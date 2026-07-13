@@ -1,0 +1,7 @@
+export const ACCOUNT_STATUS = Object.freeze({
+  PENDING: "PENDING",
+  ACTIVE: "ACTIVE",
+  BLOCKED: "BLOCKED",
+  SUSPENDED: "SUSPENDED",
+  DELETED: "DELETED",
+});
