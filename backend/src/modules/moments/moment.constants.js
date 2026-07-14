@@ -1,0 +1,12 @@
+export const MOMENT_STATUS = Object.freeze({
+  DRAFT: "DRAFT",
+  PUBLISHED: "PUBLISHED",
+  BLOCKED: "BLOCKED",
+});
+
+export const MOMENT_TYPE = Object.freeze({
+  FOOD_REVIEW: "FOOD_REVIEW",
+  SHOP_PROMOTION: "SHOP_PROMOTION",
+  STUDENT_LIFE: "STUDENT_LIFE",
+  LOCAL_GUIDE: "LOCAL_GUIDE",
+});

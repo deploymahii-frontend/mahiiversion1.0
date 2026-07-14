@@ -1,0 +1,6 @@
+export const REWARD_TYPE = Object.freeze({
+  MOMENT_VIEW: "MOMENT_VIEW",
+  SHOP_VISIT: "SHOP_VISIT",
+  ORDER_GENERATED: "ORDER_GENERATED",
+  BONUS: "BONUS",
+});
