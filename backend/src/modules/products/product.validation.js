@@ -18,6 +18,31 @@ export const createProductSchema = Joi.object({
 
   images: Joi.array().items(Joi.string().uri().allow("")).default([]),
 
+  availability: Joi.object({
+    breakfast: Joi.object({
+      enabled: Joi.boolean(),
+      start: Joi.string().allow("").optional(),
+      end: Joi.string().allow("").optional(),
+    }).default({}),
+    lunch: Joi.object({
+      enabled: Joi.boolean(),
+      start: Joi.string().allow("").optional(),
+      end: Joi.string().allow("").optional(),
+    }).default({}),
+    dinner: Joi.object({
+      enabled: Joi.boolean(),
+      start: Joi.string().allow("").optional(),
+      end: Joi.string().allow("").optional(),
+    }).default({}),
+  }).default({}),
+
+  rating: Joi.object({
+    average: Joi.number().min(0).max(5).default(0),
+    totalReviews: Joi.number().integer().min(0).default(0),
+  }).default({}),
+
+  favorites: Joi.number().integer().min(0).default(0),
+
   status: Joi.string()
     .valid(...Object.values(PRODUCT_STATUS))
     .default(PRODUCT_STATUS.ACTIVE),
@@ -41,6 +66,31 @@ export const updateProductSchema = Joi.object({
   discountPrice: Joi.number().min(0),
 
   images: Joi.array().items(Joi.string().uri().allow("")),
+
+  availability: Joi.object({
+    breakfast: Joi.object({
+      enabled: Joi.boolean(),
+      start: Joi.string().allow("").optional(),
+      end: Joi.string().allow("").optional(),
+    }).default({}),
+    lunch: Joi.object({
+      enabled: Joi.boolean(),
+      start: Joi.string().allow("").optional(),
+      end: Joi.string().allow("").optional(),
+    }).default({}),
+    dinner: Joi.object({
+      enabled: Joi.boolean(),
+      start: Joi.string().allow("").optional(),
+      end: Joi.string().allow("").optional(),
+    }).default({}),
+  }).default({}),
+
+  rating: Joi.object({
+    average: Joi.number().min(0).max(5),
+    totalReviews: Joi.number().integer().min(0),
+  }).default({}),
+
+  favorites: Joi.number().integer().min(0),
 
   status: Joi.string().valid(...Object.values(PRODUCT_STATUS)),
 

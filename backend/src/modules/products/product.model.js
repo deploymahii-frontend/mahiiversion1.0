@@ -1,89 +1,121 @@
 import mongoose from "mongoose";
-import { PRODUCT_STATUS, PRODUCT_TYPE } from "./product.constants.js";
 
-const productSchema = new mongoose.Schema(
-  {
+const productSchema = new mongoose.Schema({
+
     shop: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Shop",
-      required: true,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Shop",
+        required: true,
+        index: true
+    },
+
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
+        required: true
     },
 
     name: {
-      type: String,
-      required: true,
-      trim: true,
-      maxlength: 200,
+        type: String,
+        required: true,
+        trim: true
     },
 
     slug: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true,
-      trim: true,
+        type: String,
+        unique: true,
+        index: true
     },
 
-    type: {
-      type: String,
-      enum: Object.values(PRODUCT_TYPE),
-      required: true,
-    },
-
-    description: {
-      type: String,
-      default: "",
-    },
+    description: String,
 
     price: {
-      type: Number,
-      required: true,
-      min: 0,
+        type: Number,
+        required: true
     },
 
-    discountPrice: {
-      type: Number,
-      default: 0,
+    discountedPrice: Number,
+
+    images: [String],
+
+    available: {
+        type: Boolean,
+        default: true
     },
 
-    images: {
-      type: [String],
-      default: [],
-    },
+    variants: [
+        {
+            name: String,
+            price: Number,
+            available: {
+                type: Boolean,
+                default: true
+            }
+        }
+    ],
 
-    status: {
-      type: String,
-      enum: Object.values(PRODUCT_STATUS),
-      default: PRODUCT_STATUS.ACTIVE,
-    },
+    addons: [
+        {
+            name: String,
+            price: Number
+        }
+    ],
 
-    stock: {
-      type: Number,
-      default: 0,
+    availability: {
+        breakfast: {
+            enabled: Boolean,
+            start: String,
+            end: String
+        },
+        lunch: {
+            enabled: Boolean,
+            start: String,
+            end: String
+        },
+        dinner: {
+            enabled: Boolean,
+            start: String,
+            end: String
+        }
     },
 
     rating: {
-      average: {
-        type: Number,
-        default: 0,
-      },
-      totalReviews: {
-        type: Number,
-        default: 0,
-      },
+        average: {
+            type: Number,
+            default: 0
+        },
+        totalReviews: {
+            type: Number,
+            default: 0
+        }
     },
 
-    isFeatured: {
-      type: Boolean,
-      default: false,
+    favorites: {
+        type: Number,
+        default: 0
     },
-  },
-  {
-    timestamps: true,
-  }
+
+    inventory: {
+        quantity: {
+            type: Number,
+            default: 0
+        },
+        trackInventory: {
+            type: Boolean,
+            default: true
+        }
+    }
+
+}, {
+    timestamps:true
+});
+
+productSchema.index({
+    name: "text",
+    description: "text"
+});
+
+export default mongoose.model(
+    "Product",
+    productSchema
 );
-
-productSchema.index({ shop: 1 });
-productSchema.index({ name: "text", description: "text" });
-
-export default mongoose.model("Product", productSchema);

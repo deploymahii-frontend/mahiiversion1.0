@@ -1,49 +1,105 @@
-import * as repository from "./auth.repository.js";
-import { generateAccessToken } from "./jwt.service.js";
+import bcrypt from "bcryptjs";
+import AuthRepository from "./repositories/auth.repository.js";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  verifyRefreshToken,
+} from "./jwt.service.js";
 
-export async function signup(data) {
-  const emailExists = await repository.findByEmail(data.email);
+class AuthService {
+  async signup(payload) {
+    const existingUser = await AuthRepository.findByPhone(
+      payload.phone
+    );
 
-  if (emailExists) {
-    throw new Error("Email already exists");
+    if (existingUser) {
+      throw new Error("User already exists.");
+    }
+
+    const user = await AuthRepository.createUser(payload);
+
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
+    await AuthRepository.updateRefreshToken(
+      user._id,
+      refreshToken
+    );
+
+    return {
+      user,
+      accessToken,
+      refreshToken,
+    };
   }
 
-  const mobileExists = await repository.findByMobile(data.mobile);
+  async login(phone, password) {
+    const user = await AuthRepository.findByPhone(phone);
 
-  if (mobileExists) {
-    throw new Error("Mobile number already exists");
+    if (!user) {
+      throw new Error("Invalid phone or password.");
+    }
+
+    if (user.isLocked()) {
+      throw new Error(
+        "Account temporarily locked. Try again later."
+      );
+    }
+
+    const validPassword = await user.comparePassword(
+      password
+    );
+
+    if (!validPassword) {
+      await AuthRepository.incrementLoginAttempts(user._id);
+
+      if (user.loginAttempts >= 4) {
+        await AuthRepository.lockAccount(user._id);
+      }
+
+      throw new Error("Invalid phone or password.");
+    }
+
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
+    await AuthRepository.updateRefreshToken(
+      user._id,
+      refreshToken
+    );
+
+    await AuthRepository.updateLastLogin(user._id);
+
+    return {
+      user,
+      accessToken,
+      refreshToken,
+    };
   }
 
-  const user = await repository.createUser(data);
+  async refreshToken(refreshToken) {
+    const decoded = verifyRefreshToken(refreshToken);
 
-  const token = generateAccessToken(user);
+    const user = await AuthRepository.findById(decoded.id);
 
-  return {
-    token,
-    user,
-  };
+    if (!user) {
+      throw new Error("User not found.");
+    }
+
+    const accessToken = generateAccessToken(user);
+
+    return {
+      accessToken,
+    };
+  }
+
+  async logout(userId) {
+    await AuthRepository.clearRefreshToken(userId);
+
+    return {
+      success: true,
+    };
+  }
 }
 
-export async function login({ email, password }) {
-  const user = await repository.findByEmailWithPassword(email);
-
-  if (!user) {
-    throw new Error("Invalid email or password");
-  }
-
-  const isMatch = await user.comparePassword(password);
-
-  if (!isMatch) {
-    throw new Error("Invalid email or password");
-  }
-
-  const token = generateAccessToken(user);
-
-  user.lastLogin = new Date();
-  await user.save();
-
-  return {
-    token,
-    user,
-  };
-}
+export default new AuthService();

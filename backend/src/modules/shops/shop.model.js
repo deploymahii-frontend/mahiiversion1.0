@@ -1,378 +1,204 @@
 import mongoose from "mongoose";
-import {
-  SHOP_STATUS,
-  VERIFICATION_STATUS,
-  SHOP_CATEGORIES,
-  SHOP_DEFAULTS,
-  DAYS_OF_WEEK,
-} from "./shop.constants.js";
 
-const businessHourSchema = new mongoose.Schema(
-  {
-    day: {
-      type: String,
-      enum: DAYS_OF_WEEK,
-      required: true,
-    },
-    open: {
-      type: String,
-      default: "",
-    },
-    close: {
-      type: String,
-      default: "",
-    },
-    closed: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  { _id: false }
-);
+const shopSchema = new mongoose.Schema({
 
-const addressSchema = new mongoose.Schema(
-  {
-    addressLine: {
-      type: String,
-      trim: true,
-    },
-    area: {
-      type: String,
-      trim: true,
-    },
-    city: {
-      type: String,
-      trim: true,
-    },
-    state: {
-      type: String,
-      trim: true,
-    },
-    country: {
-      type: String,
-      default: "India",
-    },
-    pincode: {
-      type: String,
-      trim: true,
-    },
-  },
-  { _id: false }
-);
+    owner:{
 
-const locationSchema = new mongoose.Schema(
-  {
-    type: {
-      type: String,
-      enum: ["Point"],
-      default: "Point",
-    },
-    coordinates: {
-      type: [Number],
-      default: [0, 0], // [longitude, latitude]
-    },
-  },
-  { _id: false }
-);
+        type:mongoose.Schema.Types.ObjectId,
 
-const shopSchema = new mongoose.Schema(
-  {
-    owner: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+        ref:"User",
+
+        required:true,
+
+        index:true
+
     },
 
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-      minlength: 2,
-      maxlength: 120,
+    name:{
+        type:String,
+        required:true,
+        trim:true
     },
 
-    slug: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true,
-      trim: true,
+    slug:{
+        type:String,
+        unique:true,
+        index:true
     },
 
-    shopCode: {
-      type: String,
-      unique: true,
+    category:{
+        type:String,
+        required:true
     },
 
-    description: {
-      type: String,
-      trim: true,
-      maxlength: SHOP_DEFAULTS.MAX_DESCRIPTION_LENGTH,
-      default: "",
+    description:String,
+
+    phone:String,
+
+    email:String,
+
+    address:{
+
+        line1:String,
+
+        city:String,
+
+        state:String,
+
+        pincode:String,
+
+        location:{
+
+            type:{
+                type:String,
+                enum:["Point"],
+                default:"Point"
+            },
+
+            coordinates:{
+                type:[Number],
+                default:[0,0]
+            }
+
+        }
+
     },
 
-    category: {
-      type: String,
-      required: true,
-      enum: SHOP_CATEGORIES,
+    logo:String,
+
+    coverImage:String,
+
+    isVerified:{
+        type:Boolean,
+        default:false
     },
 
-    tags: {
-      type: [String],
-      default: [],
-    },
-
-    phone: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    email: {
-      type: String,
-      lowercase: true,
-      trim: true,
-      default: "",
-    },
-
-    website: {
-      type: String,
-      trim: true,
-      default: "",
-    },
-
-    logo: {
-      type: String,
-      default: "",
-    },
-
-    cover: {
-      type: String,
-      default: "",
-    },
-
-    gallery: {
-      type: [String],
-      default: [],
-    },
-
-    address: {
-      type: addressSchema,
-      default: () => ({}),
-    },
-
-    location: {
-      type: locationSchema,
-      default: () => ({
-        type: "Point",
-        coordinates: [0, 0],
-      }),
+    status:{
+        type:String,
+        enum:[
+            "PENDING",
+            "APPROVED",
+            "REJECTED",
+            "SUSPENDED"
+        ],
+        default:"PENDING"
     },
 
     businessHours: {
-      type: [businessHourSchema],
-      default: [],
+
+        monday: {
+            open: String,
+            close: String,
+            closed: {
+                type: Boolean,
+                default: false
+            }
+        },
+
+        tuesday: {
+            open: String,
+            close: String,
+            closed: Boolean
+        },
+
+        wednesday: {
+            open: String,
+            close: String,
+            closed: Boolean
+        },
+
+        thursday: {
+            open: String,
+            close: String,
+            closed: Boolean
+        },
+
+        friday: {
+            open: String,
+            close: String,
+            closed: Boolean
+        },
+
+        saturday: {
+            open: String,
+            close: String,
+            closed: Boolean
+        },
+
+        sunday: {
+            open: String,
+            close: String,
+            closed: Boolean
+        }
+
     },
 
-    paymentSettings: {
-      acceptsCash: {
-        type: Boolean,
-        default: true,
-      },
+    deliverySettings: {
 
-      acceptsUPI: {
-        type: Boolean,
-        default: true,
-      },
+        deliveryRadius: {
+            type: Number,
+            default: 5
+        },
 
-      acceptsOnline: {
-        type: Boolean,
-        default: false,
-      },
+        minimumOrder: {
+            type: Number,
+            default: 0
+        },
 
-      upiId: {
-        type: String,
-        default: "",
-        trim: true,
-      },
+        deliveryFee: {
+            type: Number,
+            default: 0
+        },
 
-      upiName: {
-        type: String,
-        default: "",
-        trim: true,
-      },
+        averageDeliveryTime: {
+            type: Number,
+            default: 30
+        }
 
-      qrCode: {
-        type: String,
-        default: "",
-      },
     },
 
-    fulfillment: {
-      pickup: {
-        type: Boolean,
-        default: true,
-      },
+    verification: {
 
-      delivery: {
-        type: Boolean,
-        default: false,
-      },
+        panCard: String,
 
-      dineIn: {
-        type: Boolean,
-        default: true,
-      },
+        gstNumber: String,
 
-      preparationTime: {
-        type: Number,
-        default: 20,
-      },
+        fssaiLicense: String,
 
-      deliveryRadius: {
-        type: Number,
-        default: 0,
-      },
+        aadhaar: String,
 
-      minimumOrder: {
-        type: Number,
-        default: 0,
-      },
+        cancelledCheque: String,
+
+        verifiedAt: Date,
+
+        verifiedBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }
+
     },
 
-    facilities: {
-      parking: {
-        type: Boolean,
-        default: false,
-      },
+    images: {
 
-      wifi: {
-        type: Boolean,
-        default: false,
-      },
+        logo: String,
 
-      ac: {
-        type: Boolean,
-        default: false,
-      },
+        cover: String,
 
-      familyFriendly: {
-        type: Boolean,
-        default: false,
-      },
+        gallery: [
+            String
+        ]
 
-      pureVeg: {
-        type: Boolean,
-        default: false,
-      },
+    }
 
-      wheelchairAccessible: {
-        type: Boolean,
-        default: false,
-      },
-    },
-
-    socialLinks: {
-      instagram: {
-        type: String,
-        default: "",
-      },
-
-      facebook: {
-        type: String,
-        default: "",
-      },
-
-      whatsapp: {
-        type: String,
-        default: "",
-      },
-    },
-
-    searchKeywords: {
-      type: [String],
-      default: [],
-    },
-
-    targetCustomers: {
-      type: [String],
-      enum: [
-        "students",
-        "families",
-        "office",
-        "travellers",
-        "tourists",
-        "couples",
-      ],
-      default: [],
-    },
-
-    status: {
-      type: String,
-      enum: Object.values(SHOP_STATUS),
-      default: SHOP_STATUS.DRAFT,
-    },
-
-    verificationStatus: {
-      type: String,
-      enum: Object.values(VERIFICATION_STATUS),
-      default: VERIFICATION_STATUS.NOT_SUBMITTED,
-      index: true,
-    },
-
-    rating: {
-      type: Number,
-      default: SHOP_DEFAULTS.RATING,
-      min: 0,
-      max: 5,
-    },
-
-    totalReviews: {
-      type: Number,
-      default: SHOP_DEFAULTS.TOTAL_REVIEWS,
-      min: 0,
-    },
-
-    totalOrders: {
-      type: Number,
-      default: SHOP_DEFAULTS.TOTAL_ORDERS,
-      min: 0,
-    },
-
-    totalViews: {
-      type: Number,
-      default: SHOP_DEFAULTS.TOTAL_VIEWS,
-      min: 0,
-    },
-
-    isFeatured: {
-      type: Boolean,
-      default: false,
-    },
-
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
-
-shopSchema.index({ owner: 1 });
-shopSchema.index({ category: 1 });
-shopSchema.index({ status: 1 });
-shopSchema.index({ "address.city": 1 });
-shopSchema.index({ location: "2dsphere" });
-
-shopSchema.set("toJSON", {
-  transform(doc, ret) {
-    delete ret.__v;
-    return ret;
-  },
+}, {
+    timestamps:true
 });
 
-const Shop = mongoose.model("Shop", shopSchema);
+shopSchema.index({
+    "address.location":"2dsphere"
+});
 
-export default Shop;
+export default mongoose.model(
+    "Shop",
+    shopSchema
+);

@@ -71,7 +71,19 @@ export const deleteProduct = (id) =>
  * Search Products
  */
 export const searchProducts = (keyword) =>
-  repository.search(keyword);
+  repository.searchProducts(keyword);
+
+/**
+ * Bulk Import Products
+ */
+export const bulkCreateProducts = (products) =>
+  repository.bulkCreateProducts(products);
+
+/**
+ * Decrease Inventory
+ */
+export const decreaseInventory = (productId, quantity) =>
+  repository.decreaseInventory(productId, quantity);
 
 /**
  * Count Products

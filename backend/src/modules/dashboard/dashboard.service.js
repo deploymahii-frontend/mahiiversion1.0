@@ -1,6 +1,7 @@
 import Shop from "../shops/shop.model.js";
 import Order from "../orders/order.model.js";
 import Wishlist from "../wishlist/wishlist.model.js";
+import * as repository from "./dashboard.repository.js";
 
 function startOfToday() {
   const date = new Date();
@@ -31,30 +32,12 @@ function thirtyDaysAgo() {
   return date;
 }
 
+export async function getOverview(ownerId) {
+  return repository.getDashboard(ownerId);
+}
+
 export async function getShopOverview(ownerId) {
-  const shop = await Shop.findOne({ owner: ownerId });
-
-  if (!shop) {
-    throw new Error("Shop not found.");
-  }
-
-  const today = startOfToday();
-  const todayOrders = await Order.countDocuments({
-    shop: shop._id,
-    createdAt: { $gte: today },
-  });
-
-  const wishlistCount = await Wishlist.countDocuments({ shop: shop._id });
-
-  return {
-    shopName: shop.name,
-    todayOrders,
-    totalOrders: shop.totalOrders,
-    rating: shop.rating,
-    totalReviews: shop.totalReviews,
-    totalViews: shop.totalViews,
-    wishlistCount,
-  };
+  return repository.getDashboard(ownerId);
 }
 
 export async function getSalesAnalytics(ownerId) {
@@ -184,3 +167,7 @@ export async function getCustomerInsights(ownerId) {
     topAreas: topAreasResult.map((item) => item.area),
   };
 }
+
+export const getDashboardStats = (ownerId) => {
+  return repository.getDashboardStats(ownerId);
+};

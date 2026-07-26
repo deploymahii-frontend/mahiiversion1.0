@@ -7,6 +7,7 @@ import { validate } from "../../middleware/validate.middleware.js";
 import {
   addToCartSchema,
   updateCartQuantitySchema,
+  applyCouponSchema,
 } from "./cart.validation.js";
 
 const router = Router();
@@ -34,6 +35,14 @@ router.put(
   validate(updateCartQuantitySchema),
   controller.updateQuantity
 );
+
+router.post(
+  "/coupon",
+  validate(applyCouponSchema),
+  controller.applyCoupon
+);
+
+router.delete("/coupon", controller.removeCoupon);
 
 router.delete("/:productId", controller.removeFromCart);
 

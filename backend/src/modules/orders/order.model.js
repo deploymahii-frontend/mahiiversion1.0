@@ -108,6 +108,19 @@ const orderSchema = new mongoose.Schema(
       default: 0,
     },
 
+    couponCode: {
+      type: String,
+      default: "",
+      trim: true,
+      uppercase: true,
+    },
+
+    couponId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Offer",
+      default: null,
+    },
+
     totalAmount: {
       type: Number,
       required: true,
@@ -150,6 +163,11 @@ const orderSchema = new mongoose.Schema(
     },
 
     razorpayPaymentId: {
+      type: String,
+      default: "",
+    },
+
+    razorpaySignature: {
       type: String,
       default: "",
     },

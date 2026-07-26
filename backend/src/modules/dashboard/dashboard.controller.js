@@ -1,6 +1,16 @@
 import * as dashboardService from "./dashboard.service.js";
 import { successResponse } from "../../utils/api-response.js";
 
+export async function getOverview(req, res, next) {
+  try {
+    const data = await dashboardService.getOverview(req.user._id);
+
+    return successResponse(res, data, "Dashboard overview fetched successfully");
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function getShopOverview(req, res, next) {
   try {
     const data = await dashboardService.getShopOverview(req.user._id);
@@ -36,6 +46,16 @@ export async function getCustomerInsights(req, res, next) {
     const data = await dashboardService.getCustomerInsights(req.user._id);
 
     return successResponse(res, data, "Customer insights fetched successfully");
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getStats(req, res, next) {
+  try {
+    const data = await dashboardService.getDashboardStats(req.user._id);
+
+    return successResponse(res, data, "Dashboard stats fetched successfully");
   } catch (error) {
     next(error);
   }

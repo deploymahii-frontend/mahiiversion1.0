@@ -1,0 +1,35 @@
+export const PAYMENT_METHOD = Object.freeze({
+
+    CASH: "CASH",
+
+    BANK_TRANSFER: "BANK_TRANSFER",
+
+    UPI: "UPI",
+
+    CHEQUE: "CHEQUE",
+
+    CREDIT_CARD: "CREDIT_CARD",
+
+    DEBIT_CARD: "DEBIT_CARD",
+
+    ONLINE_GATEWAY: "ONLINE_GATEWAY",
+
+    WALLET: "WALLET"
+
+});
+
+export const PAYMENT_STATUS = Object.freeze({
+
+    DRAFT: "DRAFT",
+
+    POSTED: "POSTED",
+
+    PARTIALLY_ALLOCATED: "PARTIALLY_ALLOCATED",
+
+    FULLY_ALLOCATED: "FULLY_ALLOCATED",
+
+    REVERSED: "REVERSED",
+
+    CANCELLED: "CANCELLED"
+
+});

@@ -1,6 +1,7 @@
 import express from "express";
 import * as controller from "./promotion.controller.js";
-import { authenticate, authorize } from "../auth/auth.middleware.js";
+import { authenticate } from "../auth/auth.middleware.js";
+import { authorize } from "../auth/authorize.middleware.js";
 
 const router = express.Router();
 

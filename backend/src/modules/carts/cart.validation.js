@@ -8,3 +8,7 @@ export const addToCartSchema = Joi.object({
 export const updateCartQuantitySchema = Joi.object({
   quantity: Joi.number().integer().min(1).required(),
 });
+
+export const applyCouponSchema = Joi.object({
+  couponCode: Joi.string().trim().uppercase().min(3).required(),
+});

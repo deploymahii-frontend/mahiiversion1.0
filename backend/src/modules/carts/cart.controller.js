@@ -62,6 +62,45 @@ export async function updateQuantity(req, res, next) {
 }
 
 /**
+ * Apply Coupon
+ */
+export async function applyCoupon(req, res, next) {
+  try {
+    const { couponCode } = req.body;
+
+    const cart = await cartService.applyCoupon(
+      req.user._id,
+      couponCode
+    );
+
+    return successResponse(
+      res,
+      cart,
+      "Coupon applied successfully"
+    );
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Remove Coupon
+ */
+export async function removeCoupon(req, res, next) {
+  try {
+    const cart = await cartService.removeCoupon(req.user._id);
+
+    return successResponse(
+      res,
+      cart,
+      "Coupon removed successfully"
+    );
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
  * Remove Product
  */
 export async function removeFromCart(req, res, next) {

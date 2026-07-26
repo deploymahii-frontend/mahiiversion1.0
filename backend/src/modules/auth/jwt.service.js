@@ -1,19 +1,57 @@
 import jwt from "jsonwebtoken";
-import config from "../../config/server.config.js";
 
-export const generateAccessToken = (user) => {
-  return jwt.sign(
-    {
-      id: user._id,
-      role: user.role,
-    },
-    config.jwt.secret,
-    {
-      expiresIn: config.jwt.expiresIn,
-    }
-  );
-};
+export function signAccessToken(payload) {
 
-export const verifyAccessToken = (token) => {
-  return jwt.verify(token, config.jwt.secret);
-};
+    return jwt.sign(
+
+        payload,
+
+        process.env.JWT_SECRET,
+
+        {
+            expiresIn: "15m"
+        }
+
+    );
+
+}
+
+export function signRefreshToken(payload) {
+
+    return jwt.sign(
+
+        payload,
+
+        process.env.JWT_REFRESH_SECRET,
+
+        {
+            expiresIn: "30d"
+        }
+
+    );
+
+}
+
+export function verifyAccessToken(token) {
+
+    return jwt.verify(
+
+        token,
+
+        process.env.JWT_SECRET
+
+    );
+
+}
+
+export function verifyRefreshToken(token) {
+
+    return jwt.verify(
+
+        token,
+
+        process.env.JWT_REFRESH_SECRET
+
+    );
+
+}

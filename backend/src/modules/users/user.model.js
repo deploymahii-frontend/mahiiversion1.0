@@ -1,155 +1,74 @@
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
-import validator from "validator";
-import { ROLES } from "../../shared/constants/roles.js";
-import { ACCOUNT_STATUS } from "../../shared/constants/account-status.js";
 
-const userSchema = new mongoose.Schema(
-	{
-		fullName: {
-			type: String,
-			required: true,
-			trim: true,
-			minlength: 2,
-			maxlength: 100,
-		},
+const UserSchema = new mongoose.Schema(
+{
+    firstName: {
+        type: String,
+        required: true,
+        trim: true
+    },
 
-		email: {
-			type: String,
-			required: true,
-			unique: true,
-			lowercase: true,
-			trim: true,
-			validate: [validator.isEmail, "Invalid email address"],
-		},
+    lastName: {
+        type: String,
+        required: true,
+        trim: true
+    },
 
-		mobile: {
-			type: String,
-			required: true,
-			unique: true,
-			trim: true,
-		},
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        lowercase: true
+    },
 
-		password: {
-			type: String,
-			required: true,
-			minlength: 8,
-			select: false,
-		},
+    mobile: {
+        type: String,
+        unique: true,
+        sparse: true,
+    },
 
-		profileImage: {
-			type: String,
-			default: "",
-		},
+    password: {
+        type: String,
+        required: true,
+        select: false
+    },
 
-		role: {
-			type: String,
-			enum: Object.values(ROLES),
-			default: ROLES.CUSTOMER,
-			index: true,
-		},
+    emailVerified: {
+        type: Boolean,
+        default: false
+    },
 
-		accountStatus: {
-			type: String,
-			enum: Object.values(ACCOUNT_STATUS),
-			default: ACCOUNT_STATUS.PENDING,
-			index: true,
-		},
+    failedLoginAttempts: {
+        type: Number,
+        default: 0
+    },
 
-		isEmailVerified: {
-			type: Boolean,
-			default: false,
-		},
+    deletedAt: {
+        type: Date,
+        default: null
+    },
 
-		isMobileVerified: {
-			type: Boolean,
-			default: false,
-		},
+    role: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Role"
+    },
 
-		loginAttempts: {
-			type: Number,
-			default: 0,
-		},
+    permissions: [{
+        type: String
+    }],
 
-		lastLogin: {
-			type: Date,
-		},
+    status: {
+        type: String,
+        enum: ["ACTIVE", "INACTIVE", "SUSPENDED", "DELETED"],
+        default: "ACTIVE"
+    }
 
-		passwordChangedAt: {
-			type: Date,
-		},
-
-		refreshTokens: {
-			type: [String],
-			default: [],
-		},
-
-		address: {
-			city: String,
-			state: String,
-			country: {
-				type: String,
-				default: "India",
-			},
-			pincode: String,
-		},
-
-		preferences: {
-			language: {
-				type: String,
-				default: "en",
-			},
-
-			theme: {
-				type: String,
-				default: "light",
-			},
-
-			notifications: {
-				email: {
-					type: Boolean,
-					default: true,
-				},
-
-				push: {
-					type: Boolean,
-					default: true,
-				},
-
-				sms: {
-					type: Boolean,
-					default: false,
-				},
-			},
-		},
-	},
-	{
-		timestamps: true,
-	}
-);
-
-userSchema.pre("save", async function () {
-	if (!this.isModified("password")) {
-		return;
-	}
-
-	this.password = await bcrypt.hash(this.password, 12);
+},
+{
+    timestamps: true
 });
 
-userSchema.methods.comparePassword = async function (password) {
-	return bcrypt.compare(password, this.password);
-};
-
-userSchema.set("toJSON", {
-	transform(doc, ret) {
-		delete ret.password;
-		delete ret.refreshTokens;
-		delete ret.__v;
-		return ret;
-	},
-});
-
-const User = mongoose.model("User", userSchema);
+const User = mongoose.models.User || mongoose.model("User", UserSchema);
 
 export default User;
 

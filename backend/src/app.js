@@ -7,6 +7,8 @@ import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 
 import routes from "./routes/index.js";
+import businessRoutes from "./modules/business/business.routes.js";
+import catalogRoutes from "./modules/catalog/catalog.routes.js";
 import notFound from "./middleware/notFound.middleware.js";
 import errorHandler from "./middleware/error.middleware.js";
 
@@ -46,6 +48,8 @@ app.use(limiter);
 
 /* API */
 app.use("/api/v1", routes);
+app.use("/api/v1/businesses", businessRoutes);
+app.use("/api/v1/catalog", catalogRoutes);
 
 /* 404 */
 app.use(notFound);

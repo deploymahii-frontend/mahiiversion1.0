@@ -9,6 +9,12 @@ const router = Router();
 router.use(authenticate);
 
 router.get(
+  "/overview",
+  authorize(ROLES.SHOP_OWNER, ROLES.ADMIN),
+  dashboardController.getOverview
+);
+
+router.get(
   "/shop",
   authorize(ROLES.SHOP_OWNER, ROLES.ADMIN),
   dashboardController.getShopOverview
@@ -30,6 +36,12 @@ router.get(
   "/customers",
   authorize(ROLES.SHOP_OWNER, ROLES.ADMIN),
   dashboardController.getCustomerInsights
+);
+
+router.get(
+  "/stats",
+  authorize(ROLES.SHOP_OWNER, ROLES.ADMIN),
+  dashboardController.getStats
 );
 
 export default router;

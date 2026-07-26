@@ -1,0 +1,23 @@
+export const SALES_ORDER_STATUS = Object.freeze({
+
+    DRAFT: "DRAFT",
+
+    OPEN: "OPEN",
+
+    CONFIRMED: "CONFIRMED",
+
+    RESERVED: "RESERVED",
+
+    PICKING: "PICKING",
+
+    PACKED: "PACKED",
+
+    DISPATCHED: "DISPATCHED",
+
+    DELIVERED: "DELIVERED",
+
+    COMPLETED: "COMPLETED",
+
+    CANCELLED: "CANCELLED"
+
+});

@@ -2,12 +2,11 @@ import { Router } from "express";
 
 import * as shopController from "./shop.controller.js";
 import { authenticate } from "../auth/auth.middleware.js";
+import { authorize } from "../auth/authorize.middleware.js";
 import { validate } from "../../middleware/validate.middleware.js";
 import {
   createShopSchema,
   updateShopSchema,
-  updateLocationSchema,
-  updateBusinessHoursSchema,
 } from "./shop.validation.js";
 
 const router = Router();
@@ -28,18 +27,25 @@ router.get("/:slug", shopController.getShopBySlug);
 router.post(
   "/",
   authenticate,
+  authorize("SHOP_OWNER"),
   validate(createShopSchema),
   shopController.createShop
 );
 
-router.put(
+router.get(
+  "/mine",
+  authenticate,
+  authorize("SHOP_OWNER"),
+  shopController.getMyShop
+);
+
+router.patch(
   "/:id",
   authenticate,
+  authorize("SHOP_OWNER"),
   validate(updateShopSchema),
   shopController.updateShop
 );
-
-router.delete("/:id", authenticate, shopController.deleteShop);
 
 export default router;
 

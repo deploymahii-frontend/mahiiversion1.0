@@ -84,6 +84,24 @@ const cartSchema = new mongoose.Schema(
       default: 0,
     },
 
+    couponCode: {
+      type: String,
+      default: "",
+      trim: true,
+      uppercase: true,
+    },
+
+    couponId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Offer",
+      default: null,
+    },
+
+    couponType: {
+      type: String,
+      default: "",
+    },
+
     grandTotal: {
       type: Number,
       default: 0,

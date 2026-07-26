@@ -5,14 +5,26 @@ import * as shopService from "./shop.service.js";
  */
 export const createShop = async (req, res, next) => {
   try {
-    const shop = await shopService.createShop({
-      ...req.body,
-      owner: req.user._d,
-    });
+    const shop = await shopService.registerShop(
+      req.user._id,
+      req.body
+    );
 
     return res.status(201).json({
       success: true,
-      message: "Shop created successfully.",
+      data: shop,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getMyShop = async (req, res, next) => {
+  try {
+    const shop = await shopService.getOwnerShop(req.user._id);
+
+    return res.json({
+      success: true,
       data: shop,
     });
   } catch (error) {
@@ -120,7 +132,7 @@ export const listShops = async (req, res, next) => {
  */
 export const searchShops = async (req, res, next) => {
   try {
-    const shops = await shopService.searchShops(req.query.search || "");
+    const shops = await shopService.searchShops(req.query.q || "");
 
     return res.json({
       success: true,

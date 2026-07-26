@@ -44,3 +44,96 @@ export const search = (keyword) =>
       $search: keyword,
     },
   }).populate("shop", "name slug");
+
+export async function createProduct(data){
+
+    return Product.create(data);
+
+}
+
+export async function getProducts(shopId){
+
+    return Product.find({
+
+        shop:shopId
+
+    });
+
+}
+
+export async function updateProduct(
+
+    id,
+
+    data
+
+){
+
+    return Product.findByIdAndUpdate(
+
+        id,
+
+        data,
+
+        {
+
+            new:true
+
+        }
+
+    );
+}
+
+export async function searchProducts(query){
+
+    return Product.find({
+
+        $text:{
+
+            $search:query
+
+        }
+
+    });
+
+}
+
+export async function bulkCreateProducts(
+
+    products
+
+){
+
+    return Product.insertMany(
+
+        products
+
+    );
+
+}
+
+export async function decreaseInventory(
+
+    productId,
+
+    quantity
+
+){
+
+    await Product.findByIdAndUpdate(
+
+        productId,
+
+        {
+
+            $inc:{
+
+                "inventory.quantity":-quantity
+
+            }
+
+        }
+
+    );
+
+}

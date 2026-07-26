@@ -77,6 +77,8 @@ export async function createOrder(customerId, orderData) {
     subTotal: cart.subTotal,
     tax: cart.tax,
     discount: cart.discount,
+    couponCode: cart.couponCode || "",
+    couponId: cart.couponId || null,
     deliveryCharge: cart.deliveryCharge,
     totalAmount: cart.grandTotal,
     paymentMethod: orderData.paymentMethod,
