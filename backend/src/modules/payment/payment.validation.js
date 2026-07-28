@@ -9,9 +9,9 @@ export const createOrderSchema = z.object({
 
 export const verifySchema = z.object({
   body: z.object({
-    orderId: z.string().required(),
-    razorpay_order_id: z.string().required(),
-    razorpay_payment_id: z.string().required(),
-    razorpay_signature: z.string().required(),
+    orderId: z.string().min(1),
+    razorpay_order_id: z.string().min(1),
+    razorpay_payment_id: z.string().min(1),
+    razorpay_signature: z.string().min(1),
   }),
 });

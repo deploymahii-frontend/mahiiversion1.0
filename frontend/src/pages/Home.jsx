@@ -10,7 +10,7 @@ import RecommendedSection from "../components/home/RecommendedSection";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen">
       <HeroHeader />
       <SearchSection />
       <ModeSwitcher />

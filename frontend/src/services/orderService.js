@@ -17,3 +17,8 @@ export async function getOrder(id) {
 
   return data.data;
 }
+
+export async function verifyPayment(id, paymentData) {
+  const { data } = await ApiClient.post(`/orders/${id}/verify-payment`, paymentData);
+  return data.data;
+}

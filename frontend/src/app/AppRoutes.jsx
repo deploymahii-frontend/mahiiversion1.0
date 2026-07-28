@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "@/modules/auth/pages/Login";
@@ -11,7 +12,16 @@ import Cart from "@/modules/customer/pages/Cart/Cart";
 import Checkout from "@/modules/customer/pages/Checkout/Checkout";
 import OrderSuccess from "@/modules/customer/pages/OrderSuccess/OrderSuccess";
 
-import BusinessDashboard from "@/modules/shop/pages/Dashboard";
+import OwnerDashboard from "@/modules/shopOwner/pages/OwnerDashboard";
+import OrdersManagement from "@/modules/shopOwner/pages/OrdersManagement";
+import ProductManagement from "@/modules/shopOwner/pages/ProductManagement";
+import OffersManagement from "@/modules/shopOwner/pages/OffersManagement";
+import InventoryManagement from "@/modules/shopOwner/pages/InventoryManagement";
+import ReviewsManagement from "@/modules/shopOwner/pages/ReviewsManagement";
+import EarningsDashboard from "@/modules/shopOwner/pages/EarningsDashboard";
+import AnalyticsDashboard from "@/modules/shopOwner/pages/AnalyticsDashboard";
+import OwnerSettings from "@/modules/shopOwner/pages/OwnerSettings";
+import ShopProfileSettings from "@/modules/shopOwner/pages/ShopProfileSettings";
 
 import AdminDashboard from "@/modules/admin/pages/Dashboard/Dashboard";
 import Users from "@/modules/admin/pages/Users/Users";
@@ -28,10 +38,55 @@ import Categories from "@/modules/admin/pages/Categories/Categories";
 import Analytics from "@/modules/admin/pages/Analytics/Analytics";
 import Settings from "@/modules/admin/pages/Settings/Settings";
 
+import useAuthStore from "@/modules/auth/store/auth.store";
+import * as AuthService from "@/modules/auth/services/auth.service";
 import ProtectedRoute from "@/routes/ProtectedRoute";
 import RoleRoute from "@/routes/RoleRoute";
 
 export default function AppRoutes() {
+  const login = useAuthStore((state) => state.login);
+  const logout = useAuthStore((state) => state.logout);
+  const [authInitialized, setAuthInitialized] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    const storedUser = localStorage.getItem("user");
+
+    const initialize = async () => {
+      if (!token) {
+        setAuthInitialized(true);
+        return;
+      }
+
+      if (storedUser) {
+        try {
+          const user = JSON.parse(storedUser);
+          login(user, token);
+          setAuthInitialized(true);
+          return;
+        } catch (error) {
+          localStorage.removeItem("user");
+        }
+      }
+
+      try {
+        const response = await AuthService.getProfile();
+        const currentUser = response.data.data;
+        login(currentUser, token);
+      } catch (error) {
+        logout();
+      } finally {
+        setAuthInitialized(true);
+      }
+    };
+
+    initialize();
+  }, [login, logout]);
+
+  if (!authInitialized) {
+    return null;
+  }
+
   return (
     <BrowserRouter>
       <Routes>
@@ -58,13 +113,103 @@ export default function AppRoutes() {
           }
         />
 
-        {/* Shop */}
+        {/* Shop Owner */}
         <Route
-          path="/business/dashboard"
+          path="/owner/dashboard"
           element={
             <ProtectedRoute>
               <RoleRoute roles={["shop_owner"]}>
-                <BusinessDashboard />
+                <OwnerDashboard />
+              </RoleRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/owner/orders"
+          element={
+            <ProtectedRoute>
+              <RoleRoute roles={["shop_owner"]}>
+                <OrdersManagement />
+              </RoleRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/owner/products"
+          element={
+            <ProtectedRoute>
+              <RoleRoute roles={["shop_owner"]}>
+                <ProductManagement />
+              </RoleRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/owner/offers"
+          element={
+            <ProtectedRoute>
+              <RoleRoute roles={["shop_owner"]}>
+                <OffersManagement />
+              </RoleRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/owner/inventory"
+          element={
+            <ProtectedRoute>
+              <RoleRoute roles={["shop_owner"]}>
+                <InventoryManagement />
+              </RoleRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/owner/reviews"
+          element={
+            <ProtectedRoute>
+              <RoleRoute roles={["shop_owner"]}>
+                <ReviewsManagement />
+              </RoleRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/owner/earnings"
+          element={
+            <ProtectedRoute>
+              <RoleRoute roles={["shop_owner"]}>
+                <EarningsDashboard />
+              </RoleRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/owner/analytics"
+          element={
+            <ProtectedRoute>
+              <RoleRoute roles={["shop_owner"]}>
+                <AnalyticsDashboard />
+              </RoleRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/owner/settings"
+          element={
+            <ProtectedRoute>
+              <RoleRoute roles={["shop_owner"]}>
+                <OwnerSettings />
+              </RoleRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/owner/profile"
+          element={
+            <ProtectedRoute>
+              <RoleRoute roles={["shop_owner"]}>
+                <ShopProfileSettings />
               </RoleRoute>
             </ProtectedRoute>
           }

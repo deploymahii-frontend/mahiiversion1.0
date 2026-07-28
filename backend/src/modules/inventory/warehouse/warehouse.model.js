@@ -53,9 +53,7 @@ const WarehouseSchema = new mongoose.Schema(
     timestamps: true
 });
 
-WarehouseSchema.index({
-    code: 1
-});
+
 
 WarehouseSchema.index({
     name: 1

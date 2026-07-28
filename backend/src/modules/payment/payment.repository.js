@@ -50,8 +50,7 @@ const paymentTransactionSchema = new mongoose.Schema(
   }
 );
 
-paymentTransactionSchema.index({ providerOrderId: 1 });
-paymentTransactionSchema.index({ order: 1 });
+
 
 const PaymentTransaction = mongoose.model(
   "PaymentTransaction",

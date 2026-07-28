@@ -1,62 +1,14 @@
-import mongoose from "mongoose";
-import { ACCOUNT_STATUS } from "../../shared/constants/account-status.js";
-import User from "../users/user.model.js";
+import authRepository from "./repositories/auth.repository.js";
 
-const activeFilter = {
-    deletedAt: null,
-    status: { $ne: ACCOUNT_STATUS.DELETED },
-};
+export const createUser = (...args) => authRepository.createUser(...args);
+export const findById = (...args) => authRepository.findById(...args);
+export const findByMobile = (...args) => authRepository.findByMobile(...args);
+export const findByMobileWithPassword = (...args) => authRepository.findByMobileWithPassword(...args);
+export const updateRefreshToken = (...args) => authRepository.updateRefreshToken(...args);
+export const clearRefreshToken = (...args) => authRepository.clearRefreshToken(...args);
+export const updateLastLogin = (...args) => authRepository.updateLastLogin(...args);
+export const resetLoginAttempts = (...args) => authRepository.resetLoginAttempts(...args);
+export const incrementLoginAttempts = (...args) => authRepository.incrementLoginAttempts(...args);
+export const lockAccount = (...args) => authRepository.lockAccount(...args);
 
-export async function findByEmail(email) {
-    return User.findOne({ email, ...activeFilter }).populate("role");
-}
-
-export async function findByEmailWithPassword(email) {
-    return User.findOne({ email, ...activeFilter })
-        .select("+password")
-        .populate("role");
-}
-
-export async function createUser(data, session = null) {
-    const user = new User(data);
-    return user.save({ session });
-}
-
-export async function findById(id) {
-    return User.findOne({ _id: id, ...activeFilter }).populate("role");
-}
-
-export async function findByIdWithPassword(id) {
-    return User.findOne({ _id: id, ...activeFilter })
-        .select("+password")
-        .populate("role");
-}
-
-export async function updateLastLogin(id) {
-    return User.findByIdAndUpdate(
-        id,
-        {
-            lastLogin: new Date(),
-            failedLoginAttempts: 0,
-        },
-        {
-            new: true,
-        }
-    );
-}
-
-export async function incrementFailedLoginAttempts(id) {
-    return User.findByIdAndUpdate(
-        id,
-        { $inc: { failedLoginAttempts: 1 } },
-        { new: true }
-    );
-}
-
-export async function resetFailedLoginAttempts(id) {
-    return User.findByIdAndUpdate(
-        id,
-        { failedLoginAttempts: 0 },
-        { new: true }
-    );
-}
+export default authRepository;

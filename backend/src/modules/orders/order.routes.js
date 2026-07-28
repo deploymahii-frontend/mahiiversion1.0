@@ -41,6 +41,12 @@ router.patch(
 
 router.get("/:id", controller.getOrder);
 
+router.post(
+  "/:id/verify-payment",
+  authorize(ROLES.CUSTOMER, ROLES.SHOP_OWNER, ROLES.ADMIN),
+  controller.verifyPayment
+);
+
 router.put(
   "/:id",
   authorize(ROLES.SHOP_OWNER, ROLES.ADMIN),

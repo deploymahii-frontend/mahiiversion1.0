@@ -1,26 +1,41 @@
 import { Navigate, Outlet } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
-import { ROUTES } from "../constants/routes";
 
-export default function ProtectedRoute() {
-  const { user, loading } = useAuth();
+export default function ProtectedRoute({
+  allowedRoles = [],
+  children,
+}) {
+  const { user, authenticated, loading } = useAuth();
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900">
         <div className="h-10 w-10 rounded-full border-4 border-orange-500 border-t-transparent animate-spin" />
       </div>
     );
   }
 
-  if (!user) {
-    return (
-      <Navigate
-        to={ROUTES.LOGIN}
-        replace
-      />
-    );
+  const token = localStorage.getItem("token") || localStorage.getItem("accessToken");
+  const normalizedAllowed = allowedRoles.map(r => String(r).toUpperCase());
+  const isAdminRoute = normalizedAllowed.includes("ADMIN") || normalizedAllowed.includes("SUPER_ADMIN");
+
+  if (!authenticated && !token) {
+    if (isAdminRoute) {
+      return <Navigate to="/admin/login" replace />;
+    }
+    return <Navigate to="/login" replace />;
   }
 
-  return <Outlet />;
+  if (allowedRoles.length > 0) {
+    const currentUserRole = String(user?.role || "").toUpperCase();
+
+    if (!normalizedAllowed.includes(currentUserRole)) {
+      if (isAdminRoute) {
+        return <Navigate to="/admin/login" replace />;
+      }
+      return <Navigate to="/unauthorized" replace />;
+    }
+  }
+
+  return children || <Outlet />;
 }

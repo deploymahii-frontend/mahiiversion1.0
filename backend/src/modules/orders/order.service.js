@@ -3,7 +3,15 @@ import * as cartRepository from "../carts/cart.repository.js";
 import Cart from "../carts/cart.model.js";
 import Product from "../products/product.model.js";
 import * as notificationService from "../notifications/notification.service.js";
-import { ORDER_STATUS, PAYMENT_STATUS } from "./order.constants.js";
+import { ORDER_STATUS, PAYMENT_STATUS, ALLOWED_TRANSITIONS, PAYMENT_METHOD } from "./order.constants.js";
+import mongoose from "mongoose";
+import Razorpay from "razorpay";
+import crypto from "crypto";
+
+const razorpayInstance = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID || "rzp_test_mock_key",
+  key_secret: process.env.RAZORPAY_KEY_SECRET || "rzp_test_mock_secret",
+});
 
 /**
  * Generate Order Number
@@ -26,98 +34,219 @@ function generateOrderNumber() {
  * Create Order From Cart
  */
 export async function createOrder(customerId, orderData) {
-  const cart = await Cart.findOne({ customer: customerId })
-    .populate("items.product")
-    .populate("shop");
+    const session = await mongoose.startSession();
 
-  if (!cart || cart.items.length === 0) {
-    throw new Error("Cart is empty.");
-  }
+    try {
+        let createdOrder = null;
+        let shopOwnerId = null;
 
-  let orderNumber = generateOrderNumber();
+        await session.withTransaction(async () => {
+            const cart = await Cart.findOne({
+                customer: customerId,
+            })
+            .populate("items.product")
+            .populate("shop")
+            .session(session);
 
-  while (await repository.findByOrderNumber(orderNumber)) {
-    orderNumber = generateOrderNumber();
-  }
+            if (!cart || cart.items.length === 0) {
+                throw new Error("Cart is empty.");
+            }
 
-  const items = cart.items.map((item) => ({
-    product: item.product._id,
-    name: item.product.name || item.name,
-    image:
-      item.product.images?.[0] ||
-      item.image ||
-      "",
-    price: item.price,
-    quantity: item.quantity,
-    total: item.total,
-  }));
+            shopOwnerId = cart.shop.owner;
 
-  for (const item of cart.items) {
-    const product = await Product.findById(item.product._id);
+            let orderNumber = generateOrderNumber();
 
-    if (!product) {
-      throw new Error(`Product not found: ${item.product.name || item.product}`);
+            while (await repository.findByOrderNumber(orderNumber, session)) {
+                orderNumber = generateOrderNumber();
+            }
+
+            const items = cart.items.map((item) => ({
+                product: item.product._id,
+                name: item.product.name || item.name,
+                image: item.product.images?.[0] || item.image || "",
+                price: item.price,
+                quantity: item.quantity,
+                total: item.total,
+            }));
+
+            for (const item of cart.items) {
+                const updatedProduct = await Product.findOneAndUpdate(
+                    {
+                        _id: item.product._id,
+                        stock: {
+                            $gte: item.quantity,
+                        },
+                    },
+                    {
+                        $inc: {
+                            stock: -item.quantity,
+                        },
+                    },
+                    {
+                        new: true,
+                        session,
+                    }
+                );
+
+                if (!updatedProduct) {
+                    throw new Error(
+                        `${item.product.name} is out of stock.`
+                    );
+                }
+            }
+
+            createdOrder = await repository.create(
+                {
+                    orderNumber,
+                    customer: customerId,
+                    shop: cart.shop._id,
+                    items,
+                    deliveryType: orderData.deliveryType,
+                    deliveryAddress: orderData.deliveryAddress,
+                    subTotal: cart.subTotal,
+                    tax: cart.tax,
+                    discount: cart.discount,
+                    couponCode: cart.couponCode || "",
+                    couponId: cart.couponId || null,
+                    deliveryCharge: cart.deliveryCharge,
+                    totalAmount: cart.grandTotal,
+                    paymentMethod: orderData.paymentMethod,
+                    paymentStatus: PAYMENT_STATUS.PENDING,
+                    orderStatus: ORDER_STATUS.PLACED,
+                    notes: orderData.notes || "",
+                },
+                session
+            );
+
+            // Integrate Razorpay
+            if (orderData.paymentMethod === PAYMENT_METHOD.RAZORPAY) {
+                const razorpayOrder = await razorpayInstance.orders.create({
+                    amount: Math.round(cart.grandTotal * 100), // amount in smallest currency unit (paise)
+                    currency: "INR",
+                    receipt: createdOrder.orderNumber,
+                });
+                
+                createdOrder.razorpayOrderId = razorpayOrder.id;
+                await createdOrder.save({ session });
+            }
+
+            await cartRepository.deleteCart(
+                customerId,
+                session
+            );
+        });
+
+        if (createdOrder) {
+            try {
+                await notificationService.createNotification({
+                    user: shopOwnerId,
+                    title: "New Order Received",
+                    message: `New order ${createdOrder.orderNumber} has been placed for your shop.`,
+                    type: "ORDER",
+                    referenceId: createdOrder._id,
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        return createdOrder;
+
+    } finally {
+        await session.endSession();
     }
-
-    if (product.stock < item.quantity) {
-      throw new Error(`Product out of stock: ${product.name}`);
-    }
-
-    product.stock -= item.quantity;
-    await product.save();
-  }
-
-  const order = await repository.create({
-    orderNumber,
-    customer: customerId,
-    shop: cart.shop._id,
-    items,
-    deliveryType: orderData.deliveryType,
-    deliveryAddress: orderData.deliveryAddress,
-    subTotal: cart.subTotal,
-    tax: cart.tax,
-    discount: cart.discount,
-    couponCode: cart.couponCode || "",
-    couponId: cart.couponId || null,
-    deliveryCharge: cart.deliveryCharge,
-    totalAmount: cart.grandTotal,
-    paymentMethod: orderData.paymentMethod,
-    paymentStatus: PAYMENT_STATUS.PENDING,
-    orderStatus: ORDER_STATUS.PLACED,
-    notes: orderData.notes || "",
-  });
-
-  await cartRepository.deleteCart(customerId);
-
-  await notificationService.createNotification({
-    user: cart.shop.owner,
-    title: "New Order Received",
-    message: `New order ${order.orderNumber} has been placed for your shop.`,
-    type: "ORDER",
-    referenceId: order._id,
-  });
-
-  return order;
 }
 
 export async function updateOrderStatus(id, status) {
-  const order = await repository.update(id, { orderStatus: status });
+  const order = await repository.findById(id);
 
   if (!order) {
     throw new Error("Order not found.");
   }
 
+  const validNextStatuses = ALLOWED_TRANSITIONS[order.orderStatus] || [];
+  if (!validNextStatuses.includes(status)) {
+    throw new Error(`Invalid status transition from ${order.orderStatus} to ${status}.`);
+  }
+
+  if (status === ORDER_STATUS.CANCELLED) {
+    const session = await mongoose.startSession();
+    try {
+      await session.withTransaction(async () => {
+        for (const item of order.items) {
+          await Product.findByIdAndUpdate(
+            item.product,
+            { $inc: { stock: item.quantity } },
+            { session }
+          );
+        }
+        await repository.update(id, { orderStatus: status }, session);
+      });
+    } finally {
+      session.endSession();
+    }
+  } else {
+    await repository.update(id, { orderStatus: status });
+  }
+
+  const updatedOrder = await repository.findById(id);
+
   if (status === ORDER_STATUS.ACCEPTED) {
     await notificationService.createNotification({
-      user: order.customer,
+      user: order.customer._id || order.customer,
       title: "Order Accepted",
       message: `Your order ${order.orderNumber} has been accepted by the shop.`,
       type: "ORDER",
       referenceId: order._id,
     });
+  } else if (status === ORDER_STATUS.CANCELLED) {
+    await notificationService.createNotification({
+      user: order.customer._id || order.customer,
+      title: "Order Cancelled",
+      message: `Your order ${order.orderNumber} has been cancelled.`,
+      type: "ORDER",
+      referenceId: order._id,
+    });
   }
 
-  return order;
+  return updatedOrder;
+}
+
+export async function verifyPayment(id, paymentData) {
+  const order = await repository.findById(id);
+  if (!order) {
+    throw new Error("Order not found.");
+  }
+
+  if (order.paymentStatus === PAYMENT_STATUS.PAID) {
+    throw new Error("Payment is already verified and marked as PAID.");
+  }
+
+  if (paymentData.razorpayOrderId && order.razorpayOrderId && order.razorpayOrderId !== paymentData.razorpayOrderId) {
+    throw new Error("Payment does not belong to this order.");
+  }
+
+  if (paymentData.amount && paymentData.amount !== order.totalAmount * 100) {
+    throw new Error("Payment amount does not match the order total.");
+  }
+
+  // Cryptographic Signature Verification
+  const generatedSignature = crypto
+    .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET || "rzp_test_mock_secret")
+    .update(order.razorpayOrderId + "|" + paymentData.razorpayPaymentId)
+    .digest("hex");
+
+  if (generatedSignature !== paymentData.razorpaySignature) {
+    throw new Error("Invalid payment signature.");
+  }
+
+  const updatedOrder = await repository.update(id, {
+    paymentStatus: PAYMENT_STATUS.PAID,
+    razorpayPaymentId: paymentData.razorpayPaymentId || order.razorpayPaymentId,
+    razorpaySignature: paymentData.razorpaySignature || order.razorpaySignature,
+  });
+
+  return updatedOrder;
 }
 
 /**

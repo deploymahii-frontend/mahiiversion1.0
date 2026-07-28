@@ -7,7 +7,9 @@ export function authorize(...roles) {
       });
     }
 
-    if (!roles.includes(req.user.role)) {
+    const userRole = req.user.role?.toUpperCase();
+
+    if (!roles.map((role) => role.toUpperCase()).includes(userRole)) {
       return res.status(403).json({
         success: false,
         message: "Access denied",

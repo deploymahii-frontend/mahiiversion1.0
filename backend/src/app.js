@@ -14,6 +14,8 @@ import errorHandler from "./middleware/error.middleware.js";
 
 const app = express();
 
+app.set("trust proxy", true);
+
 /* Security */
 app.use(helmet());
 

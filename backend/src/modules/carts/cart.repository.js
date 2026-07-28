@@ -31,8 +31,15 @@ export const saveCart = (cart) =>
 /**
  * Delete Cart
  */
-export const deleteCart = (customerId) =>
-  Cart.findOneAndDelete({ customer: customerId });
+export const deleteCart = (customerId, session) =>
+  Cart.deleteOne(
+      {
+          customer: customerId,
+      },
+      {
+          session,
+      }
+  );
 
 /**
  * Clear Cart Items

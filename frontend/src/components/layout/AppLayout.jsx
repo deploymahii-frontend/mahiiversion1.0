@@ -1,23 +1,26 @@
 import { Outlet } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Navbar from './Navbar';
-import BottomNavigation from './BottomNavigation';
+import BottomNavigation from './MobileBottomNav';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
 import PageContainer from './PageContainer';
 
 const AppLayout = () => {
   return (
-    <div style={{ minHeight: '100vh', background: '#f8fafc', color: '#0f172a' }}>
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
       <Navbar />
-      <div style={{ display: 'flex', minHeight: 'calc(100vh - 180px)' }}>
+      
+      <div className="flex-1 flex w-full max-w-7xl mx-auto">
         <Sidebar />
-        <main style={{ flex: 1, padding: '24px 16px 80px' }}>
+        
+        <main className="flex-1 w-full min-w-0 p-3 sm:p-4 md:p-6 pb-20 md:pb-8">
           <PageContainer>
             <Outlet />
           </PageContainer>
         </main>
       </div>
+
       <BottomNavigation />
       <Footer />
       <Toaster position="top-right" toastOptions={{ duration: 3000 }} />

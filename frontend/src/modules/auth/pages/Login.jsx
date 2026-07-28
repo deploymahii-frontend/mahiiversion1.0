@@ -38,13 +38,15 @@ export default function Login() {
 
       toast.success("Login Successful");
 
-      switch (user.role) {
+      switch (String(user.role).toLowerCase()) {
         case "shop_owner":
-          navigate("/business/dashboard");
+        case "shopowner":
+          navigate("/owner/dashboard");
           break;
 
         case "admin":
         case "super_admin":
+        case "superadmin":
           navigate("/admin/dashboard");
           break;
 

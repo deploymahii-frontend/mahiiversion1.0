@@ -1,11 +1,6 @@
-import api from "./axios";
+import client from "./client.js";
 
-export const createPaymentOrder = async (data) => {
-  const response = await api.post("/payment/create-order", data);
-  return response.data.data;
-};
-
-export const verifyPayment = async (data) => {
-  const response = await api.post("/payment/verify", data);
-  return response.data;
+export const paymentApi = {
+  createRazorpayOrder: (data) => client.post("/payments/create-order", data),
+  verifyPayment: (data) => client.post("/payments/verify", data),
 };

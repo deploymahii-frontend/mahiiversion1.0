@@ -1,6 +1,8 @@
 import { Router } from "express";
 import * as productController from "./product.controller.js";
 import { authenticate } from "../auth/auth.middleware.js";
+import { authorize } from "../auth/authorize.middleware.js";
+import { ROLES } from "../../shared/constants/roles.js";
 import { validate } from "../../middleware/validate.middleware.js";
 import {
   createProductSchema,
@@ -32,6 +34,7 @@ router.get("/:id", productController.getProduct);
 router.post(
   "/",
   authenticate,
+  authorize(ROLES.SHOP_OWNER, ROLES.ADMIN),
   validate(createProductSchema),
   productController.createProduct
 );
@@ -39,6 +42,7 @@ router.post(
 router.put(
   "/:id",
   authenticate,
+  authorize(ROLES.SHOP_OWNER, ROLES.ADMIN),
   validate(updateProductSchema),
   productController.updateProduct
 );
@@ -46,6 +50,7 @@ router.put(
 router.delete(
   "/:id",
   authenticate,
+  authorize(ROLES.SHOP_OWNER, ROLES.ADMIN),
   productController.deleteProduct
 );
 

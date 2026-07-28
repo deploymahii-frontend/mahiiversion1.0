@@ -1,57 +1,36 @@
 import jwt from "jsonwebtoken";
 
-export function signAccessToken(payload) {
+function buildTokenPayload(payload) {
+  if (!payload) {
+    return {};
+  }
 
-    return jwt.sign(
+  if (payload._id || payload.id) {
+    return { id: payload._id || payload.id };
+  }
 
-        payload,
-
-        process.env.JWT_SECRET,
-
-        {
-            expiresIn: "15m"
-        }
-
-    );
-
+  return payload;
 }
 
-export function signRefreshToken(payload) {
+export function generateAccessToken(payload) {
+  return jwt.sign(buildTokenPayload(payload), process.env.JWT_SECRET, {
+    expiresIn: "15m",
+  });
+}
 
-    return jwt.sign(
-
-        payload,
-
-        process.env.JWT_REFRESH_SECRET,
-
-        {
-            expiresIn: "30d"
-        }
-
-    );
-
+export function generateRefreshToken(payload) {
+  return jwt.sign(buildTokenPayload(payload), process.env.JWT_REFRESH_SECRET, {
+    expiresIn: "30d",
+  });
 }
 
 export function verifyAccessToken(token) {
-
-    return jwt.verify(
-
-        token,
-
-        process.env.JWT_SECRET
-
-    );
-
+  return jwt.verify(token, process.env.JWT_SECRET);
 }
 
 export function verifyRefreshToken(token) {
-
-    return jwt.verify(
-
-        token,
-
-        process.env.JWT_REFRESH_SECRET
-
-    );
-
+  return jwt.verify(token, process.env.JWT_REFRESH_SECRET);
 }
+
+export const signAccessToken = generateAccessToken;
+export const signRefreshToken = generateRefreshToken;

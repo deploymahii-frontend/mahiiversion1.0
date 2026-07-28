@@ -115,3 +115,15 @@ export async function deleteOrder(req, res, next) {
     next(error);
   }
 }
+
+/**
+ * Verify Razorpay Payment
+ */
+export async function verifyPayment(req, res, next) {
+  try {
+    const order = await orderService.verifyPayment(req.params.id, req.body);
+    return successResponse(res, order, "Payment verified successfully");
+  } catch (error) {
+    next(error);
+  }
+}

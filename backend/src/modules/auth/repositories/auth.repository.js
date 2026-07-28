@@ -9,8 +9,12 @@ class AuthRepository {
     return User.findById(id);
   }
 
-  async findByPhone(phone) {
-    return User.findOne({ phone }).select("+password +refreshToken");
+  async findByMobile(mobile) {
+    return User.findOne({ mobile }).select("+password +refreshToken");
+  }
+
+  async findByMobileWithPassword(mobile) {
+    return this.findByMobile(mobile);
   }
 
   async findByEmail(email) {
@@ -38,6 +42,15 @@ class AuthRepository {
       userId,
       {
         lastLogin: new Date(),
+      },
+      { new: true }
+    );
+  }
+
+  async resetLoginAttempts(userId) {
+    return User.findByIdAndUpdate(
+      userId,
+      {
         loginAttempts: 0,
         lockUntil: null,
       },
@@ -57,13 +70,11 @@ class AuthRepository {
     );
   }
 
-  async lockAccount(userId, minutes = 30) {
+  async lockAccount(userId, minutes = 15) {
     return User.findByIdAndUpdate(
       userId,
       {
-        lockUntil: new Date(
-          Date.now() + minutes * 60 * 1000
-        ),
+        lockUntil: new Date(Date.now() + minutes * 60 * 1000),
       },
       { new: true }
     );

@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs";
 import AuthRepository from "./repositories/auth.repository.js";
 import {
   generateAccessToken,
@@ -8,9 +7,7 @@ import {
 
 class AuthService {
   async signup(payload) {
-    const existingUser = await AuthRepository.findByPhone(
-      payload.phone
-    );
+    const existingUser = await AuthRepository.findByMobile(payload.mobile);
 
     if (existingUser) {
       throw new Error("User already exists.");
@@ -21,10 +18,7 @@ class AuthService {
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
-    await AuthRepository.updateRefreshToken(
-      user._id,
-      refreshToken
-    );
+    await AuthRepository.updateRefreshToken(user._id, refreshToken);
 
     return {
       user,
@@ -33,63 +27,63 @@ class AuthService {
     };
   }
 
-  async login(phone, password) {
-    const user = await AuthRepository.findByPhone(phone);
+  async login({ mobile, password, device, ipAddress, userAgent }) {
+    const user = await AuthRepository.findByMobile(mobile);
 
     if (!user) {
-      throw new Error("Invalid phone or password.");
+      throw new Error("Invalid mobile or password.");
     }
 
     if (user.isLocked()) {
-      throw new Error(
-        "Account temporarily locked. Try again later."
-      );
+      throw new Error("Account temporarily locked. Try again later.");
     }
 
-    const validPassword = await user.comparePassword(
-      password
-    );
+    const validPassword = await user.comparePassword(password);
 
     if (!validPassword) {
-      await AuthRepository.incrementLoginAttempts(user._id);
+      const updatedUser = await AuthRepository.incrementLoginAttempts(user._id);
+      const nextLoginAttempts = updatedUser?.loginAttempts ?? user.loginAttempts + 1;
 
-      if (user.loginAttempts >= 4) {
+      if (nextLoginAttempts >= 4) {
         await AuthRepository.lockAccount(user._id);
       }
 
-      throw new Error("Invalid phone or password.");
+      throw new Error("Invalid mobile or password.");
     }
 
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
-    await AuthRepository.updateRefreshToken(
-      user._id,
-      refreshToken
-    );
-
+    await AuthRepository.updateRefreshToken(user._id, refreshToken);
     await AuthRepository.updateLastLogin(user._id);
+    await AuthRepository.resetLoginAttempts(user._id);
 
     return {
       user,
       accessToken,
-      refreshToken,
     };
   }
 
-  async refreshToken(refreshToken) {
-    const decoded = verifyRefreshToken(refreshToken);
-
+  async refreshToken(receivedRefreshToken) {
+    const decoded = verifyRefreshToken(receivedRefreshToken);
     const user = await AuthRepository.findById(decoded.id);
 
     if (!user) {
       throw new Error("User not found.");
     }
 
+    if (!user.refreshToken || user.refreshToken !== receivedRefreshToken) {
+      throw new Error("Invalid refresh token.");
+    }
+
     const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
+    await AuthRepository.updateRefreshToken(user._id, refreshToken);
 
     return {
       accessToken,
+      refreshToken,
     };
   }
 

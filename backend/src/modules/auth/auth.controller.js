@@ -1,5 +1,18 @@
 import * as authService from "./auth.service.js";
 
+function getClientIp(req) {
+  return req.ip || req.headers["x-forwarded-for"] || req.connection?.remoteAddress || "unknown";
+}
+
+function setRefreshTokenCookie(res, refreshToken) {
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+  });
+}
+
 export async function signup(req, res, next) {
   try {
     const result = await authService.signup(req.body);
@@ -18,16 +31,26 @@ export async function login(req, res, next) {
   try {
     const result = await authService.login({
       ...req.body,
+      mobile: req.body.mobile,
+      password: req.body.password,
       device: req.body.device || req.headers["user-agent"],
-      ipAddress:
-        req.ip || req.headers["x-forwarded-for"] || req.connection?.remoteAddress,
+      ipAddress: getClientIp(req),
       userAgent: req.headers["user-agent"],
     });
+
+    const { accessToken, refreshToken, user } = result;
+
+    if (refreshToken) {
+      setRefreshTokenCookie(res, refreshToken);
+    }
 
     return res.status(200).json({
       success: true,
       message: "Login successful.",
-      data: result,
+      data: {
+        user,
+        accessToken,
+      },
     });
   } catch (error) {
     next(error);
@@ -36,7 +59,9 @@ export async function login(req, res, next) {
 
 export async function logout(req, res, next) {
   try {
-    await authService.logout(req.user.id, req.body.refreshToken);
+    await authService.logout(req.user.id);
+
+    res.clearCookie("refreshToken");
 
     return res.status(200).json({
       success: true,
@@ -62,11 +87,18 @@ export async function logoutAll(req, res, next) {
 
 export async function refreshToken(req, res, next) {
   try {
-    const result = await authService.refreshToken(req.body.refreshToken);
+    const refreshToken = req.cookies?.refreshToken || req.body?.refreshToken;
+    const result = await authService.refreshToken(refreshToken);
+
+    if (result.refreshToken) {
+      setRefreshTokenCookie(res, result.refreshToken);
+    }
 
     return res.status(200).json({
       success: true,
-      data: result,
+      data: {
+        accessToken: result.accessToken,
+      },
     });
   } catch (error) {
     next(error);

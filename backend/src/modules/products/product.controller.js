@@ -16,11 +16,27 @@ export async function create(req, res, next) {
 
 export async function list(req, res, next) {
     try {
-        const products = await service.getProducts(req.params.shopId);
+        const shopId = req.params.shopId || req.user?.shopId;
+        const products = shopId 
+            ? await service.getShopProducts(shopId)
+            : await service.getAllProducts();
 
         return res.json({
             success: true,
             data: products
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function getOne(req, res, next) {
+    try {
+        const product = await service.getProduct(req.params.id);
+
+        return res.json({
+            success: true,
+            data: product
         });
     } catch (error) {
         next(error);
@@ -34,6 +50,34 @@ export async function update(req, res, next) {
         return res.json({
             success: true,
             data: product
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function updateStock(req, res, next) {
+    try {
+        const { stock } = req.body;
+        const product = await service.updateProduct(req.params.id, { stock });
+
+        return res.json({
+            success: true,
+            data: product
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function toggleAvailability(req, res, next) {
+    try {
+        const product = await service.getProduct(req.params.id);
+        const updated = await service.updateProduct(req.params.id, { available: !product?.available });
+
+        return res.json({
+            success: true,
+            data: updated
         });
     } catch (error) {
         next(error);

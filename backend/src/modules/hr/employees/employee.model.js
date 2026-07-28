@@ -169,9 +169,7 @@ EmployeeSchema.index({
     joiningDate:1
 });
 
-EmployeeSchema.index({
-    status:1
-});
+
 
 EmployeeSchema.set("toJSON",{virtuals:true});
 EmployeeSchema.set("toObject",{virtuals:true});

@@ -1,27 +1,34 @@
-const steps = ["PLACED", "ACCEPTED", "PREPARING", "READY", "COMPLETED"];
+// src/components/orders/OrderTimeline.jsx
 
-export default function OrderTimeline({ status }) {
-  const active = steps.indexOf(status);
+const steps = [
+    "Order Placed",
+    "Accepted",
+    "Preparing",
+    "Ready for Pickup",
+    "Out for Delivery",
+    "Delivered",
+];
 
-  return (
-    <div className="bg-white rounded-3xl shadow p-6">
-      <h2 className="text-2xl font-bold mb-8">Order Progress</h2>
-
-      <div className="space-y-6">
-        {steps.map((step, index) => (
-          <div key={step} className="flex items-center gap-4">
-            <div
-              className={`w-5 h-5 rounded-full ${
-                index <= active ? "bg-green-500" : "bg-gray-300"
-              }`}
-            />
-
-            <span className={`font-medium ${index <= active ? "text-black" : "text-gray-400"}`}>
-              {step}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+export default function OrderTimeline({
+    currentStep,
+}) {
+    return (
+        <div className="flex flex-col gap-4">
+            {steps.map((step, index) => (
+                <div
+                    key={step}
+                    className="flex items-center gap-4"
+                >
+                    <div
+                        className={`h-4 w-4 rounded-full ${
+                            index <= currentStep
+                                ? "bg-green-500"
+                                : "bg-gray-300"
+                        }`}
+                    />
+                    <span>{step}</span>
+                </div>
+            ))}
+        </div>
+    );
 }

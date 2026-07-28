@@ -27,11 +27,17 @@ import leaveRoutes from "../modules/hr/leave/leave.routes.js";
 import payrollRoutes from "../modules/hr/payroll/payroll.routes.js";
 import salaryStructureRoutes from "../modules/hr/payroll/salary-structure.routes.js";
 import warehouseRoutes from "../modules/inventory/warehouse/warehouse.routes.js";
+import customerRoutes from "../modules/customers/customer.routes.js";
+import inventoryAnalyticsRoutes from "../modules/inventory/inventory.routes.js";
+import shopOwnerRoutes from "../modules/shops/shopOwner.routes.js";
 
 const router = Router();
 
 router.use("/auth", authRoutes);
 router.use("/users", userRoutes);
+router.use("/customers", customerRoutes);
+router.use("/inventory", inventoryAnalyticsRoutes);
+router.use("/shop", shopOwnerRoutes);
 router.use("/categories", categoryRoutes);
 router.use("/shops", shopRoutes);
 router.use("/products", productRoutes);

@@ -30,131 +30,142 @@ export default function Checkout() {
       <h1 className="text-4xl font-bold mb-8">Checkout</h1>
 
       <form onSubmit={submit} className="space-y-6">
-        <div className="grid md:grid-cols-2 gap-4">
-          <input
-            placeholder="Full Name"
-            className="w-full border rounded-xl p-4"
-            value={form.deliveryAddress.fullName}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                deliveryAddress: {
-                  ...form.deliveryAddress,
-                  fullName: e.target.value,
-                },
-              })
-            }
-          />
+        {form.deliveryType === "SHOP_DELIVERY" && (
+          <div className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-4">
+              <input
+                placeholder="Full Name"
+                className="w-full border rounded-xl p-4"
+                value={form.deliveryAddress.fullName}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    deliveryAddress: {
+                      ...form.deliveryAddress,
+                      fullName: e.target.value,
+                    },
+                  })
+                }
+                required
+              />
 
-          <input
-            placeholder="Mobile"
-            className="w-full border rounded-xl p-4"
-            value={form.deliveryAddress.mobile}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                deliveryAddress: {
-                  ...form.deliveryAddress,
-                  mobile: e.target.value,
-                },
-              })
-            }
-          />
-        </div>
+              <input
+                placeholder="Mobile"
+                className="w-full border rounded-xl p-4"
+                value={form.deliveryAddress.mobile}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    deliveryAddress: {
+                      ...form.deliveryAddress,
+                      mobile: e.target.value,
+                    },
+                  })
+                }
+                required
+              />
+            </div>
 
-        <input
-          placeholder="Address Line"
-          className="w-full border rounded-xl p-4"
-          value={form.deliveryAddress.addressLine}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              deliveryAddress: {
-                ...form.deliveryAddress,
-                addressLine: e.target.value,
-              },
-            })
-          }
-        />
+            <input
+              placeholder="Address Line"
+              className="w-full border rounded-xl p-4"
+              value={form.deliveryAddress.addressLine}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  deliveryAddress: {
+                    ...form.deliveryAddress,
+                    addressLine: e.target.value,
+                  },
+                })
+              }
+              required
+            />
 
-        <div className="grid md:grid-cols-2 gap-4">
-          <input
-            placeholder="Area"
-            className="w-full border rounded-xl p-4"
-            value={form.deliveryAddress.area}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                deliveryAddress: {
-                  ...form.deliveryAddress,
-                  area: e.target.value,
-                },
-              })
-            }
-          />
+            <div className="grid md:grid-cols-2 gap-4">
+              <input
+                placeholder="Area"
+                className="w-full border rounded-xl p-4"
+                value={form.deliveryAddress.area}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    deliveryAddress: {
+                      ...form.deliveryAddress,
+                      area: e.target.value,
+                    },
+                  })
+                }
+                required
+              />
 
-          <input
-            placeholder="City"
-            className="w-full border rounded-xl p-4"
-            value={form.deliveryAddress.city}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                deliveryAddress: {
-                  ...form.deliveryAddress,
-                  city: e.target.value,
-                },
-              })
-            }
-          />
-        </div>
+              <input
+                placeholder="City"
+                className="w-full border rounded-xl p-4"
+                value={form.deliveryAddress.city}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    deliveryAddress: {
+                      ...form.deliveryAddress,
+                      city: e.target.value,
+                    },
+                  })
+                }
+                required
+              />
+            </div>
 
-        <div className="grid md:grid-cols-2 gap-4">
-          <input
-            placeholder="State"
-            className="w-full border rounded-xl p-4"
-            value={form.deliveryAddress.state}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                deliveryAddress: {
-                  ...form.deliveryAddress,
-                  state: e.target.value,
-                },
-              })
-            }
-          />
+            <div className="grid md:grid-cols-2 gap-4">
+              <input
+                placeholder="State"
+                className="w-full border rounded-xl p-4"
+                value={form.deliveryAddress.state}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    deliveryAddress: {
+                      ...form.deliveryAddress,
+                      state: e.target.value,
+                    },
+                  })
+                }
+                required
+              />
 
-          <input
-            placeholder="Pincode"
-            className="w-full border rounded-xl p-4"
-            value={form.deliveryAddress.pincode}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                deliveryAddress: {
-                  ...form.deliveryAddress,
-                  pincode: e.target.value,
-                },
-              })
-            }
-          />
-        </div>
+              <input
+                placeholder="Pincode"
+                className="w-full border rounded-xl p-4"
+                value={form.deliveryAddress.pincode}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    deliveryAddress: {
+                      ...form.deliveryAddress,
+                      pincode: e.target.value,
+                    },
+                  })
+                }
+                required
+              />
+            </div>
 
-        <input
-          placeholder="Landmark"
-          className="w-full border rounded-xl p-4"
-          value={form.deliveryAddress.landmark}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              deliveryAddress: {
-                ...form.deliveryAddress,
-                landmark: e.target.value,
-              },
-            })
-          }
-        />
+            <input
+              placeholder="Landmark"
+              className="w-full border rounded-xl p-4"
+              value={form.deliveryAddress.landmark}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  deliveryAddress: {
+                    ...form.deliveryAddress,
+                    landmark: e.target.value,
+                  },
+                })
+              }
+            />
+          </div>
+        )}
 
         <select
           className="w-full border rounded-xl p-4"

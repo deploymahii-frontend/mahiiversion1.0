@@ -5,15 +5,16 @@ export default function RoleRoute({
   roles,
   children,
 }) {
-  const user = useAuthStore(
-    (state) => state.user
-  );
+  const user = useAuthStore((state) => state.user);
 
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  if (!roles.includes(user.role)) {
+  const userRole = String(user.role || "").toLowerCase();
+  const allowedRoles = roles.map((role) => String(role).toLowerCase());
+
+  if (!allowedRoles.includes(userRole)) {
     return <Navigate to="/" replace />;
   }
 

@@ -3,6 +3,7 @@ import { Router } from "express";
 import * as shopController from "./shop.controller.js";
 import { authenticate } from "../auth/auth.middleware.js";
 import { authorize } from "../auth/authorize.middleware.js";
+import { ROLES } from "../../shared/constants/roles.js";
 import { validate } from "../../middleware/validate.middleware.js";
 import {
   createShopSchema,
@@ -27,7 +28,7 @@ router.get("/:slug", shopController.getShopBySlug);
 router.post(
   "/",
   authenticate,
-  authorize("SHOP_OWNER"),
+  authorize(ROLES.SHOP_OWNER, ROLES.ADMIN),
   validate(createShopSchema),
   shopController.createShop
 );
@@ -35,14 +36,14 @@ router.post(
 router.get(
   "/mine",
   authenticate,
-  authorize("SHOP_OWNER"),
+  authorize(ROLES.SHOP_OWNER),
   shopController.getMyShop
 );
 
 router.patch(
   "/:id",
   authenticate,
-  authorize("SHOP_OWNER"),
+  authorize(ROLES.SHOP_OWNER, ROLES.ADMIN),
   validate(updateShopSchema),
   shopController.updateShop
 );

@@ -13,8 +13,27 @@ router.post(
 );
 
 router.get(
+    "/shop",
+    authenticate,
+    authorize("SHOP_OWNER"),
+    controller.list
+);
+
+router.get(
     "/shop/:shopId",
     controller.list
+);
+
+router.get(
+    "/:id",
+    controller.getOne
+);
+
+router.put(
+    "/:id",
+    authenticate,
+    authorize("SHOP_OWNER"),
+    controller.update
 );
 
 router.patch(
@@ -22,6 +41,20 @@ router.patch(
     authenticate,
     authorize("SHOP_OWNER"),
     controller.update
+);
+
+router.patch(
+    "/:id/stock",
+    authenticate,
+    authorize("SHOP_OWNER"),
+    controller.updateStock
+);
+
+router.patch(
+    "/:id/availability",
+    authenticate,
+    authorize("SHOP_OWNER"),
+    controller.toggleAvailability
 );
 
 router.delete(

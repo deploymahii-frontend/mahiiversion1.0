@@ -1,28 +1,10 @@
-import api from "./axios";
+import client from "./client.js";
 
-export const createOrder = async (data) => {
-  const response = await api.post("/orders", data);
-  return response.data.data;
+export const orderApi = {
+  createOrder: (data) => client.post("/orders", data),
+  getOrderById: (id) => client.get(`/orders/${id}`),
+  getCustomerOrders: (params) => client.get("/orders/customer", { params }),
+  getShopOrders: (shopId, params) => client.get(`/orders/shop/${shopId}`, { params }),
+  updateOrderStatus: (id, data) => client.put(`/orders/${id}/status`, data),
+  cancelOrder: (id) => client.put(`/orders/${id}/cancel`),
 };
-
-const orderAPI = {
-  async getShopOrders(shopId) {
-    const { data } = await api.get(`/orders/shop/${shopId}`);
-    return data;
-  },
-
-  async getOrder(id) {
-    const { data } = await api.get(`/orders/${id}`);
-    return data;
-  },
-
-  async updateStatus(id, status) {
-    const { data } = await api.patch(`/orders/${id}/status`, {
-      status,
-    });
-
-    return data;
-  },
-};
-
-export default orderAPI;

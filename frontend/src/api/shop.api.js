@@ -1,39 +1,15 @@
-import axios from "axios";
+import client from "./client.js";
 
-const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
-  withCredentials: true,
-});
-
-export const shopAPI = {
-  async getNearby(params = {}) {
-    const { data } = await API.get("/shops/nearby", {
-      params,
-    });
-    return data;
-  },
-
-  async search(query) {
-    const { data } = await API.get("/shops/search", {
-      params: { q: query },
-    });
-    return data;
-  },
-
-  async getTrending() {
-    const { data } = await API.get("/shops/trending");
-    return data;
-  },
-
-  async getRecommended() {
-    const { data } = await API.get("/shops/recommended");
-    return data;
-  },
-
-  async getShop(slug) {
-    const { data } = await API.get(`/shops/${slug}`);
-    return data;
-  },
+export const shopApi = {
+  getAllShops: (params) => client.get("/businesses", { params }),
+  getShop: (slug) => client.get(`/businesses/slug/${slug}`),
+  getShopById: (id) => client.get(`/businesses/${id}`),
+  getShopBySlug: (slug) => client.get(`/businesses/slug/${slug}`),
+  createShop: (data) => client.post("/businesses", data),
+  updateShop: (id, data) => client.put(`/businesses/${id}`, data),
+  deleteShop: (id) => client.delete(`/businesses/${id}`),
+  getNearbyShops: (params) => client.get("/businesses/nearby", { params }),
+  getNearby: (params) => client.get("/businesses/nearby", { params }),
 };
 
-export default shopAPI;
+export default shopApi;

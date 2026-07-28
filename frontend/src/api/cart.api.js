@@ -1,25 +1,10 @@
-import API from "./api";
+import client from "./client.js";
 
-const cartAPI = {
-  getCart() {
-    return API.get("/cart");
-  },
-
-  addItem(data) {
-    return API.post("/cart/add", data);
-  },
-
-  updateQuantity(productId, quantity) {
-    return API.patch(`/cart/item/${productId}`, { quantity });
-  },
-
-  removeItem(productId) {
-    return API.delete(`/cart/item/${productId}`);
-  },
-
-  clearCart() {
-    return API.delete("/cart");
-  },
+export const cartApi = {
+  getCart: () => client.get("/cart"),
+  addToCart: (data) => client.post("/cart/add", data),
+  updateCartItem: (data) => client.put("/cart/update", data),
+  removeFromCart: (data) => client.delete("/cart/remove", { data }),
+  clearCart: () => client.delete("/cart/clear"),
+  applyCoupon: (data) => client.post("/cart/coupon", data),
 };
-
-export default cartAPI;
