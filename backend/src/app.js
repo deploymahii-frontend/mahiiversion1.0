@@ -48,6 +48,17 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
+/* Root Health Check — required by Render.com */
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    message: "Mahii API is healthy",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || "development",
+  });
+});
+
 /* API */
 app.use("/api/v1", routes);
 app.use("/api/v1/businesses", businessRoutes);
