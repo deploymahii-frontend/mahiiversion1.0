@@ -36,7 +36,7 @@ const HeroHeader = ({
       className="bg-white dark:bg-slate-900 rounded-b-3xl shadow-md border-b border-gray-100 dark:border-slate-800 transition-colors"
     >
       <div className="max-w-7xl mx-auto px-5 py-6">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
           <div>
             <p className="text-sm text-orange-500 font-semibold flex items-center gap-1">
               <span>{emoji}</span> {greeting}
@@ -73,7 +73,7 @@ const HeroHeader = ({
                 </Link>
                 <Link
                   to="/signup"
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-300 dark:border-slate-700 text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-800 font-medium transition"
+                  className="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-300 dark:border-slate-700 text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-800 font-medium transition"
                 >
                   <FiUserPlus />
                   <span>Sign Up</span>

@@ -11,7 +11,7 @@ export default function Navbar() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-6 lg:px-8">
         <Link to="/" className="flex items-center gap-2">
           <img src="/mahiiindextitle.png" alt="Mahii Logo" className="h-8 w-auto" />
-          <span className="text-2xl font-extrabold text-orange-500">Mahii</span>
+          <span className="text-2xl font-extrabold text-orange-500 hidden sm:block">Mahii</span>
         </Link>
 
         <div className="flex items-center gap-3 text-slate-700 dark:text-slate-200">
