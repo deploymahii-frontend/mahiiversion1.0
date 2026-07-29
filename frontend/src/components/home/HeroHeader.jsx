@@ -1,12 +1,25 @@
+import { useState } from "react";
 import { FiBell, FiMapPin, FiChevronDown, FiLogIn, FiUserPlus } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import LocationPickerModal from "../common/LocationPickerModal";
 
 const HeroHeader = ({
   location = "Kolhapur, Maharashtra",
 }) => {
   const { user, authenticated } = useAuth();
+  
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState(() => {
+    return localStorage.getItem("mahii_user_location") || location;
+  });
+
+  const handleLocationSelect = (newLoc) => {
+    setSelectedLocation(newLoc);
+    localStorage.setItem("mahii_user_location", newLoc);
+  };
+
   const hour = new Date().getHours();
 
   let greeting = "Good Evening";
@@ -83,12 +96,22 @@ const HeroHeader = ({
           </div>
         </div>
 
-        <button className="mt-6 inline-flex items-center gap-2 rounded-full bg-orange-100 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 px-4 py-2 font-medium hover:bg-orange-200 dark:hover:bg-orange-900/50 transition">
+        <button 
+          onClick={() => setIsLocationModalOpen(true)}
+          className="mt-6 inline-flex items-center gap-2 rounded-full bg-orange-100 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 px-4 py-2 font-medium hover:bg-orange-200 dark:hover:bg-orange-900/50 transition cursor-pointer"
+        >
           <FiMapPin />
-          {location}
+          {selectedLocation}
           <FiChevronDown />
         </button>
       </div>
+
+      <LocationPickerModal
+        isOpen={isLocationModalOpen}
+        onClose={() => setIsLocationModalOpen(false)}
+        onSelectLocation={handleLocationSelect}
+        currentLocation={selectedLocation}
+      />
     </motion.header>
   );
 };

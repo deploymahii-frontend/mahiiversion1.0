@@ -29,9 +29,15 @@ const momentSchema = new mongoose.Schema(
       trim: true,
     },
 
-    videoUrl: {
+    mediaUrl: {
       type: String,
       required: true,
+    },
+
+    mediaType: {
+      type: String,
+      enum: ["image", "video"],
+      default: "video",
     },
 
     thumbnailUrl: {

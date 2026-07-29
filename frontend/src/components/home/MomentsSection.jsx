@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { moments as initialMoments } from "../../data/mockData";
-import { FiPlay, FiChevronRight, FiHeart, FiEye } from "react-icons/fi";
+import { FiPlay, FiChevronRight, FiHeart, FiEye, FiPlus } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
 
 export default function MomentsSection() {
   const navigate = useNavigate();
+  const { authenticated } = useAuth();
   const [items, setItems] = useState(
     initialMoments.map((m) => ({
       ...m,
@@ -29,8 +31,16 @@ export default function MomentsSection() {
     );
   };
 
+  const handleCreate = () => {
+    if (!authenticated) {
+      toast("Please log in to create a Moment 📸", { icon: "🔒" });
+      navigate("/login?redirect=/create-moment");
+      return;
+    }
+    navigate("/create-moment");
+  };
+
   const handleOpenMoment = (moment) => {
-    toast.success(`Playing ${moment.title} from ${moment.shop}`);
     navigate("/moments");
   };
 
@@ -46,21 +56,44 @@ export default function MomentsSection() {
           </p>
         </div>
 
-        <button
-          onClick={() => navigate("/moments")}
-          className="flex items-center gap-1 text-orange-500 font-bold hover:text-orange-600 transition text-sm"
-        >
-          <span>See All</span>
-          <FiChevronRight />
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleCreate}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs shadow-md shadow-orange-500/20 transition"
+          >
+            <FiPlus size={14} />
+            <span className="hidden sm:inline">Create</span>
+          </button>
+          <button
+            onClick={() => navigate("/moments")}
+            className="flex items-center gap-1 text-orange-500 font-bold hover:text-orange-600 transition text-sm"
+          >
+            <span>See All</span>
+            <FiChevronRight />
+          </button>
+        </div>
       </div>
 
       <div className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide">
+        {/* Create your moment card */}
+        <button
+          onClick={handleCreate}
+          className="relative min-w-[200px] sm:min-w-[220px] h-[340px] sm:h-[380px] rounded-3xl overflow-hidden bg-gradient-to-br from-orange-100 to-amber-50 dark:from-orange-950/40 dark:to-slate-800 border-2 border-dashed border-orange-300 dark:border-orange-700 flex flex-col items-center justify-center gap-3 flex-shrink-0 hover:border-orange-500 dark:hover:border-orange-500 transition group"
+        >
+          <div className="w-14 h-14 rounded-full bg-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/30 group-hover:scale-110 transition">
+            <FiPlus size={28} className="text-white" />
+          </div>
+          <p className="text-orange-600 dark:text-orange-400 font-bold text-sm">Share a Moment</p>
+          <p className="text-orange-400 dark:text-orange-600 text-xs text-center px-4">
+            {authenticated ? "Post a photo or video" : "Login to post"}
+          </p>
+        </button>
+
         {items.map((moment) => (
           <div
             key={moment.id}
             onClick={() => handleOpenMoment(moment)}
-            className="relative min-w-[260px] h-[400px] rounded-3xl overflow-hidden shadow-lg group cursor-pointer border border-gray-100 dark:border-slate-800 transition transform hover:-translate-y-1"
+            className="relative min-w-[200px] sm:min-w-[220px] h-[340px] sm:h-[380px] rounded-3xl overflow-hidden shadow-lg group cursor-pointer border border-gray-100 dark:border-slate-800 transition transform hover:-translate-y-1 flex-shrink-0"
           >
             <img
               src={moment.image}
@@ -95,7 +128,7 @@ export default function MomentsSection() {
               <span className="inline-block px-2.5 py-0.5 rounded-full bg-orange-500 text-[10px] font-bold uppercase tracking-wider mb-2">
                 {moment.shop}
               </span>
-              <h3 className="font-bold text-base leading-snug line-clamp-2">{moment.title}</h3>
+              <h3 className="font-bold text-sm leading-snug line-clamp-2">{moment.title}</h3>
 
               <div className="flex items-center gap-2 mt-2 text-xs text-gray-300">
                 <span className="flex items-center gap-1">

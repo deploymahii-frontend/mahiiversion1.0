@@ -10,6 +10,7 @@ import Orders from '../pages/Orders';
 import OrderDetails from '../pages/OrderDetails';
 import Profile from '../pages/Profile';
 import Wallet from '../pages/Wallet';
+import CreateMoment from '../pages/CreateMoment';
 import Terms from '../pages/Terms';
 import Privacy from '../pages/Privacy';
 import Contact from '../pages/Contact';
@@ -67,6 +68,7 @@ const AppRoutes = () => {
             <Route path={`${ROUTES.ORDERS}/:id`} element={<OrderDetails />} />
             <Route path={ROUTES.PROFILE} element={<Profile />} />
             <Route path="/wallet" element={<Wallet />} />
+            <Route path="/create-moment" element={<CreateMoment />} />
           </Route>
         </Route>
 

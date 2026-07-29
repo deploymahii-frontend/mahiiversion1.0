@@ -74,7 +74,7 @@ export default function ShopCard({ shop = {} }) {
       whileHover={{ y: -6 }}
       whileTap={{ scale: 0.98 }}
       transition={{ duration: 0.2 }}
-      className="w-full rounded-3xl overflow-hidden bg-white dark:bg-slate-800 shadow-md border border-gray-100 dark:border-slate-700/50 flex flex-col justify-between"
+      className="min-w-[280px] max-w-xs w-full rounded-3xl overflow-hidden bg-white dark:bg-slate-800 shadow-md border border-gray-100 dark:border-slate-700/50 flex flex-col justify-between flex-shrink-0"
     >
       <div>
         <div className="relative">
@@ -82,7 +82,7 @@ export default function ShopCard({ shop = {} }) {
             src={shopData.image}
             alt={shopData.name}
             loading="lazy"
-            className="w-full h-48 object-cover"
+            className="w-full h-40 sm:h-48 object-cover"
           />
 
           <button

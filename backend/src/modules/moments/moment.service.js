@@ -3,30 +3,28 @@ import Shop from "../shops/shop.model.js";
 import { MOMENT_STATUS, MOMENT_TYPE } from "./moment.constants.js";
 
 export async function createMoment(userId, data) {
-  if (!data.shop) {
-    throw new Error("Shop is required for each moment.");
+  if (!data.title && !data.description) {
+    throw new Error("Title or caption is required for a moment.");
   }
 
-  if (!data.title) {
-    throw new Error("Title is required for a moment.");
+  if (!data.mediaUrl && !data.videoUrl) {
+    throw new Error("Media URL is required for a moment.");
   }
 
-  if (!data.videoUrl) {
-    throw new Error("Video URL is required for a moment.");
-  }
-
-  const shop = await Shop.findById(data.shop);
-
-  if (!shop) {
-    throw new Error("Shop not found.");
+  let shopId = null;
+  if (data.shop) {
+    const shop = await Shop.findById(data.shop);
+    if (!shop) throw new Error("Shop not found.");
+    shopId = shop._id;
   }
 
   const moment = await repository.createMoment({
     creator: userId,
-    shop: data.shop,
-    title: data.title,
+    shop: shopId,
+    title: data.title || data.description?.substring(0, 50) || "Moment",
     description: data.description || "",
-    videoUrl: data.videoUrl,
+    mediaUrl: data.mediaUrl || data.videoUrl,
+    mediaType: data.mediaType || "video",
     thumbnailUrl: data.thumbnailUrl || "",
     type: data.type || MOMENT_TYPE.FOOD_REVIEW,
     status: data.status || MOMENT_STATUS.DRAFT,
