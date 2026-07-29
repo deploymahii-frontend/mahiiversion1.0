@@ -71,10 +71,11 @@ export default function ShopCard({ shop = {} }) {
 
   return (
     <motion.div
-      whileHover={{ y: -6 }}
+      whileHover={{ y: -4 }}
       whileTap={{ scale: 0.98 }}
       transition={{ duration: 0.2 }}
-      className="min-w-[280px] max-w-xs w-full rounded-3xl overflow-hidden bg-white dark:bg-slate-800 shadow-md border border-gray-100 dark:border-slate-700/50 flex flex-col justify-between flex-shrink-0"
+      onClick={handleViewShop}
+      className="w-[160px] min-w-[160px] sm:w-[220px] sm:min-w-[220px] rounded-2xl overflow-hidden bg-white dark:bg-slate-800 shadow-sm border border-gray-100 dark:border-slate-700/50 flex flex-col justify-between flex-shrink-0 cursor-pointer"
     >
       <div>
         <div className="relative">
@@ -82,17 +83,18 @@ export default function ShopCard({ shop = {} }) {
             src={shopData.image}
             alt={shopData.name}
             loading="lazy"
-            className="w-full h-40 sm:h-48 object-cover"
+            className="w-full h-32 sm:h-40 object-cover"
           />
 
           <button
             type="button"
             aria-label="Add shop to favorites"
             onClick={handleToggleLike}
-            className="absolute top-4 right-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur p-2.5 rounded-full shadow-md hover:scale-110 transition z-10"
+            className="absolute top-2 right-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur p-2 rounded-full shadow-sm hover:scale-110 transition z-10"
           >
             <FiHeart
-              className={`text-base transition ${
+              size={14}
+              className={`transition ${
                 liked
                   ? "text-red-500 fill-current scale-110"
                   : "text-gray-600 dark:text-slate-300 hover:text-red-500"
@@ -101,59 +103,39 @@ export default function ShopCard({ shop = {} }) {
           </button>
 
           <div
-            className={`absolute bottom-4 left-4 px-3 py-1 rounded-full text-xs font-semibold shadow ${
+            className={`absolute bottom-2 left-2 px-2 py-0.5 rounded text-[10px] font-bold shadow-sm ${
               shopData.open
                 ? "bg-emerald-500 text-white"
                 : "bg-red-500 text-white"
             }`}
           >
-            {shopData.open ? "Open Now" : "Closed"}
+            {shopData.open ? "Open" : "Closed"}
           </div>
         </div>
 
-        <div className="p-5">
-          <div className="flex justify-between items-start">
-            <div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white line-clamp-1">{shopData.name}</h3>
-              <p className="text-xs font-medium text-gray-500 dark:text-slate-400 mt-0.5">{shopData.category}</p>
+        <div className="p-3">
+          <div className="flex justify-between items-start gap-2">
+            <div className="overflow-hidden">
+              <h3 className="text-sm font-bold text-gray-900 dark:text-white line-clamp-2 leading-snug">{shopData.name}</h3>
             </div>
 
-            <div className="flex items-center gap-1 text-amber-500 bg-amber-50 dark:bg-amber-950/40 px-2 py-1 rounded-lg text-xs font-bold">
-              <FaStar />
+            <div className="flex-shrink-0 flex items-center gap-1 text-amber-500 bg-amber-50 dark:bg-amber-950/40 px-1.5 py-0.5 rounded text-[10px] font-bold">
+              <FaStar size={10} />
               <span>{shopData.rating}</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-slate-400 mt-3">
-            <FiMapPin className="text-orange-500" />
-            <span>{shopData.distance}</span>
+          <p className="text-[10px] sm:text-xs font-medium text-gray-500 dark:text-slate-400 mt-1 line-clamp-1">{shopData.category}</p>
+
+          <div className="flex items-center gap-1 text-[10px] sm:text-xs text-gray-500 dark:text-slate-400 mt-1.5">
+            <FiMapPin className="text-orange-500" size={10} />
+            <span className="truncate">{shopData.distance}</span>
           </div>
 
-          <div className="mt-2">
-            <span className="text-orange-600 dark:text-orange-400 font-bold text-sm">{shopData.price}</span>
+          <div className="mt-2 flex items-center justify-between">
+            <span className="text-orange-600 dark:text-orange-400 font-bold text-xs sm:text-sm">{shopData.price}</span>
           </div>
         </div>
-      </div>
-
-      <div className="p-5 pt-0 grid grid-cols-2 gap-3">
-        <button
-          type="button"
-          aria-label={`View ${shopData.name} shop`}
-          onClick={handleViewShop}
-          className="rounded-xl bg-orange-500 hover:bg-orange-600 text-white py-2.5 text-xs font-bold shadow-md shadow-orange-500/20 transition text-center"
-        >
-          View Shop
-        </button>
-
-        <button
-          type="button"
-          aria-label={`Open ${shopData.name} in Google Maps`}
-          onClick={handleNavigate}
-          className="rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-700/50 text-gray-700 dark:text-slate-200 py-2.5 text-xs font-semibold flex justify-center items-center gap-1.5 hover:bg-gray-100 dark:hover:bg-slate-700 transition"
-        >
-          <FiNavigation />
-          <span>Navigate</span>
-        </button>
       </div>
     </motion.div>
   );

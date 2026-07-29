@@ -43,26 +43,27 @@ const HeroHeader = ({
 
   return (
     <motion.header
-      initial={{ opacity: 0, y: -25 }}
+      initial={{ opacity: 0, y: -15 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.45 }}
-      className="bg-white dark:bg-slate-900 rounded-b-3xl shadow-md border-b border-gray-100 dark:border-slate-800 transition-colors"
+      transition={{ duration: 0.3 }}
+      className="bg-white dark:bg-slate-900 shadow-sm border-b border-gray-100 dark:border-slate-800 sticky top-0 z-40"
     >
-      <div className="max-w-7xl mx-auto px-5 py-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
-          <div>
-            <p className="text-sm text-orange-500 font-semibold flex items-center gap-1">
-              <span>{emoji}</span> {greeting}
-            </p>
+      <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4">
+        <div className="flex items-center justify-between gap-4">
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1.5 cursor-pointer group" onClick={() => setIsLocationModalOpen(true)}>
+                <FiMapPin className="text-orange-500 text-lg sm:text-xl" />
+                <h1 className="text-sm sm:text-base font-bold text-gray-900 dark:text-white group-hover:text-orange-500 transition line-clamp-1 max-w-[200px] sm:max-w-[300px]">
+                  {selectedLocation.split(',')[0]}
+                </h1>
+                <FiChevronDown className="text-gray-500 group-hover:text-orange-500 transition" />
+              </div>
+              <p className="text-[10px] sm:text-xs text-gray-500 dark:text-slate-400 mt-0.5 line-clamp-1 ml-6 max-w-[200px] sm:max-w-[300px]">
+                {selectedLocation}
+              </p>
+            </div>
 
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mt-1">
-              {authenticated ? userName : "Welcome to Mahii"}
-            </h1>
 
-            <p className="text-gray-500 dark:text-slate-400 mt-2">
-              Discover trusted local shops, restaurants, messes & nearby services ✨
-            </p>
-          </div>
 
           <div className="flex items-center gap-3">
             {authenticated ? (
@@ -79,31 +80,15 @@ const HeroHeader = ({
               <div className="flex items-center gap-2">
                 <Link
                   to="/login"
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-medium shadow-md transition"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-50 hover:bg-orange-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-orange-600 dark:text-orange-400 font-bold text-xs sm:text-sm transition"
                 >
-                  <FiLogIn />
+                  <FiLogIn size={14} />
                   <span>Login</span>
-                </Link>
-                <Link
-                  to="/signup"
-                  className="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-300 dark:border-slate-700 text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-800 font-medium transition"
-                >
-                  <FiUserPlus />
-                  <span>Sign Up</span>
                 </Link>
               </div>
             )}
           </div>
         </div>
-
-        <button 
-          onClick={() => setIsLocationModalOpen(true)}
-          className="mt-6 inline-flex items-center gap-2 rounded-full bg-orange-100 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 px-4 py-2 font-medium hover:bg-orange-200 dark:hover:bg-orange-900/50 transition cursor-pointer"
-        >
-          <FiMapPin />
-          {selectedLocation}
-          <FiChevronDown />
-        </button>
       </div>
 
       <LocationPickerModal

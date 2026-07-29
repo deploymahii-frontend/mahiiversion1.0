@@ -74,26 +74,13 @@ export default function MomentsSection() {
         </div>
       </div>
 
-      <div className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide">
-        {/* Create your moment card */}
-        <button
-          onClick={handleCreate}
-          className="relative min-w-[200px] sm:min-w-[220px] h-[340px] sm:h-[380px] rounded-3xl overflow-hidden bg-gradient-to-br from-orange-100 to-amber-50 dark:from-orange-950/40 dark:to-slate-800 border-2 border-dashed border-orange-300 dark:border-orange-700 flex flex-col items-center justify-center gap-3 flex-shrink-0 hover:border-orange-500 dark:hover:border-orange-500 transition group"
-        >
-          <div className="w-14 h-14 rounded-full bg-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/30 group-hover:scale-110 transition">
-            <FiPlus size={28} className="text-white" />
-          </div>
-          <p className="text-orange-600 dark:text-orange-400 font-bold text-sm">Share a Moment</p>
-          <p className="text-orange-400 dark:text-orange-600 text-xs text-center px-4">
-            {authenticated ? "Post a photo or video" : "Login to post"}
-          </p>
-        </button>
+      <div className="flex gap-3 sm:gap-5 overflow-x-auto pb-4 scrollbar-hide px-1">
 
         {items.map((moment) => (
           <div
             key={moment.id}
             onClick={() => handleOpenMoment(moment)}
-            className="relative min-w-[200px] sm:min-w-[220px] h-[340px] sm:h-[380px] rounded-3xl overflow-hidden shadow-lg group cursor-pointer border border-gray-100 dark:border-slate-800 transition transform hover:-translate-y-1 flex-shrink-0"
+            className="relative w-[140px] min-w-[140px] h-[250px] sm:w-[200px] sm:min-w-[200px] sm:h-[355px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-md group cursor-pointer border border-gray-100 dark:border-slate-800 flex-shrink-0"
           >
             <img
               src={moment.image}
@@ -108,9 +95,9 @@ export default function MomentsSection() {
                 e.stopPropagation();
                 handleOpenMoment(moment);
               }}
-              className="absolute top-4 right-4 bg-white/90 dark:bg-slate-900/90 text-orange-500 rounded-full p-3 shadow-md hover:scale-110 transition"
+              className="absolute top-3 right-3 bg-white/90 dark:bg-slate-900/90 text-orange-500 rounded-full p-2 shadow-md hover:scale-110 transition"
             >
-              <FiPlay size={18} />
+              <FiPlay size={14} className="sm:w-5 sm:h-5" />
             </button>
 
             <button
@@ -124,15 +111,15 @@ export default function MomentsSection() {
               <span className="text-xs font-bold">{moment.likes}</span>
             </button>
 
-            <div className="absolute bottom-5 left-5 right-5 text-white">
-              <span className="inline-block px-2.5 py-0.5 rounded-full bg-orange-500 text-[10px] font-bold uppercase tracking-wider mb-2">
+            <div className="absolute bottom-3 left-3 right-3 text-white">
+              <span className="inline-block px-2 py-0.5 rounded-full bg-orange-500 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider mb-1.5">
                 {moment.shop}
               </span>
-              <h3 className="font-bold text-sm leading-snug line-clamp-2">{moment.title}</h3>
+              <h3 className="font-bold text-xs sm:text-sm leading-snug line-clamp-2">{moment.title}</h3>
 
-              <div className="flex items-center gap-2 mt-2 text-xs text-gray-300">
+              <div className="flex items-center gap-2 mt-1.5 text-[10px] sm:text-xs text-gray-300">
                 <span className="flex items-center gap-1">
-                  <FiEye size={13} /> {moment.views} views
+                  <FiEye size={12} /> {moment.views} views
                 </span>
               </div>
             </div>

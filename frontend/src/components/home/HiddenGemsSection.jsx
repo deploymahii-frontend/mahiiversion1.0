@@ -24,7 +24,7 @@ export default function HiddenGemsSection() {
         </Link>
       </div>
 
-      <div className="flex gap-6 overflow-x-auto pb-4">
+      <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-4 px-1 scrollbar-hide">
         {hiddenGems.map((shop) => (
           <ShopCard key={shop.id} shop={shop} />
         ))}

@@ -5,43 +5,37 @@ const modes = [
   {
     id: "student",
     title: "Student Mode",
-    subtitle: "Budget meals • Monthly mess",
-    icon: <FaGraduationCap size={28} />,
-    color: "from-orange-500 to-orange-400",
+    icon: <FaGraduationCap size={22} />,
+    color: "from-orange-500 to-amber-500",
+    shadow: "shadow-orange-500/30"
   },
   {
     id: "travel",
     title: "Travel Mode",
-    subtitle: "Tea • Parking • Breakfast",
-    icon: <FaCarSide size={28} />,
-    color: "from-blue-500 to-cyan-400",
+    icon: <FaCarSide size={22} />,
+    color: "from-blue-500 to-cyan-500",
+    shadow: "shadow-blue-500/30"
   },
 ];
 
 export default function ModeSwitcher() {
   return (
-    <section className="max-w-7xl mx-auto px-5 mt-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <section className="max-w-7xl mx-auto px-5 mt-6">
+      <div className="flex items-center gap-6">
         {modes.map((mode, index) => (
           <motion.button
             key={mode.id}
-            initial={{ opacity: 0, y: 25 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.15 }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className={`rounded-3xl bg-gradient-to-r ${mode.color} text-white p-6 shadow-lg text-left`}
+            transition={{ delay: index * 0.1 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex flex-col items-center gap-2 group"
           >
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-xl font-bold">{mode.title}</h3>
-                <p className="mt-2 text-white/90 text-sm">{mode.subtitle}</p>
-              </div>
-
-              <div className="bg-white/20 rounded-2xl p-4">
-                {mode.icon}
-              </div>
+            <div className={`w-14 h-14 rounded-full bg-gradient-to-tr ${mode.color} text-white flex items-center justify-center shadow-lg ${mode.shadow} group-hover:shadow-xl transition-all`}>
+              {mode.icon}
             </div>
+            <span className="text-[11px] font-bold text-gray-700 dark:text-slate-300">{mode.title}</span>
           </motion.button>
         ))}
       </div>
