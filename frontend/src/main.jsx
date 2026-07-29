@@ -8,6 +8,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import { SocketProvider } from "./providers/SocketProvider";
 import CartProvider from "./core/cart/CartProvider";
+import { Analytics } from "@vercel/analytics/react";
 import "./styles/index.css";
 
 const queryClient = new QueryClient();
@@ -21,6 +22,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <CartProvider>
               <SocketProvider>
                 <AppRoutes />
+                <Analytics />
               </SocketProvider>
             </CartProvider>
           </AuthProvider>
