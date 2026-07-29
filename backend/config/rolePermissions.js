@@ -1,0 +1,27 @@
+import { ROLES, PERMISSIONS } from "./permissions";
+
+export const ROLE_PERMISSIONS = {
+
+    [ROLES.CUSTOMER]: [],
+
+    [ROLES.SHOP_OWNER]: [
+
+        PERMISSIONS.MANAGE_PRODUCTS,
+
+        PERMISSIONS.MANAGE_ORDERS,
+
+        PERMISSIONS.VIEW_ANALYTICS
+
+    ],
+
+    [ROLES.DELIVERY_PARTNER]: [],
+
+    [ROLES.ADMIN]: [
+
+        PERMISSIONS.MANAGE_USERS
+
+    ],
+
+    [ROLES.SUPER_ADMIN]: Object.values(PERMISSIONS)
+
+};

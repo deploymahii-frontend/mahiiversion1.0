@@ -1,0 +1,21 @@
+export const DELIVERY_STATUS = Object.freeze({
+
+    PENDING: "PENDING",
+
+    PICKING: "PICKING",
+
+    PACKED: "PACKED",
+
+    DISPATCHED: "DISPATCHED",
+
+    IN_TRANSIT: "IN_TRANSIT",
+
+    DELIVERED: "DELIVERED",
+
+    FAILED: "FAILED",
+
+    RETURNED: "RETURNED",
+
+    CANCELLED: "CANCELLED"
+
+});

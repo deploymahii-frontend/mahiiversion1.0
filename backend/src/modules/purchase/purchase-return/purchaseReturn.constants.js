@@ -1,0 +1,31 @@
+export const PURCHASE_RETURN_STATUS = Object.freeze({
+
+    DRAFT: "DRAFT",
+
+    PENDING: "PENDING",
+
+    APPROVED: "APPROVED",
+
+    REJECTED: "REJECTED",
+
+    CANCELLED: "CANCELLED"
+
+});
+
+export const PURCHASE_RETURN_REASON = Object.freeze({
+
+    DAMAGED: "DAMAGED",
+
+    DEFECTIVE: "DEFECTIVE",
+
+    EXPIRED: "EXPIRED",
+
+    EXCESS: "EXCESS",
+
+    WRONG_ITEM: "WRONG_ITEM",
+
+    QUALITY_ISSUE: "QUALITY_ISSUE",
+
+    OTHER: "OTHER"
+
+});

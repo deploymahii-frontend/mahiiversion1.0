@@ -1,0 +1,17 @@
+export const QUOTATION_STATUS = Object.freeze({
+
+    DRAFT: "DRAFT",
+
+    SENT: "SENT",
+
+    ACCEPTED: "ACCEPTED",
+
+    REJECTED: "REJECTED",
+
+    EXPIRED: "EXPIRED",
+
+    CONVERTED: "CONVERTED",
+
+    CANCELLED: "CANCELLED"
+
+});

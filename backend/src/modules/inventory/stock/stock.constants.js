@@ -1,0 +1,35 @@
+export const STOCK_TRANSACTION = Object.freeze({
+
+    OPENING: "OPENING",
+
+    PURCHASE: "PURCHASE",
+
+    SALE: "SALE",
+
+    RETURN_IN: "RETURN_IN",
+
+    RETURN_OUT: "RETURN_OUT",
+
+    TRANSFER_IN: "TRANSFER_IN",
+
+    TRANSFER_OUT: "TRANSFER_OUT",
+
+    DAMAGE: "DAMAGE",
+
+    ADJUSTMENT: "ADJUSTMENT",
+
+    PRODUCTION: "PRODUCTION"
+
+});
+
+export const STOCK_STATUS = Object.freeze({
+
+    AVAILABLE: "AVAILABLE",
+
+    RESERVED: "RESERVED",
+
+    DAMAGED: "DAMAGED",
+
+    IN_TRANSIT: "IN_TRANSIT"
+
+});
