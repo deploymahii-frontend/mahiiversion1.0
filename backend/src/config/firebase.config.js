@@ -5,13 +5,15 @@ dotenv.config();
 
 let isFirebaseInitialized = false;
 
+const databaseURL = process.env.FIREBASE_DATABASE_URL || "https://mahiiversion1-default-rtdb.asia-southeast1.firebasedatabase.app";
+
 try {
   // Option 1: Parse from a JSON string in Environment Variables (Recommended for Render)
-  // Format: FIREBASE_SERVICE_ACCOUNT='{"type": "service_account", "project_id": "...", ...}'
   if (process.env.FIREBASE_SERVICE_ACCOUNT) {
     const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
+      databaseURL: databaseURL
     });
     isFirebaseInitialized = true;
     console.log("✅ Firebase Admin Initialized (via Env Var)");
@@ -20,6 +22,7 @@ try {
   else if (process.env.FIREBASE_SERVICE_ACCOUNT_PATH) {
     admin.initializeApp({
       credential: admin.credential.cert(process.env.FIREBASE_SERVICE_ACCOUNT_PATH),
+      databaseURL: databaseURL
     });
     isFirebaseInitialized = true;
     console.log("✅ Firebase Admin Initialized (via File Path)");
