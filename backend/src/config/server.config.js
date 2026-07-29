@@ -7,7 +7,7 @@ const config = {
     name: "Mahii API",
     version: "1.0.0",
     env: process.env.NODE_ENV || "development",
-    port: Number(process.env.PORT) || 5000,
+    port: Number(process.env.PORT) || 10000,
     clientUrl: process.env.CLIENT_URL || "http://localhost:3000",
   },
 
