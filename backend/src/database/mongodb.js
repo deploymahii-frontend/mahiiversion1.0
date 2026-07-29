@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import config from "../config/server.config.js";
 
+import dns from 'node:dns';
+
 export async function connectDatabase(retries = 3) {
   if (!config.database.uri) {
     console.warn("⚠️ MONGODB_URI is not set. Skipping database connection.");
@@ -12,6 +14,9 @@ export async function connectDatabase(retries = 3) {
   }
 
   try {
+    // Override Node's default DNS resolver with Google DNS to bypass ISP block for SRV lookups
+    dns.setServers(['8.8.8.8', '0.0.0.0']);
+
     await mongoose.connect(config.database.uri, {
       serverSelectionTimeoutMS: 5000,
     });

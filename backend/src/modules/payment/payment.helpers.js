@@ -1,7 +1,4 @@
-import dotenv from "dotenv";
 import Razorpay from "razorpay";
-
-dotenv.config();
 
 if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
   throw new Error(

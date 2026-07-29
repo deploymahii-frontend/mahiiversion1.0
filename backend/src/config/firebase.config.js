@@ -1,27 +1,32 @@
-import admin from "firebase-admin";
+import { initializeApp, cert } from "firebase-admin/app";
+import { getAuth } from "firebase-admin/auth";
 import dotenv from "dotenv";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 
 let isFirebaseInitialized = false;
+let firebaseApp = null;
 
 const databaseURL = process.env.FIREBASE_DATABASE_URL || "https://mahiiversion1-default-rtdb.asia-southeast1.firebasedatabase.app";
 
 try {
-  // Option 1: Parse from a JSON string in Environment Variables (Recommended for Render)
   if (process.env.FIREBASE_SERVICE_ACCOUNT) {
-    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
+    const serviceAccountPath = path.resolve(process.cwd(), "..", process.env.FIREBASE_SERVICE_ACCOUNT);
+    const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
+    firebaseApp = initializeApp({
+      credential: cert(serviceAccount),
       databaseURL: databaseURL
     });
     isFirebaseInitialized = true;
-    console.log("✅ Firebase Admin Initialized (via Env Var)");
-  } 
-  // Option 2: Fallback to local file if path is provided
-  else if (process.env.FIREBASE_SERVICE_ACCOUNT_PATH) {
-    admin.initializeApp({
-      credential: admin.credential.cert(process.env.FIREBASE_SERVICE_ACCOUNT_PATH),
+    console.log("✅ Firebase Admin Initialized (via Env File)");
+  } else if (process.env.FIREBASE_SERVICE_ACCOUNT_PATH) {
+    firebaseApp = initializeApp({
+      credential: cert(process.env.FIREBASE_SERVICE_ACCOUNT_PATH),
       databaseURL: databaseURL
     });
     isFirebaseInitialized = true;
@@ -33,5 +38,8 @@ try {
   console.error("❌ Failed to initialize Firebase Admin:", error.message);
 }
 
-export const firebaseAdmin = admin;
+// Export a backward-compatible object for other files expecting `admin.auth()`
+export const firebaseAdmin = {
+  auth: () => getAuth(firebaseApp)
+};
 export { isFirebaseInitialized };

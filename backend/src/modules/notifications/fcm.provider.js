@@ -1,14 +1,13 @@
-import admin from "firebase-admin";
+import { getApps, initializeApp } from 'firebase-admin/app';
+import { getMessaging } from 'firebase-admin/messaging';
 
 // Initialize Firebase Admin if not already initialized
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.applicationDefault(),
-  });
+if (!getApps().length) {
+  initializeApp(); // Uses default credentials or env config if not passed
 }
 
 export async function sendPush({ token, title, body, data = {} }) {
-  return admin.messaging().send({
+  return getMessaging().send({
     token,
     notification: {
       title,
