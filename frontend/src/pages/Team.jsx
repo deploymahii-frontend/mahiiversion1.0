@@ -34,6 +34,30 @@ const leadership = [
     linkedin: "https://linkedin.com",
     instagram: "https://instagram.com",
   },
+  {
+    name: "Aishwarya Patil",
+    role: "Operations Manager",
+    image: "",
+    bio: "Oversees daily store onboarding, training, and ensures smooth marketplace operations across regions.",
+    linkedin: "https://linkedin.com",
+    instagram: "https://instagram.com",
+  },
+  {
+    name: "Ayush Mane",
+    role: "Technical Manager",
+    image: "",
+    bio: "Leads product roadmap, feature prioritization, and coordinates cross‑functional teams for rapid releases.",
+    linkedin: "https://linkedin.com",
+    instagram: "https://instagram.com",
+  },
+  {
+    name: "Anuja Jaybhaye",
+    role: "HR Manager",
+    image: "",
+    bio: "Builds relationships with local shop owners, runs outreach programs, and drives community engagement.",
+    linkedin: "https://linkedin.com",
+    instagram: "https://instagram.com",
+  }
 ];
 
 export default function Team() {
@@ -102,11 +126,11 @@ export default function Team() {
           {/* Team Grid */}
           <div className="space-y-8">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center">Leadership Team</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
               {leadership.slice(1).map((member) => (
                 <div
                   key={member.name}
-                  className="bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-slate-700 flex flex-col justify-between space-y-4 hover:-translate-y-1 transition duration-200"
+                  className="w-[160px] min-w-[160px] sm:w-[220px] sm:min-w-[220px] rounded-2xl overflow-hidden bg-white dark:bg-slate-800 shadow-sm border border-gray-100 dark:border-slate-700/50 flex flex-col justify-between flex-shrink-0 cursor-pointer hover:-translate-y-1 transition duration-200"
                 >
                   <div className="space-y-4">
                     <img

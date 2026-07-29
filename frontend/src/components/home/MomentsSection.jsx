@@ -41,7 +41,17 @@ export default function MomentsSection() {
   };
 
   const handleOpenMoment = (moment) => {
-    navigate("/moments");
+    // Increment local view count for the moment (if numeric)
+    setItems((prev) =>
+      prev.map((item) =>
+        item.id === moment.id
+          ? { ...item, views: typeof item.views === "number" ? item.views + 1 : item.views }
+          : item
+      )
+    );
+    // Navigate to the shop page using a slug derived from the shop name
+    const shopSlug = moment.shop.toLowerCase().replace(/\s+/g, "-");
+    navigate(`/shop/${shopSlug}`);
   };
 
   return (
