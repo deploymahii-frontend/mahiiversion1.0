@@ -9,6 +9,10 @@ class AuthRepository {
     return User.findById(id);
   }
 
+  async findByFirebaseUid(uid) {
+    return User.findOne({ firebaseUid: uid });
+  }
+
   async findByMobile(mobile) {
     return User.findOne({ mobile }).select("+password +refreshToken");
   }

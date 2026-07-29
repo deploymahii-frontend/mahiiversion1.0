@@ -34,6 +34,22 @@ class AuthController {
     }
   }
 
+  async firebaseSync(req, res, next) {
+    try {
+      const firebaseUser = req.firebaseUser;
+      
+      const result = await AuthService.firebaseSync(firebaseUser);
+
+      return res.status(200).json({
+        success: true,
+        message: "Firebase sync successful.",
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async refreshToken(req, res, next) {
     try {
       const { refreshToken } = req.body;

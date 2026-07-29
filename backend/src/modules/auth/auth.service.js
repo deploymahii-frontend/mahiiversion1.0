@@ -64,6 +64,55 @@ class AuthService {
     };
   }
 
+  async firebaseSync(firebaseUser) {
+    const { uid, phone_number, email, name } = firebaseUser;
+
+    // 1. Check if user already exists by Firebase UID
+    let user = await AuthRepository.findByFirebaseUid(uid);
+
+    if (!user) {
+      // 2. Check by phone or email if UID not found
+      if (phone_number) {
+        user = await AuthRepository.findByMobile(phone_number);
+      } else if (email) {
+        user = await AuthRepository.findByEmail(email);
+      }
+
+      // 3. Link existing user to Firebase UID, or create a new user
+      if (user) {
+        user.firebaseUid = uid;
+        await user.save();
+      } else {
+        // Create new user (Generate a random password since Firebase handles auth)
+        const randomPassword = Math.random().toString(36).slice(-8) + "Aa1@";
+        
+        user = await AuthRepository.createUser({
+          fullName: name || email?.split('@')[0] || "Mahii User",
+          email: email || null,
+          phone: phone_number || `no-phone-${uid}`, // Fallback if no phone
+          password: randomPassword,
+          firebaseUid: uid,
+          accountStatus: "active", // Auto-activate Firebase users
+          phoneVerified: !!phone_number,
+          emailVerified: !!email,
+        });
+      }
+    }
+
+    // Generate JWTs for our own session management
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
+    await AuthRepository.updateRefreshToken(user._id, refreshToken);
+    await AuthRepository.updateLastLogin(user._id);
+
+    return {
+      user,
+      accessToken,
+      refreshToken,
+    };
+  }
+
   async refreshToken(receivedRefreshToken) {
     const decoded = verifyRefreshToken(receivedRefreshToken);
     const user = await AuthRepository.findById(decoded.id);

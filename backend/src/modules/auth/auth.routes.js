@@ -10,6 +10,7 @@ import {
 import { validate } from "../../middleware/validate.middleware.js";
 
 import { authenticate } from "./middleware/auth.middleware.js";
+import { verifyFirebaseAuth } from "../../middleware/firebaseAuth.middleware.js";
 
 const router = express.Router();
 
@@ -34,6 +35,12 @@ router.post(
 router.post(
   "/refresh",
   AuthController.refreshToken
+);
+
+router.post(
+  "/firebase-sync",
+  verifyFirebaseAuth,
+  AuthController.firebaseSync
 );
 
 /*
