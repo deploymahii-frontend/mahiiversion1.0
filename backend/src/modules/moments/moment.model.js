@@ -89,5 +89,7 @@ const momentSchema = new mongoose.Schema(
 
 momentSchema.index({ creator: 1 });
 momentSchema.index({ shop: 1 });
+// Auto-delete moments 24 hours after creation
+momentSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400 });
 
 export default mongoose.model("Moment", momentSchema);

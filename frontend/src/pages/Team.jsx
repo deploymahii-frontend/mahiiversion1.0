@@ -1,6 +1,8 @@
 import { Helmet } from "react-helmet-async";
 import { FiLinkedin, FiInstagram, FiMail, FiAward } from "react-icons/fi";
 
+const placeholderImg = "https://via.placeholder.com/300x300?text=Team+Member";
+
 const leadership = [
   {
     name: "Om Jaunjal",
@@ -87,11 +89,11 @@ export default function Team() {
           <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 sm:p-12 shadow-xl border border-gray-100 dark:border-slate-700 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-4 flex justify-center">
               <div className="relative">
-                <img
-                  src={leadership[0].image}
-                  alt={leadership[0].name}
-                  className="w-56 h-56 sm:w-64 sm:h-64 object-cover rounded-3xl shadow-lg border-4 border-orange-500"
-                />
+<img
+  src={leadership[0].image || placeholderImg}
+  alt={leadership[0].name}
+  className="w-56 h-56 sm:w-64 sm:h-64 object-cover rounded-3xl shadow-lg border-4 border-orange-500"
+/>
                 <span className="absolute bottom-3 right-3 bg-orange-500 text-white font-black text-[10px] uppercase px-3 py-1 rounded-full tracking-wider shadow">
                   Founder & CEO
                 </span>
@@ -134,7 +136,7 @@ export default function Team() {
                 >
                   <div className="space-y-4">
                     <img
-                      src={member.image}
+                      src={member.image || placeholderImg}
                       alt={member.name}
                       className="w-full h-56 object-cover rounded-2xl shadow"
                     />
