@@ -10,3 +10,6 @@ frontend/uploads/
 .DS_Store
 Thumbs.db
 .vscode/settings.json
+firebase-service-account.json
+**/firebase-service-account.json
+scratch/
