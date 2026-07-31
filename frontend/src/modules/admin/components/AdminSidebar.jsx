@@ -1,3 +1,7 @@
+import { useState } from "react";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { NavLink } from "react-router-dom";
+
 const items = [
   { label: "Dashboard", icon: "🏠", href: "/admin/dashboard" },
   { label: "Users", icon: "👤", href: "/admin/users" },
@@ -16,19 +20,45 @@ const items = [
 ];
 
 export default function AdminSidebar() {
+  const [collapsed, setCollapsed] = useState(false);
+  const toggle = () => setCollapsed((c) => !c);
+  const widthClass = collapsed ? "w-20" : "w-64";
+  
   return (
-    <aside className="w-72 border-r border-slate-200 bg-white px-4 py-6">
-      <div className="mb-8 px-3 text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Mahii Admin</div>
-      <nav className="space-y-2">
+    <aside
+      className={`${widthClass} bg-[#051e34] border-r border-[#031525] px-3 py-5 transition-width duration-200 flex flex-col h-screen overflow-y-auto shrink-0 sticky top-0`}
+    >
+      <div className="flex items-center justify-between mb-8 px-3">
+        {!collapsed && (
+          <span className="text-[#8a9bb1] text-xs font-bold uppercase tracking-wider">
+            Mahii Admin
+          </span>
+        )}
+        <button 
+          onClick={toggle} 
+          aria-label="Toggle navigation" 
+          className="text-[#8a9bb1] hover:text-white transition-colors p-1 rounded-lg hover:bg-white/5"
+        >
+          {collapsed ? <FiChevronRight size={18} /> : <FiChevronLeft size={18} />}
+        </button>
+      </div>
+      
+      <nav className="space-y-1.5 flex-1">
         {items.map((item) => (
-          <a
+          <NavLink
             key={item.label}
-            href={item.href}
-            className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+            to={item.href}
+            className={({ isActive }) =>
+              `flex items-center gap-3.5 rounded-lg px-3 py-2.5 text-[13px] font-medium transition-colors group ${
+                isActive
+                  ? "bg-white/10 text-white"
+                  : "text-[#8a9bb1] hover:text-white hover:bg-white/10"
+              }`
+            }
           >
-            <span>{item.icon}</span>
-            {item.label}
-          </a>
+            <span className="text-lg opacity-80 group-hover:opacity-100 transition-opacity">{item.icon}</span>
+            {!collapsed && <span>{item.label}</span>}
+          </NavLink>
         ))}
       </nav>
     </aside>

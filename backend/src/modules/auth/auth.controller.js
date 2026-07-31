@@ -32,6 +32,7 @@ export async function login(req, res, next) {
     const result = await authService.login({
       ...req.body,
       mobile: req.body.mobile,
+      email: req.body.email,
       password: req.body.password,
       device: req.body.device || req.headers["user-agent"],
       ipAddress: getClientIp(req),

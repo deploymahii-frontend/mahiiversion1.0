@@ -1,0 +1,7 @@
+export const WISHLIST_TYPES = {
+  SHOP: "SHOP",
+  PRODUCT: "PRODUCT",
+  SERVICE: "SERVICE",
+  PLAN: "PLAN",
+  OFFER: "OFFER",
+};

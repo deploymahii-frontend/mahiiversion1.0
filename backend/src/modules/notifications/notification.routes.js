@@ -1,18 +1,13 @@
-import { Router } from "express";
+import express from "express";
+import { authenticate } from "../../middleware/authenticate.js";
 import * as notificationController from "./notification.controller.js";
-import * as deviceTokenController from "./deviceToken.controller.js";
-import { authenticate } from "../auth/auth.middleware.js";
 
-const router = Router();
+const router = express.Router();
 
-router.use(authenticate);
+router.get("/", authenticate, notificationController.getNotifications);
 
-router.get("/", notificationController.getNotifications);
-router.patch("/:id/read", notificationController.markNotificationRead);
-router.delete("/:id", notificationController.deleteNotification);
+router.patch("/:id/read", authenticate, notificationController.markAsRead);
 
-router.post("/device-token", deviceTokenController.registerDeviceToken);
-router.delete("/device-token", deviceTokenController.deleteDeviceToken);
-router.get("/device-token", deviceTokenController.getDeviceTokens);
+router.patch("/read-all", authenticate, notificationController.markAllAsRead);
 
 export default router;

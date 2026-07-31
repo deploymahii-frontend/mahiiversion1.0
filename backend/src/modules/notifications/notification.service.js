@@ -1,10 +1,17 @@
-import * as repository from "./notification.repository.js";
+import Notification from "./notification.model.js";
 
-export const createNotification = (data) => repository.create(data);
-
-export const getNotifications = (userId) =>
-  repository.findUserNotifications(userId);
-
-export const markNotificationRead = (id) => repository.markRead(id);
-
-export const deleteNotification = (id) => repository.remove(id);
+export const createNotification = async ({
+  recipient,
+  type,
+  title,
+  message,
+  data = {},
+}) => {
+  return Notification.create({
+    recipient,
+    type,
+    title,
+    message,
+    data,
+  });
+};

@@ -18,22 +18,38 @@ import About from '../pages/About';
 import Team from '../pages/Team';
 import LoginPage from '../modules/auth/pages/LoginPage';
 import SignupPage from '../modules/auth/pages/SignupPage';
-import AdminLogin from '../pages/AdminLogin';
+import SecureAdminPortal from '../pages/SecureAdminPortal';
 import ProtectedRoute from '../core/auth/ProtectedRoute';
 import GuestRoute from '../core/auth/GuestRoute';
 import ShopDetails from '../features/marketplace/shop/pages/ShopDetails';
 import ProductDetails from '../pages/ProductDetails';
 import NotFound from '../pages/NotFound';
 import OrderSuccess from '../features/orders/pages/OrderSuccess';
-import DashboardRoutes from './DashboardRoutes';
-import AdminDashboard from '../modules/admin/pages/Dashboard/Dashboard';
-import SystemSettings from '../features/admin/system-settings/pages/SystemSettings';
-import FeatureFlagsPage from '../features/admin/feature-flags/pages/FeatureFlags';
-import OwnerPortalEntry from '../features/owner/owner-portal/OwnerPortalEntry';
+import ShopOwnerDashboardRoutes from './ShopOwnerDashboardRoutes';
+import ShopRegistration from '../modules/shopOwner/pages/ShopRegistration';
+import AdminDashboard from '../modules/admin/pages/Dashboard';
+import SystemSettings from '../modules/admin/system-settings/pages/SystemSettings';
+import FeatureFlagsPage from '../modules/admin/feature-flags/pages/FeatureFlags';
 import ShopRoutes from '../modules/shop/routes';
 import ForbiddenPage from '../pages/ForbiddenPage';
 import Unauthorized from '../pages/Unauthorized';
 import { ROUTES } from '../core/constants/routes';
+import CustomerRoutes from '../modules/customer/routes/index.jsx';
+
+// Admin imports
+import AdminLayout from '../modules/admin/components/AdminLayout';
+import UsersManagement from '../modules/admin/pages/UsersManagement';
+import ShopApprovalManagement from '../modules/admin/pages/ShopApprovalManagement';
+import CategoryManagement from '../modules/admin/pages/CategoryManagement';
+import PaymentSettlementManagement from '../modules/admin/pages/PaymentSettlementManagement';
+import DisputeResolution from '../modules/admin/pages/DisputeResolution';
+import AdminProducts from '../modules/admin/pages/Products';
+import AdminServices from '../modules/admin/pages/Services';
+import AdminOrders from '../modules/admin/pages/Orders';
+import AdminMoments from '../modules/admin/pages/Moments';
+import AdminReports from '../modules/admin/pages/Reports';
+import AdminCities from '../modules/admin/pages/Cities';
+import AdminAnalytics from '../modules/admin/pages/Analytics';
 
 const AppRoutes = () => {
   return (
@@ -72,52 +88,65 @@ const AppRoutes = () => {
           </Route>
         </Route>
 
-        {/* Dedicated Standalone Secret Admin Login */}
-        <Route path="/admin/login" element={<AdminLogin />} />
+        {/* Hidden Secure Admin Portal — only accessible via direct URL */}
+        <Route path="/secure-admin-portal" element={<SecureAdminPortal />} />
+        {/* Redirect old admin login to the new secure portal */}
+        <Route path="/admin/login" element={<SecureAdminPortal />} />
 
         {/* Protected Admin Routes */}
         <Route
           path="/admin"
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPER_ADMIN"]}>
-              <AdminDashboard />
+              <AdminLayout />
             </ProtectedRoute>
           }
-        />
-        <Route
-          path="/admin/dashboard"
-          element={
-            <ProtectedRoute allowedRoles={["ADMIN", "SUPER_ADMIN"]}>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/system-settings"
-          element={
-            <ProtectedRoute allowedRoles={["ADMIN", "SUPER_ADMIN"]}>
-              <SystemSettings />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/feature-flags"
-          element={
-            <ProtectedRoute allowedRoles={["ADMIN", "SUPER_ADMIN"]}>
-              <FeatureFlagsPage />
-            </ProtectedRoute>
-          }
-        />
+        >
+          {/* Default to dashboard if just /admin */}
+          <Route index element={<AdminDashboard />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="users" element={<UsersManagement />} />
+          <Route path="businesses" element={<ShopApprovalManagement />} />
+          <Route path="products" element={<AdminProducts />} />
+          <Route path="services" element={<AdminServices />} />
+          <Route path="orders" element={<AdminOrders />} />
+          <Route path="payments" element={<PaymentSettlementManagement />} />
+          <Route path="moments" element={<AdminMoments />} />
+          <Route path="reports" element={<AdminReports />} />
+          <Route path="support" element={<DisputeResolution />} />
+          <Route path="cities" element={<AdminCities />} />
+          <Route path="categories" element={<CategoryManagement />} />
+          <Route path="analytics" element={<AdminAnalytics />} />
+          <Route path="settings" element={<SystemSettings />} />
+          
+          <Route path="system-settings" element={<SystemSettings />} />
+          <Route path="feature-flags" element={<FeatureFlagsPage />} />
+        </Route>
         <Route
           path="/dashboard/*"
           element={
             <ProtectedRoute allowedRoles={["SHOP_OWNER", "SHOPOWNER", "ADMIN", "SUPER_ADMIN"]}>
-              <DashboardRoutes />
+              <ShopOwnerDashboardRoutes />
             </ProtectedRoute>
           }
         />
-        <Route path="/owner/*" element={<OwnerPortalEntry />} />
+        <Route
+          path="/shop/register"
+          element={
+            <ProtectedRoute allowedRoles={["SHOP_OWNER", "SHOPOWNER", "ADMIN", "SUPER_ADMIN"]}>
+              <ShopRegistration />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/shop/*" element={<ShopRoutes />} />
+        <Route
+          path="/customer/*"
+          element={
+            <ProtectedRoute allowedRoles={["CUSTOMER", "USER", "ADMIN", "SUPER_ADMIN"]}>
+              <CustomerRoutes />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/403" element={<ForbiddenPage />} />
         <Route path="*" element={<NotFound />} />

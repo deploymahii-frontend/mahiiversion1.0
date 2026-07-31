@@ -8,7 +8,7 @@ const leadership = [
     name: "Om Jaunjal",
     role: "Founder & Chief Executive Officer (CEO)",
     image: "",
-    bio: "Passionate entrepreneur committed to revolutionizing hyperlocal commerce and empowering traditional Indian shop owners with modern tech.",
+
     linkedin: "https://www.linkedin.com/in/om-jaunjal-8b2414306/",
     instagram: "https://instagram.com",
   },
@@ -16,7 +16,7 @@ const leadership = [
     name: "Atharv Dahifale",
     role: "Chief Financial Officer",
     image: "",
-    bio: "Tech strategist and full-stack architect leading Mahii’s real-time ordering engines, logistics algorithms, and mobile infrastructure.",
+
     linkedin: "https://linkedin.com",
     instagram: "https://instagram.com",
   },
@@ -24,7 +24,7 @@ const leadership = [
     name: "Rohan Kodgire",
     role: "Chief Marketing Officer",
     image: "",
-    bio: "Fosters merchant onboarding, digital training, and local market growth for over 1,800+ shop owners across Kolhapur and Sangli.",
+
     linkedin: "https://linkedin.com",
     instagram: "https://instagram.com",
   },
@@ -32,7 +32,7 @@ const leadership = [
     name: "Atharv Kambale",
     role: "Digital Media Manager",
     image: "",
-    bio: "Manages neighborhood delivery fleet networks, dispatch optimization, and 15-minute last-mile delivery operations.",
+
     linkedin: "https://linkedin.com",
     instagram: "https://instagram.com",
   },
@@ -40,7 +40,7 @@ const leadership = [
     name: "Aishwarya Patil",
     role: "Operations Manager",
     image: "",
-    bio: "Oversees daily store onboarding, training, and ensures smooth marketplace operations across regions.",
+
     linkedin: "https://linkedin.com",
     instagram: "https://instagram.com",
   },
@@ -48,7 +48,7 @@ const leadership = [
     name: "Ayush Mane",
     role: "Technical Manager",
     image: "",
-    bio: "Leads product roadmap, feature prioritization, and coordinates cross‑functional teams for rapid releases.",
+
     linkedin: "https://linkedin.com",
     instagram: "https://instagram.com",
   },
@@ -56,7 +56,7 @@ const leadership = [
     name: "Anuja Jaybhaye",
     role: "HR Manager",
     image: "",
-    bio: "Builds relationships with local shop owners, runs outreach programs, and drives community engagement.",
+
     linkedin: "https://linkedin.com",
     instagram: "https://instagram.com",
   }
@@ -71,7 +71,7 @@ export default function Team() {
       </Helmet>
 
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
-        <div className="max-w-6xl mx-auto space-y-16">
+        <div className="max-w-7xl mx-auto space-y-16">
           {/* Header */}
           <div className="text-center space-y-4">
             <span className="inline-flex items-center gap-1.5 bg-orange-100 dark:bg-orange-950/50 text-orange-600 font-extrabold text-xs px-3.5 py-1.5 rounded-full uppercase tracking-widest">
@@ -128,31 +128,31 @@ export default function Team() {
           {/* Team Grid */}
           <div className="space-y-8">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center">Leadership Team</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
               {leadership.slice(1).map((member) => (
                 <div
                   key={member.name}
-                  className="w-[160px] min-w-[160px] sm:w-[220px] sm:min-w-[220px] rounded-2xl overflow-hidden bg-white dark:bg-slate-800 shadow-sm border border-gray-100 dark:border-slate-700/50 flex flex-col justify-between flex-shrink-0 cursor-pointer hover:-translate-y-1 transition duration-200"
+                                  className="max-w-xs w-full mx-auto rounded-2xl overflow-hidden bg-white dark:bg-slate-800 shadow-sm border border-gray-100 dark:border-slate-700/50 flex flex-col justify-between cursor-pointer hover:-translate-y-1 transition duration-200 p-4"
                 >
-                  <div className="space-y-4">
+                  <div className="flex flex-col flex-1 space-y-4 text-center">
                     <img
                       src={member.image || placeholderImg}
                       alt={member.name}
                       className="w-full h-56 object-cover rounded-2xl shadow"
                     />
                     <div>
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">{member.name}</h3>
-                      <p className="text-xs font-semibold text-orange-500 mt-0.5">{member.role}</p>
+                      <h3 className="text-base font-bold text-gray-900 dark:text-white">{member.name}</h3>
+                      <p className="text-sm font-semibold text-orange-500 mt-0.5">{member.role}</p>
                     </div>
-                    <p className="text-xs text-gray-600 dark:text-slate-300 leading-relaxed">{member.bio}</p>
+
                   </div>
 
                   <div className="flex items-center gap-3 pt-3 border-t border-gray-100 dark:border-slate-700/60">
                     <a href={member.linkedin} target="_blank" rel="noreferrer" className="text-gray-400 hover:text-orange-500 transition">
-                      <FiLinkedin size={16} />
+                      <FiLinkedin size={20} />
                     </a>
                     <a href={member.instagram} target="_blank" rel="noreferrer" className="text-gray-400 hover:text-orange-500 transition">
-                      <FiInstagram size={16} />
+                      <FiInstagram size={20} />
                     </a>
                   </div>
                 </div>

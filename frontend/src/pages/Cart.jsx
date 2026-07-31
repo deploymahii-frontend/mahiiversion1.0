@@ -66,7 +66,7 @@ export default function Cart() {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-4">
+          <div className="lg:col-span-2 space-y-6">
             {items.map((item, idx) => (
               <CartItem
                 key={item.productId || item._id || item.product || idx}

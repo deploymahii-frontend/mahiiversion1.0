@@ -1,70 +1,181 @@
-// src/modules/customer/components/ShopCard.jsx
-
 import { Link } from "react-router-dom";
-import { FaStar, FaMapMarkerAlt, FaClock } from "react-icons/fa";
+import { Star, Clock3, MapPin, Heart, BadgePercent, Crown } from "lucide-react";
+import { useState } from "react";
+import clsx from "clsx";
 
-export default function ShopCard({ shop }) {
-    const {
-        _id,
-        slug,
-        name,
-        image,
-        category,
-        rating,
-        distance,
-        deliveryTime,
-        isOpen = true,
-        offerLabel,
-    } = shop;
+export default function ShopCard({ shop, onWishlist }) {
+  const [liked, setLiked] = useState(shop?.isFavourite ?? false);
 
-    return (
-        <Link
-            to={`/shop/${slug || _id}`}
-            className="group block overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"
+  const handleWishlist = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const next = !liked;
+    setLiked(next);
+
+    onWishlist?.(shop, next);
+  };
+
+  return (
+    <Link
+      to={`/shop/${shop.slug}`}
+      className="
+        group
+        overflow-hidden
+        rounded-3xl
+        bg-white
+        border
+        border-slate-200
+        shadow-sm
+        hover:shadow-xl
+        transition-all
+        duration-300
+        block
+      "
+    >
+      {/* Cover */}
+      <div className="relative overflow-hidden">
+        <img
+          src={shop.coverImage}
+          alt={shop.name}
+          className="
+            h-56
+            w-full
+            object-cover
+            transition-transform
+            duration-500
+            group-hover:scale-110
+          "
+        />
+
+        {/* Wishlist */}
+        <button
+          onClick={handleWishlist}
+          className="
+            absolute
+            top-3
+            right-3
+            rounded-full
+            bg-white/90
+            backdrop-blur
+            p-2
+          "
         >
-            <div className="relative h-52 w-full overflow-hidden bg-gray-100">
-                <img
-                    src={image || "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&q=80"}
-                    alt={name}
-                    className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                />
-                {offerLabel && (
-                    <span className="absolute left-4 top-4 rounded-full bg-yellow-500 px-3 py-1 text-xs font-bold text-white">
-                        {offerLabel}
-                    </span>
-                )}
-                {!isOpen && (
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-center">
-                        <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-gray-800">
-                            Closed
-                        </span>
-                    </div>
-                )}
+          <Heart
+            size={18}
+            className={clsx(
+              liked ? "fill-red-500 text-red-500" : "text-slate-600"
+            )}
+          />
+        </button>
+
+        {/* Offer */}
+        {shop.offer && (
+          <div
+            className="
+              absolute
+              left-3
+              bottom-3
+              rounded-full
+              bg-red-500
+              text-white
+              px-3
+              py-1
+              text-xs
+              flex
+              items-center
+              gap-1
+            "
+          >
+            <BadgePercent size={14} />
+            {shop.offer}
+          </div>
+        )}
+      </div>
+
+      {/* Body */}
+      <div className="p-5">
+        <div className="flex items-start justify-between">
+          <div>
+            <h2 className="font-bold text-lg line-clamp-1">
+              {shop.name}
+            </h2>
+            <p className="text-sm text-slate-500 mt-1">
+              {shop.category}
+            </p>
+          </div>
+          {shop.gold && (
+            <div
+              className="
+                flex
+                items-center
+                gap-1
+                rounded-full
+                bg-yellow-100
+                text-yellow-700
+                px-2
+                py-1
+                text-xs
+                font-semibold
+              "
+            >
+              <Crown size={13} />
+              Gold
             </div>
-            <div className="p-5">
-                <div className="mb-3 flex items-center justify-between gap-3">
-                    <div>
-                        <h3 className="text-lg font-bold text-gray-900">{name}</h3>
-                        <p className="text-sm text-gray-500">{category}</p>
-                    </div>
-                    {rating !== undefined && (
-                        <div className="flex items-center gap-1 rounded-2xl bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
-                            <FaStar className="text-yellow-500" />
-                            {rating}
-                        </div>
-                    )}
-                </div>
-                <div className="grid gap-3 text-sm text-gray-600 sm:grid-cols-2">
-                    <div className="flex items-center gap-2">
-                        <FaMapMarkerAlt />
-                        <span>{distance || "Nearby"}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <FaClock />
-                        <span>{deliveryTime || "30 min"}</span>
-                    </div>
-                </div>
-            </div>
-        </Link>
-    );
+          )}
+        </div>
+
+        <div className="mt-5 flex items-center justify-between text-sm">
+          <div className="flex items-center gap-1 text-green-600">
+            <Star size={16} fill="currentColor" />
+            <span>{shop.rating}</span>
+            <span className="text-slate-400">({shop.totalReviews})</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Clock3 size={15} />
+            {shop.deliveryTime}
+          </div>
+        </div>
+
+        <div className="mt-4 flex justify-between items-center text-sm">
+          <div className="flex items-center gap-1">
+            <MapPin size={15} />
+            {shop.distance}
+          </div>
+          <div className="font-semibold">
+            {shop.priceRange}
+          </div>
+        </div>
+
+        <div className="mt-5 flex justify-between items-center">
+          <span
+            className={clsx(
+              "rounded-full px-3 py-1 text-xs font-semibold",
+              shop.isOpen
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-600"
+            )}
+          >
+            {shop.isOpen ? "Open Now" : "Closed"}
+          </span>
+
+          {shop.freeDelivery && (
+            <span
+              className="
+                rounded-full
+                bg-blue-100
+                text-blue-700
+                px-3
+                py-1
+                text-xs
+                font-semibold
+              "
+            >
+              Free Delivery
+            </span>
+          )}
+        </div>
+      </div>
+    </Link>
+  );
 }

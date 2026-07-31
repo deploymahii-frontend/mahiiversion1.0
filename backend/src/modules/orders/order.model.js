@@ -139,11 +139,27 @@ const orderSchema = new mongoose.Schema(
       index: true,
     },
 
+    payment: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Payment",
+    },
+
     orderStatus: {
       type: String,
       enum: Object.values(ORDER_STATUS),
       default: ORDER_STATUS.PLACED,
       index: true,
+    },
+
+    deliveryPartner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "DeliveryPartner",
+    },
+
+    deliveryStatus: {
+      type: String,
+      enum: ["UNASSIGNED", "ASSIGNED", "ACCEPTED", "PICKED_UP", "ON_THE_WAY", "DELIVERED"],
+      default: "UNASSIGNED",
     },
 
     upiReference: {

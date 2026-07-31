@@ -26,6 +26,7 @@ export default function useLogin() {
         phone: !isEmail && cleanPhone ? cleanPhone.slice(-10) : undefined,
         mobile: !isEmail && cleanPhone ? cleanPhone.slice(-10) : undefined,
         password: values.password,
+        role: values.role, // Pass the role from UI to backend if needed
       };
 
       let userObj = null;
@@ -53,7 +54,7 @@ export default function useLogin() {
         if (lowerId.includes("admin")) {
           role = "ADMIN";
           name = "Mahii Admin";
-        } else if (lowerId.includes("shop") || lowerId.includes("owner")) {
+        } else if (values.role === "shop_owner" || lowerId.includes("shop") || lowerId.includes("owner")) {
           role = "SHOP_OWNER";
           name = "Shop Owner";
         }

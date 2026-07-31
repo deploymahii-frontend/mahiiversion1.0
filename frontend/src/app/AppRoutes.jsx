@@ -38,6 +38,8 @@ import Categories from "@/modules/admin/pages/Categories/Categories";
 import Analytics from "@/modules/admin/pages/Analytics/Analytics";
 import Settings from "@/modules/admin/pages/Settings/Settings";
 
+import CustomerRoutes from "@/modules/customer/routes";
+
 import useAuthStore from "@/modules/auth/store/auth.store";
 import * as AuthService from "@/modules/auth/services/auth.service";
 import ProtectedRoute from "@/routes/ProtectedRoute";
@@ -356,6 +358,19 @@ export default function AppRoutes() {
             </ProtectedRoute>
           }
         />
+
+        {/* ─── Customer Application (self-contained module) ─── */}
+        <Route
+          path="/customer/*"
+          element={
+            <ProtectedRoute>
+              <RoleRoute roles={["customer", "user", "CUSTOMER", "USER", "admin", "ADMIN"]}>
+                <CustomerRoutes />
+              </RoleRoute>
+            </ProtectedRoute>
+          }
+        />
+
       </Routes>
     </BrowserRouter>
   );

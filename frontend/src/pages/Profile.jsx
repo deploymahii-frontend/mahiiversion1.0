@@ -116,16 +116,6 @@ export default function Profile() {
                   <span>→</span>
                 </Link>
               )}
-
-              {(profileData.role === "ADMIN" || profileData.role === "SUPER_ADMIN") && (
-                <Link
-                  to="/admin/system-settings"
-                  className="flex items-center justify-between p-3 rounded-2xl bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 font-semibold text-sm transition"
-                >
-                  <span>Go to Admin Portal</span>
-                  <span>→</span>
-                </Link>
-              )}
             </div>
           </div>
         </div>

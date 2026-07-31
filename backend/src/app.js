@@ -2,6 +2,10 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
+import { fileURLToPath } from "url";
+import path from "path";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
@@ -70,4 +74,13 @@ app.use(notFound);
 /* Error */
 app.use(errorHandler);
 
+// Serve static files (frontend build)
+// path imported earlier (duplicate removed)
+const staticPath = path.resolve(__dirname, "../../frontend/dist");
+app.use(express.static(staticPath));
+
+// Fallback for SPA routes – serve index.html
+app.use((req, res) => {
+  res.sendFile(path.join(staticPath, "index.html"));
+});
 export default app;

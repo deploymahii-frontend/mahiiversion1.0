@@ -1,15 +1,24 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Navigate, Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
 import { FiShoppingBag, FiPhone, FiLock, FiArrowRight, FiEye, FiEyeOff } from "react-icons/fi";
 import { loginShop } from "../services/shopAuth.service";
+import useAuthStore from "../../auth/store/auth.store";
 
 export default function LoginPage() {
     const navigate = useNavigate();
+    const login = useAuthStore((state) => state.login);
+    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+    
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [form, setForm] = useState({ phone: "", password: "" });
+
+    // If already authenticated, redirect to dashboard
+    if (isAuthenticated) {
+        return <Navigate to="/shop/dashboard" replace />;
+    }
 
     const handleChange = (e) => {
         setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -20,8 +29,10 @@ export default function LoginPage() {
         try {
             setLoading(true);
             const { data } = await loginShop(form);
-            localStorage.setItem("accessToken", data.data.accessToken);
-            localStorage.setItem("user", JSON.stringify(data.data.user));
+            
+            // Sync with global auth store
+            login(data.data.user, data.data.accessToken);
+            
             toast.success("Welcome back! Redirecting to dashboard...");
             navigate("/shop/dashboard");
         } catch (err) {

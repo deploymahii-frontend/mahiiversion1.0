@@ -1,24 +1,14 @@
-import { Router } from "express";
-import * as adminController from "./admin.controller.js";
-import { authenticate } from "../auth/auth.middleware.js";
-import { authorize } from "../auth/authorize.middleware.js";
+import express from "express";
+const router = express.Router();
+import dashboardRoutes from "./dashboard/dashboard.routes.js";
+import shopsRoutes from "./shops/shops.routes.js";
 
-const router = Router();
+import { authenticate } from "../../middleware/authenticate.js";
+import { authorize } from "../../middleware/authorize.js";
+import { ROLES } from "../../shared/constants/roles.js";
 
-router.use(authenticate);
-router.use(authorize("admin", "super_admin"));
-
-router.get("/dashboard", adminController.getDashboard);
-
-router.get("/shops", adminController.getShops);
-router.get("/shops/:id", adminController.getShopById);
-router.patch("/shops/:id/status", adminController.updateShopStatus);
-router.delete("/shops/:id", adminController.deleteShop);
-
-router.get("/users", adminController.getUsers);
-router.get("/users/:id", adminController.getUserById);
-router.patch("/users/:id/activate", adminController.activateUser);
-router.patch("/users/:id/suspend", adminController.suspendUser);
-router.patch("/users/:id/verify", adminController.verifyUser);
+router.use(authenticate, authorize(ROLES.ADMIN, ROLES.SUPER_ADMIN));
+router.use("/dashboard", dashboardRoutes);
+router.use("/shops", shopsRoutes);
 
 export default router;

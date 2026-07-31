@@ -27,11 +27,16 @@ class AuthService {
     };
   }
 
-  async login({ mobile, password, device, ipAddress, userAgent }) {
-    const user = await AuthRepository.findByMobile(mobile);
+  async login({ mobile, email, password, device, ipAddress, userAgent }) {
+    let user;
+    if (email) {
+      user = await AuthRepository.findByEmail(email);
+    } else if (mobile) {
+      user = await AuthRepository.findByMobile(mobile);
+    }
 
     if (!user) {
-      throw new Error("Invalid mobile or password.");
+      throw new Error("Invalid credentials.");
     }
 
     if (user.isLocked()) {
@@ -48,7 +53,7 @@ class AuthService {
         await AuthRepository.lockAccount(user._id);
       }
 
-      throw new Error("Invalid mobile or password.");
+      throw new Error("Invalid credentials.");
     }
 
     const accessToken = generateAccessToken(user);

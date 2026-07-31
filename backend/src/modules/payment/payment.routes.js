@@ -1,26 +1,11 @@
-import { Router } from "express";
-import * as controller from "./payment.controller.js";
-import { authenticate } from "../auth/auth.middleware.js";
-import { authorize } from "../auth/authorize.middleware.js";
-import { ROLES } from "../../shared/constants/roles.js";
-import { validate } from "../../middleware/validate.middleware.js";
-import { createOrderSchema, verifySchema } from "./payment.validation.js";
+import express from "express";
+import { authenticate } from "../../middleware/authenticate.js";
+import * as paymentController from "./payment.controller.js";
 
-const router = Router();
+const router = express.Router();
 
-router.use(authenticate);
-
-router.post(
-  "/create-order",
-  authorize(ROLES.CUSTOMER),
-  validate(createOrderSchema),
-  controller.createOrder
-);
-router.post(
-  "/verify",
-  authorize(ROLES.CUSTOMER, ROLES.ADMIN),
-  validate(verifySchema),
-  controller.verify
-);
+router.post("/create", authenticate, paymentController.createPaymentHandler);
+router.post("/verify", authenticate, paymentController.verifyPaymentHandler);
+router.get("/:paymentId", authenticate, paymentController.getPayment);
 
 export default router;

@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import ShopOwnerRoutes from "@/modules/shopOwner/routes";
 
 import Home from "@/modules/customer/pages/Home";
 import Explore from "@/modules/customer/pages/Explore/Explore";
@@ -21,6 +22,7 @@ import DeliveryProfile from "@/modules/delivery/pages/ProfilePage";
 import ProtectedRoute from "@/modules/auth/routes/ProtectedRoute";
 import PublicRoute from "@/modules/auth/routes/PublicRoute";
 import CustomerLayout from "@/layouts/CustomerLayout";
+import AdminRoutes from "@/features/admin/routes/admin.routes";
 
 export default function Router() {
   return (
@@ -48,8 +50,8 @@ export default function Router() {
       <Route path="/delivery/history" element={<ProtectedRoute><DeliveryHistory /></ProtectedRoute>} />
       <Route path="/delivery/profile" element={<ProtectedRoute><DeliveryProfile /></ProtectedRoute>} />
 
-      <Route path="/admin/*" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-      <Route path="/shop/*" element={<ProtectedRoute><div>Shop Dashboard</div></ProtectedRoute>} />
+      <Route path="/admin/*" element={<ProtectedRoute><AdminRoutes /></ProtectedRoute>} />
+      <Route path="/shop/*" element={<ProtectedRoute><ShopOwnerRoutes /></ProtectedRoute>} />
     </Routes>
   );
 }

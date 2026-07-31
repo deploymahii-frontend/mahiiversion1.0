@@ -21,7 +21,7 @@ export default function ProtectedRoute({
 
   if (!authenticated && !token) {
     if (isAdminRoute) {
-      return <Navigate to="/admin/login" replace />;
+      return <Navigate to="/secure-admin-portal" replace />;
     }
     return <Navigate to="/login" replace />;
   }
@@ -31,7 +31,7 @@ export default function ProtectedRoute({
 
     if (!normalizedAllowed.includes(currentUserRole)) {
       if (isAdminRoute) {
-        return <Navigate to="/admin/login" replace />;
+        return <Navigate to="/secure-admin-portal" replace />;
       }
       return <Navigate to="/unauthorized" replace />;
     }

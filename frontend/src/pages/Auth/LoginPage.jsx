@@ -13,7 +13,7 @@ export default function LoginPage() {
         const role = user?.role?.name || user?.role;
         switch (role) {
             case "ADMIN":
-                navigate("/admin");
+                navigate("/");
                 break;
             case "SHOP_OWNER":
                 navigate("/shop");

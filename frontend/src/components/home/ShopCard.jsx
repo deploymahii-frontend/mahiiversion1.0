@@ -75,16 +75,20 @@ export default function ShopCard({ shop = {} }) {
       whileTap={{ scale: 0.98 }}
       transition={{ duration: 0.2 }}
       onClick={handleViewShop}
-      className="w-[160px] min-w-[160px] sm:w-[220px] sm:min-w-[220px] rounded-2xl overflow-hidden bg-white dark:bg-slate-800 shadow-sm border border-gray-100 dark:border-slate-700/50 flex flex-col justify-between flex-shrink-0 cursor-pointer"
+      className="max-w-[220px] w-full rounded-2xl overflow-hidden bg-white dark:bg-slate-800 shadow-sm border border-gray-100 dark:border-slate-700/50 flex flex-col justify-between cursor-pointer"
     >
       <div>
         <div className="relative">
-          <img
-            src={shopData.image}
-            alt={shopData.name}
-            loading="lazy"
-            className="w-full h-32 sm:h-40 object-cover"
-          />
+            <img
+              src={shopData.image}
+              alt={shopData.name}
+              loading="lazy"
+              className="w-full h-32 sm:h-40 object-cover"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&auto=format&fit=crop";
+              }}
+            />
 
           <button
             type="button"
@@ -102,15 +106,9 @@ export default function ShopCard({ shop = {} }) {
             />
           </button>
 
-          <div
-            className={`absolute bottom-2 left-2 px-2 py-0.5 rounded text-[10px] font-bold shadow-sm ${
-              shopData.open
-                ? "bg-emerald-500 text-white"
-                : "bg-red-500 text-white"
-            }`}
-          >
-            {shopData.open ? "Open" : "Closed"}
-          </div>
+            <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="transition-colors">
+              {shopData.open ? "Open" : "Closed"}
+            </motion.span>
         </div>
 
         <div className="p-3">

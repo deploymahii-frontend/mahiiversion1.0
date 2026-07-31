@@ -28,7 +28,7 @@ export default function Navbar() {
           {authenticated ? (
             <div className="flex items-center gap-3 ml-2">
               <Link
-                to="/dashboard"
+                to={user?.role?.toLowerCase().includes("shop") ? "/dashboard" : "/customer/dashboard"}
                 className="flex items-center gap-2 p-1.5 pr-3 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 transition border border-gray-200 dark:border-slate-700"
               >
                 <div className="w-8 h-8 rounded-lg bg-orange-500 text-white font-bold flex items-center justify-center text-sm">

@@ -1,40 +1,71 @@
-import * as notificationService from "./notification.service.js";
+import Notification from "./notification.model.js";
 
-export const getNotifications = async (req, res, next) => {
+export const getNotifications = async (req, res) => {
   try {
-    const notifications = await notificationService.getNotifications(req.user._id);
+    const notifications = await Notification.find({
+      recipient: req.user._id,
+    })
+      .sort({ createdAt: -1 })
+      .limit(50);
 
-    return res.json({
+    res.json({
       success: true,
       data: notifications,
     });
   } catch (error) {
-    next(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
-export const markNotificationRead = async (req, res, next) => {
+export const markAsRead = async (req, res) => {
   try {
-    const notification = await notificationService.markNotificationRead(req.params.id);
+    const notification = await Notification.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        recipient: req.user._id,
+      },
+      {
+        isRead: true,
+      },
+      {
+        new: true,
+      }
+    );
 
-    return res.json({
+    res.json({
       success: true,
       data: notification,
     });
   } catch (error) {
-    next(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
-export const deleteNotification = async (req, res, next) => {
+export const markAllAsRead = async (req, res) => {
   try {
-    await notificationService.deleteNotification(req.params.id);
+    await Notification.updateMany(
+      {
+        recipient: req.user._id,
+        isRead: false,
+      },
+      {
+        isRead: true,
+      }
+    );
 
-    return res.json({
+    res.json({
       success: true,
-      message: "Notification deleted successfully.",
     });
   } catch (error) {
-    next(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };

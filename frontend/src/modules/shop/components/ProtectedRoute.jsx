@@ -1,22 +1,15 @@
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../../../context/AuthContext";
+import useAuthStore from "../../../modules/auth/store/auth.store";
 
 export default function ProtectedRoute({ children }) {
-  const { user, authenticated } = useAuth();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const user = useAuthStore((state) => state.user);
 
-  const token =
-    localStorage.getItem("token") ||
-    localStorage.getItem("accessToken") ||
-    localStorage.getItem("mahii_token");
-
-  const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
-  const currentUser = user || storedUser;
-
-  const role = (currentUser?.role?.name || currentUser?.role || "").toUpperCase();
-
-  if (!token && !authenticated) {
+  if (!isAuthenticated || !user) {
     return <Navigate to="/shop/login" replace />;
   }
+
+  const role = (user?.role?.name || user?.role || "").toUpperCase();
 
   if (role && !["SHOP_OWNER", "SHOPOWNER", "ADMIN", "SUPER_ADMIN"].includes(role)) {
     return <Navigate to="/unauthorized" replace />;

@@ -108,7 +108,7 @@ export default function Moments() {
           </div>
           <button
             onClick={handleCreate}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm shadow-lg shadow-orange-500/25 transition"
+            className="hidden md:flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm shadow-lg shadow-orange-500/25 transition"
           >
             <FiPlus size={16} />
             <span>Create</span>
@@ -273,16 +273,7 @@ export default function Moments() {
         ))}
       </div>
 
-      {/* Floating Create Button */}
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={handleCreate}
-        className="fixed bottom-24 right-5 z-50 flex items-center gap-2 px-5 py-3.5 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-bold shadow-xl shadow-orange-500/30 transition"
-      >
-        <FiPlus size={20} />
-        <span className="text-sm">Create</span>
-      </motion.button>
+
     </div>
   );
 }

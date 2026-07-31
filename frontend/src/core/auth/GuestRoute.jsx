@@ -17,7 +17,7 @@ export default function GuestRoute({ children }) {
   if (authenticated && token && user) {
     const role = String(user?.role || "").toUpperCase();
     if (role === "ADMIN" || role === "SUPER_ADMIN") {
-      return <Navigate to="/admin/system-settings" replace />;
+      return <Navigate to="/admin/dashboard" replace />;
     } else if (role === "SHOP_OWNER" || role === "SHOPOWNER") {
       return <Navigate to="/dashboard" replace />;
     }
