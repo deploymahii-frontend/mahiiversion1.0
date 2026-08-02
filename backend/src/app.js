@@ -18,7 +18,9 @@ import errorHandler from "./middleware/error.middleware.js";
 
 const app = express();
 
-app.set("trust proxy", true);
+// Use a specific proxy hop count instead of `true` to avoid permissive trust proxy behavior
+// with express-rate-limit. Set to 1 for common PaaS environments like Render/Heroku.
+app.set("trust proxy", 1);
 
 /* Security */
 app.use(helmet());
