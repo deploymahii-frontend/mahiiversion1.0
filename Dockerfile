@@ -3,8 +3,10 @@ FROM node:22-alpine
 WORKDIR /app
 
 COPY package*.json ./
+COPY frontend/package*.json frontend/
+COPY backend/package*.json backend/
 
-RUN npm ci
+RUN npm ci --ignore-scripts
 
 COPY . .
 
