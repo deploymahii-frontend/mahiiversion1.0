@@ -48,7 +48,7 @@ export default function ShopReviews({ shop, reviews = [], onWriteReview }) {
                   </div>
                 </div>
 
-                <p className="mt-4 text-gray-700 dark:text-slate-300">{review.comment}</p>
+                <p className="mt-4 text-gray-700 dark:text-slate-300">{review.review || review.comment}</p>
               </div>
             ))
           )}

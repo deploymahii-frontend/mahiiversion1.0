@@ -29,6 +29,28 @@ const momentSchema = new mongoose.Schema(
       trim: true,
     },
 
+    location: {
+      type: String,
+      default: "",
+      maxlength: 200,
+      trim: true,
+    },
+
+    hashtags: {
+      type: [String],
+      default: [],
+    },
+
+    productId: {
+      type: mongoose.Schema.Types.ObjectId,
+      default: null,
+    },
+
+    offerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      default: null,
+    },
+
     mediaUrl: {
       type: String,
       required: true,

@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FiGift, FiChevronRight } from "react-icons/fi";
 import { getNearbyPromotions } from "../../services/promotion.service";
-import { todaysOffers as mockOffers } from "../../data/mockData";
 
 export default function OffersSection() {
   const [offers, setOffers] = useState([]);
@@ -14,15 +13,14 @@ export default function OffersSection() {
 
   const fetchPromotions = async () => {
     try {
-      // Mock latitude and longitude for now (Kolhapur coordinates)
       const { data } = await getNearbyPromotions(16.7050, 74.2433);
       if (data?.data && data.data.length > 0) {
         setOffers(data.data);
       } else {
-        setOffers(mockOffers); // fallback
+        setOffers([]);
       }
     } catch (error) {
-      setOffers(mockOffers);
+      setOffers([]);
     } finally {
       setLoading(false);
     }
@@ -51,7 +49,7 @@ export default function OffersSection() {
       <div className="grid md:grid-cols-2 gap-6">
         {loading ? (
           <div className="col-span-2 p-10 text-center text-gray-500 dark:text-slate-400">Loading offers...</div>
-        ) : (
+        ) : offers.length ? (
           offers.map((offer) => (
             <div
               key={offer.id || offer._id}
@@ -81,6 +79,8 @@ export default function OffersSection() {
               </div>
             </div>
           ))
+        ) : (
+          <div className="col-span-2 p-10 text-center text-gray-500 dark:text-slate-400">No offers are available right now. Check back later.</div>
         )}
       </div>
     </section>

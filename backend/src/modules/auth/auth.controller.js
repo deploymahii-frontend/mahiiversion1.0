@@ -15,7 +15,12 @@ function setRefreshTokenCookie(res, refreshToken) {
 
 export async function signup(req, res, next) {
   try {
-    const result = await authService.signup(req.body);
+    const payload = {
+      ...req.body,
+      fullName: req.body.fullName || req.body.name,
+    };
+
+    const result = await authService.signup(payload);
 
     return res.status(201).json({
       success: true,
@@ -31,7 +36,7 @@ export async function login(req, res, next) {
   try {
     const result = await authService.login({
       ...req.body,
-      mobile: req.body.mobile,
+      mobile: req.body.mobile || req.body.phone,
       email: req.body.email,
       password: req.body.password,
       device: req.body.device || req.headers["user-agent"],

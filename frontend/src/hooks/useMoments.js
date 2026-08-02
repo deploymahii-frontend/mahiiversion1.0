@@ -11,7 +11,7 @@ export default function useMoments(shopId) {
     async function load() {
       try {
         const res = await momentAPI.getShopMoments(shopId);
-        setMoments(res.data || []);
+        setMoments(res?.data?.data || []);
       } finally {
         setLoading(false);
       }

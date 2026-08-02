@@ -23,24 +23,24 @@ const router = express.Router();
 router.post(
   "/signup",
   validate(signupSchema),
-  AuthController.signup
+  (req, res, next) => AuthController.signup(req, res, next)
 );
 
 router.post(
   "/login",
   validate(loginSchema),
-  AuthController.login
+  (req, res, next) => AuthController.login(req, res, next)
 );
 
 router.post(
   "/refresh",
-  AuthController.refreshToken
+  (req, res, next) => AuthController.refreshToken(req, res, next)
 );
 
 router.post(
   "/firebase-sync",
   verifyFirebaseAuth,
-  AuthController.firebaseSync
+  (req, res, next) => AuthController.firebaseSync(req, res, next)
 );
 
 /*
@@ -52,7 +52,7 @@ router.post(
 router.post(
   "/logout",
   authenticate,
-  AuthController.logout
+  (req, res, next) => AuthController.logout(req, res, next)
 );
 
 export default router;

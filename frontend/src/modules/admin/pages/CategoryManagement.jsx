@@ -1,23 +1,57 @@
 // src/modules/admin/pages/CategoryManagement.jsx
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
+import api from "@/services/api";
 
 export default function CategoryManagement() {
     const [categories, setCategories] = useState([]);
     const [newCategory, setNewCategory] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
-    function addCategory() {
+    useEffect(() => {
+        const loadCategories = async () => {
+            try {
+                setLoading(true);
+                const response = await api.get("/categories");
+                setCategories(response?.data?.data || response?.data || []);
+            } catch (err) {
+                setError(err?.response?.data?.message || "Unable to load categories");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadCategories();
+    }, []);
+
+    async function addCategory() {
         if (!newCategory.trim()) return;
-        setCategories(previous => [
-            ...previous,
-            { _id: `${Date.now()}`, name: newCategory.trim(), shops: 0 },
-        ]);
-        setNewCategory("");
+
+        try {
+            const payload = {
+                name: newCategory.trim(),
+                slug: newCategory.trim().toLowerCase().replace(/\s+/g, "-"),
+            };
+
+            const response = await api.post("/categories", payload);
+            setCategories(prev => [response.data.data, ...prev]);
+            setNewCategory("");
+            setError("");
+        } catch (err) {
+            setError(err?.response?.data?.message || "Unable to create category");
+        }
     }
 
-    function removeCategory(id) {
-        setCategories(previous => previous.filter(category => category._id !== id));
+    async function removeCategory(id) {
+        try {
+            await api.delete(`/categories/${id}`);
+            setCategories(previous => previous.filter(category => category._id !== id));
+            setError("");
+        } catch (err) {
+            setError(err?.response?.data?.message || "Unable to delete category");
+        }
     }
 
     return (

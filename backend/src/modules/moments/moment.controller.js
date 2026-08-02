@@ -33,9 +33,39 @@ export const getShopMoments = async (req, res, next) => {
 
 export const likeMoment = async (req, res, next) => {
   try {
-    const moment = await momentService.likeMoment(req.params.id);
+    const moment = await momentService.likeMoment(req.user._id, req.params.id);
 
     return successResponse(res, moment, "Moment liked successfully");
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const saveMoment = async (req, res, next) => {
+  try {
+    const result = await momentService.saveMoment(req.user._id, req.params.id);
+
+    return successResponse(res, result, "Moment save updated successfully");
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const followMomentShop = async (req, res, next) => {
+  try {
+    const result = await momentService.followMomentShop(req.user._id, req.params.id);
+
+    return successResponse(res, result, "Moment follow updated successfully");
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const commentOnMoment = async (req, res, next) => {
+  try {
+    const comment = await momentService.commentOnMoment(req.user._id, req.params.id, req.body.value);
+
+    return successResponse(res, comment, "Comment added successfully", 201);
   } catch (error) {
     next(error);
   }

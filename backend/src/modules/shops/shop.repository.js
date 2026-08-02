@@ -16,9 +16,31 @@ export async function findShopByOwner(owner){
 
 }
 
-export async function findShop(id){
+export async function findShopById(id){
 
     return Shop.findById(id);
+
+}
+
+export async function findShopBySlug(slug){
+
+    return Shop.findOne({ slug });
+
+}
+
+export async function listShops(filter = {}, options = {}){
+    const page = Number(options.page) > 0 ? Number(options.page) : 1;
+    const limit = Number(options.limit) > 0 ? Number(options.limit) : 20;
+
+    return Shop.find(filter)
+        .sort(options.sort || { createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit);
+}
+
+export async function deleteShop(id){
+
+    return Shop.findByIdAndDelete(id);
 
 }
 

@@ -66,6 +66,17 @@ router.get(
 |--------------------------------------------------------------------------
 */
 
+router.get(
+    "/me",
+    controller.getProfile
+);
+
+router.put(
+    "/me",
+    validate(updateProfileSchema),
+    controller.updateProfile
+);
+
 router.put(
     "/profile",
     validate(updateProfileSchema),

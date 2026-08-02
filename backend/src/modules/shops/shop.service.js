@@ -68,11 +68,13 @@ export const getShopById = (id) => {
 export const getShopBySlug = async (slug) => {
   const shop = await repository.findShopBySlug(slug);
 
-  if (shop) {
-    await repository.updateShop(shop._id, {
-      totalViews: (shop.totalViews || 0) + 1,
-    });
+  if (!shop || shop.status !== "APPROVED") {
+    return null;
   }
+
+  await repository.updateShop(shop._id, {
+    totalViews: (shop.totalViews || 0) + 1,
+  });
 
   return shop;
 };

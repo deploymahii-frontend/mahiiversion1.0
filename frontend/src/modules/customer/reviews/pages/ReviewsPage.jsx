@@ -5,12 +5,7 @@ import { Star } from "lucide-react";
 export default function ReviewsPage() {
   const { data = [], isLoading } = useReviews();
 
-  const mockReviews = [
-    { _id: "1", shopName: "Shree Mess", overallRating: 5, review: "Great authentic food! Delivered hot and fresh on time.", createdAt: "2 days ago" },
-    { _id: "2", shopName: "Cafe Aroma", overallRating: 4, review: "Nice cold coffee and sandwiches.", createdAt: "1 week ago" },
-  ];
-
-  const reviews = data.length ? data : mockReviews;
+  const reviews = data;
 
   return (
     <div className="space-y-6">

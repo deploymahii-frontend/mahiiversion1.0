@@ -12,11 +12,6 @@ export async function getShopBySlug(slug) {
  * Get products of a shop
  */
 export async function getShopProducts(shopId) {
-  const { data } = await api.get("/products", {
-    params: {
-      shop: shopId,
-    },
-  });
-
+  const { data } = await api.get(`/products/shop/${shopId}`);
   return data.data;
 }

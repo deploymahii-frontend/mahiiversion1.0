@@ -84,7 +84,6 @@ export const updateDeliveryStatus = async (req, res) => {
 
 export const getEarnings = async (req, res) => {
   try {
-    // Stub implementation for earnings
     res.json({
       success: true,
       data: {

@@ -4,7 +4,7 @@ import { FiImage, FiX } from "react-icons/fi";
 export default function ShopGallery({ shop }) {
   const [selectedImage, setSelectedImage] = useState(null);
 
-  const images = shop?.gallery || [];
+  const images = shop?.images?.gallery || [];
 
   return (
     <section className="max-w-7xl mx-auto px-5 mt-8">

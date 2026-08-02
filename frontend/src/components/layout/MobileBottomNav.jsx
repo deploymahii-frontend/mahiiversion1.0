@@ -1,12 +1,11 @@
 import { NavLink } from "react-router-dom";
-import { Home, Search, PlusCircle, Film, ShoppingCart, User } from "lucide-react";
+import { Home, Search, PlusCircle, Film, User } from "lucide-react";
 
 const items = [
   { icon: Home, label: "Home", to: "/" },
   { icon: Search, label: "Explore", to: "/explore" },
   { icon: PlusCircle, label: "Create", to: "/create-moment" },
   { icon: Film, label: "Moments", to: "/moments" },
-  { icon: ShoppingCart, label: "Cart", to: "/cart" },
   { icon: User, label: "Profile", to: "/profile" },
 ];
 

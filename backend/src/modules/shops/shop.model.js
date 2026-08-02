@@ -68,6 +68,25 @@ const shopSchema = new mongoose.Schema({
 
     coverImage:String,
 
+    website:String,
+
+    tagline:String,
+
+    socialLinks: {
+      whatsapp: String,
+      instagram: String,
+    },
+
+    relatedShops: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Shop",
+    }],
+
+    isOpen: {
+      type: Boolean,
+      default: true,
+    },
+
     isVerified:{
         type:Boolean,
         default:false

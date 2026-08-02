@@ -1,7 +1,21 @@
 import { FiClock } from "react-icons/fi";
 
+const DAYS = [
+  ["monday", "Monday"],
+  ["tuesday", "Tuesday"],
+  ["wednesday", "Wednesday"],
+  ["thursday", "Thursday"],
+  ["friday", "Friday"],
+  ["saturday", "Saturday"],
+  ["sunday", "Sunday"],
+];
+
 export default function BusinessHours({ shop }) {
-  const businessHours = shop?.businessHours || [];
+  const hoursData = shop?.businessHours || {};
+  const businessHours = DAYS.map(([key, label]) => ({
+    day: label,
+    ...hoursData[key],
+  })).filter((item) => item.open || item.closed);
 
   return (
     <section className="max-w-7xl mx-auto px-5 mt-8">
@@ -26,7 +40,7 @@ export default function BusinessHours({ shop }) {
                   <span className="text-red-500 font-medium">Closed</span>
                 ) : (
                   <span className="text-gray-700">
-                    {day.open} - {day.close}
+                    {day.open || "-"} - {day.close || "-"}
                   </span>
                 )}
               </div>

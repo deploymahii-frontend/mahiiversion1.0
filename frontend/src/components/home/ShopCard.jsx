@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 export default function ShopCard({ shop = {} }) {
   const navigate = useNavigate();
 
-  const id = shop._id || shop.id || "mock-1";
+  const id = shop._id || shop.id || shop.slug || (shop.name ? shop.name.toLowerCase().replace(/[^a-z0-9]+/g, "-") : "unknown-shop");
   const rawSlug = shop.slug || (shop.name ? shop.name.toLowerCase().replace(/[^a-z0-9]+/g, "-") : id);
 
   const shopData = {

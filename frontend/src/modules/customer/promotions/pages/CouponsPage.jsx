@@ -5,13 +5,7 @@ import PromoCodeInput from "../components/PromoCodeInput";
 export default function CouponsPage() {
   const { data = [], isLoading } = useCoupons();
 
-  const mockCoupons = [
-    { id: "1", code: "MAHII20", title: "Flat 20% OFF", minimumOrder: 199, expiresAt: "15 Aug 2026" },
-    { id: "2", code: "FIRSTORDER", title: "₹100 Instant Discount", minimumOrder: 299, expiresAt: "31 Aug 2026" },
-    { id: "3", code: "GOLDVIP", title: "Free Delivery + 15% OFF", minimumOrder: 149, expiresAt: "30 Sep 2026" },
-  ];
-
-  const coupons = data.length ? data : mockCoupons;
+  const coupons = data;
 
   return (
     <div className="space-y-6">

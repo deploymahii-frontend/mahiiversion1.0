@@ -17,12 +17,13 @@ class AuthController {
 
   async login(req, res, next) {
     try {
-      const { phone, password } = req.body;
+      const { phone, email, password } = req.body;
 
-      const result = await AuthService.login(
-        phone,
-        password
-      );
+      const result = await AuthService.login({
+        mobile: phone,
+        email,
+        password,
+      });
 
       return res.status(200).json({
         success: true,

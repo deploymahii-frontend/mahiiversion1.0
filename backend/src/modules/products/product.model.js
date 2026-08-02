@@ -115,7 +115,7 @@ productSchema.index({
     description: "text"
 });
 
-export default mongoose.model(
+export default mongoose.models.Product || mongoose.model(
     "Product",
     productSchema
 );

@@ -27,7 +27,7 @@ API.interceptors.response.use(
 
             try {
                 const { data } = await API.post(
-                    "/auth/refresh-token"
+                    "/auth/refresh"
                 );
 
                 localStorage.setItem(

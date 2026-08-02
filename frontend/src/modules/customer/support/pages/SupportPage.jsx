@@ -9,12 +9,7 @@ export default function SupportPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const { data = [], isLoading } = useTickets();
 
-  const mockTickets = [
-    { _id: "SUP123", category: "ORDER", title: "Order delayed by 15 mins", status: "IN_REVIEW", createdAt: "Today, 10:30 AM" },
-    { _id: "SUP122", category: "PAYMENT", title: "Refund for cancelled order #ORD89210", status: "RESOLVED", createdAt: "28 Jul 2026" },
-  ];
-
-  const tickets = data.length ? data : mockTickets;
+  const tickets = data;
 
   return (
     <div className="space-y-6">

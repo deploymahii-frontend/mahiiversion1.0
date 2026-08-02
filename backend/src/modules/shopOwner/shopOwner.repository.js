@@ -111,6 +111,14 @@ export class ShopOwnerRepository {
       .lean();
   }
 
+  async findProductById(productId) {
+    return Product.findById(productId).lean();
+  }
+
+  async findReviewById(reviewId) {
+    return Review.findById(reviewId).lean();
+  }
+
   async updateOrderStatus(orderId, status) {
     return Order.findByIdAndUpdate(
       orderId,

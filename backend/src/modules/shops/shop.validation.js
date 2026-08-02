@@ -43,6 +43,8 @@ export const createShopSchema = Joi.object({
     .valid(...SHOP_CATEGORIES)
     .required(),
 
+  tagline: Joi.string().trim().max(160).allow(""),
+
   tags: Joi.array().items(Joi.string().trim()).default([]),
 
   phone: Joi.string().trim().required(),
@@ -50,6 +52,11 @@ export const createShopSchema = Joi.object({
   email: Joi.string().email().allow(""),
 
   website: Joi.string().uri().allow(""),
+
+  socialLinks: Joi.object({
+    whatsapp: Joi.string().uri().allow(""),
+    instagram: Joi.string().uri().allow(""),
+  }).default({}),
 
   address: addressSchema.required(),
 

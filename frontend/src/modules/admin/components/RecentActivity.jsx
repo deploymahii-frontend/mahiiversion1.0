@@ -1,10 +1,21 @@
-const activity = [
-  { title: "New support ticket", detail: "Ticket #5821 created by customer" },
-  { title: "New business verification", detail: "Shree Mess approved" },
-  { title: "Order spike", detail: "Orders up 18% this hour" },
-];
+export default function RecentActivity({ data }) {
+  const pendingShops = data?.pendingShops || [];
 
-export default function RecentActivity() {
+  const activity = [
+    {
+      title: "Pending shop approvals",
+      detail: `${pendingShops.length} shop${pendingShops.length === 1 ? "" : "s"} awaiting review`,
+    },
+    {
+      title: "Registered platform users",
+      detail: `${data?.stats?.users ?? 0} users available in the admin directory`,
+    },
+    {
+      title: "Platform revenue",
+      detail: `₹${(data?.stats?.revenue ?? 0).toLocaleString("en-IN")} captured from completed orders`,
+    },
+  ];
+
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="mb-4 flex items-center justify-between">

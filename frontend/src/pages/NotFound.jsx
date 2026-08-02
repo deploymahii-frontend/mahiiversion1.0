@@ -1,3 +1,5 @@
-const NotFound = () => <h1>Page Not Found</h1>;
+import OfflineTicTacToe from "../components/OfflineTicTacToe";
+
+const NotFound = () => <OfflineTicTacToe />;
 
 export default NotFound;

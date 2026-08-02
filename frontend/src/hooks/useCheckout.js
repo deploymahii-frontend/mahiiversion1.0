@@ -31,8 +31,15 @@ export default function useCheckout() {
           return;
         }
 
+        const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
+        if (!razorpayKey) {
+          alert("Payment provider configuration is missing. Please contact support.");
+          setLoading(false);
+          return;
+        }
+
         const options = {
-          key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_mock_key", 
+          key: razorpayKey,
           amount: order.totalAmount * 100,
           currency: "INR",
           name: "Mahii",

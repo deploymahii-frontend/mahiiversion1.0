@@ -87,6 +87,74 @@ export async function getUsers(req, res, next) {
   }
 }
 
+export async function getProducts(req, res, next) {
+  try {
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 20;
+    const status = req.query.status;
+    const search = req.query.search;
+
+    const data = await adminService.getProducts(
+      { status, search },
+      { page, limit }
+    );
+
+    return successResponse(res, data, "Products fetched successfully");
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getOrders(req, res, next) {
+  try {
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 20;
+    const status = req.query.status;
+    const search = req.query.search;
+
+    const data = await adminService.getOrders(
+      { status, search },
+      { page, limit }
+    );
+
+    return successResponse(res, data, "Orders fetched successfully");
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getPayments(req, res, next) {
+  try {
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 20;
+    const status = req.query.status;
+    const search = req.query.search;
+
+    const data = await adminService.getPayments(
+      { status, search },
+      { page, limit }
+    );
+
+    return successResponse(res, data, "Payments fetched successfully");
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updatePaymentStatus(req, res, next) {
+  try {
+    const status = req.body.status;
+    if (!status) {
+      return res.status(400).json({ success: false, message: "Status is required." });
+    }
+
+    const data = await adminService.updatePaymentStatus(req.params.id, status);
+    return successResponse(res, data, "Payment status updated successfully");
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function getUserById(req, res, next) {
   try {
     const user = await adminService.getUserById(req.params.id);

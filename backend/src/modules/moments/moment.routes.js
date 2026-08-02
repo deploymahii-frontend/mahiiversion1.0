@@ -4,13 +4,14 @@ import { authenticate } from "../auth/auth.middleware.js";
 
 const router = Router();
 
-router.use(authenticate);
-
-router.post("/", momentController.createMoment);
-router.get("/feed", momentController.getFeed);
+router.get("/feed", authenticate, momentController.getFeed);
 router.get("/shop/:shopId", momentController.getShopMoments);
-router.post("/:id/like", momentController.likeMoment);
-router.post("/:id/view", momentController.viewMoment);
-router.post("/:id/shop-click", momentController.trackShopClick);
+router.post("/", authenticate, momentController.createMoment);
+router.post("/:id/like", authenticate, momentController.likeMoment);
+router.post("/:id/save", authenticate, momentController.saveMoment);
+router.post("/:id/follow", authenticate, momentController.followMomentShop);
+router.post("/:id/comment", authenticate, momentController.commentOnMoment);
+router.post("/:id/view", authenticate, momentController.viewMoment);
+router.post("/:id/shop-click", authenticate, momentController.trackShopClick);
 
 export default router;

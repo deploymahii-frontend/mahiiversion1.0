@@ -1,6 +1,4 @@
 import { Link } from "react-router-dom";
-import ShopCard from "./ShopCard";
-import { hiddenGems } from "../../data/mockData";
 import { FiAward, FiChevronRight } from "react-icons/fi";
 
 export default function HiddenGemsSection() {
@@ -24,10 +22,14 @@ export default function HiddenGemsSection() {
         </Link>
       </div>
 
-      <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-4 px-1 scrollbar-hide">
-        {hiddenGems.map((shop) => (
-          <ShopCard key={shop.id} shop={shop} />
-        ))}
+      <div className="rounded-3xl border border-dashed border-slate-200 bg-white/80 dark:bg-slate-900/80 p-8 text-center">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          New local spots will be shown here as soon as they are available.
+        </p>
+        <Link to="/explore" className="inline-flex items-center gap-2 mt-4 text-orange-500 font-semibold hover:text-orange-600 transition">
+          Browse all shops
+          <FiChevronRight />
+        </Link>
       </div>
     </section>
   );

@@ -7,14 +7,7 @@ import toast from "react-hot-toast";
 export default function NotificationPage() {
   const { data = [], isLoading } = useNotifications();
 
-  const mockNotifications = [
-    { _id: "1", type: "ORDER", title: "Order Accepted", message: "Shree Mess has accepted your order #ORD89234.", read: false, createdAt: "2 mins ago", action: { type: "ORDER", id: "ORD89234", route: "/customer/orders/ORD89234" } },
-    { _id: "2", type: "OFFER", title: "Flash Sale Alert 🔥", message: "Flat 20% OFF on all mess subscriptions near Rajaram Puri!", read: false, createdAt: "1 hour ago" },
-    { _id: "3", type: "PAYMENT", title: "Cashback Received 🎉", message: "₹40 cashback credited to your Mahii Wallet.", read: true, createdAt: "Yesterday" },
-    { _id: "4", type: "GOLD", title: "Mahii Gold Perks", message: "Enjoy free delivery on all orders today.", read: true, createdAt: "2 days ago" },
-  ];
-
-  const notifications = data.length ? data : mockNotifications;
+  const notifications = data;
 
   const handleMarkAllRead = () => {
     toast.success("Marked all as read.");

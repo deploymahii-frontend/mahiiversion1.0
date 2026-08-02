@@ -29,51 +29,22 @@ export default function useLogin() {
         role: values.role, // Pass the role from UI to backend if needed
       };
 
-      let userObj = null;
-      let accessToken = null;
-      let refreshToken = null;
+      const res = await authService.login(payload);
+      const data = res?.data?.data || res?.data;
 
-      try {
-        const res = await authService.login(payload);
-        const data = res?.data?.data || res?.data;
-        if (data && data.user) {
-          userObj = data.user;
-          accessToken = data.accessToken;
-          refreshToken = data.refreshToken;
-        }
-      } catch (backendErr) {
-        console.warn("Backend login failed or unreachable, performing resilient local authentication:", backendErr);
+      if (!data || !data.user || !data.accessToken) {
+        throw new Error("Invalid login response from server.");
       }
 
-      // Fallback user profile if backend DB is empty or unreachable
-      if (!userObj) {
-        const lowerId = rawIdentifier.toLowerCase();
-        let role = "CUSTOMER";
-        let name = "Customer User";
-
-        if (lowerId.includes("admin")) {
-          role = "ADMIN";
-          name = "Mahii Admin";
-        } else if (values.role === "shop_owner" || lowerId.includes("shop") || lowerId.includes("owner")) {
-          role = "SHOP_OWNER";
-          name = "Shop Owner";
-        }
-
-        userObj = {
-          id: "usr-" + Date.now(),
-          name,
-          fullName: name,
-          email: isEmail ? rawIdentifier : "user@mahii.com",
-          phone: cleanPhone || "9876543210",
-          role,
-        };
-        accessToken = "mahii_mock_jwt_token_" + Date.now();
-        refreshToken = "mahii_mock_refresh_token_" + Date.now();
-      }
+      const userObj = data.user;
+      const accessToken = data.accessToken;
+      const refreshToken = data.refreshToken;
 
       localStorage.setItem("token", accessToken);
       localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
+      if (refreshToken) {
+        localStorage.setItem("refreshToken", refreshToken);
+      }
       localStorage.setItem("user", JSON.stringify(userObj));
 
       if (setAuthContextState) {

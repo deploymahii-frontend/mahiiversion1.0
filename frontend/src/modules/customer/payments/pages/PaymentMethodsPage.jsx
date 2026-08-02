@@ -7,13 +7,7 @@ import toast from "react-hot-toast";
 export default function PaymentMethodsPage() {
   const { data = [], isLoading } = usePaymentMethods();
 
-  const mockMethods = [
-    { _id: "PM001", type: "UPI", provider: "PhonePe", displayName: "om.patil@upi", isDefault: true },
-    { _id: "PM002", type: "CARD", provider: "HDFC Visa", displayName: "**** **** **** 4821", isDefault: false },
-    { _id: "PM003", type: "COD", provider: "Cash On Delivery", displayName: "Pay at Doorstep", isDefault: false },
-  ];
-
-  const methods = data.length ? data : mockMethods;
+  const methods = data;
 
   return (
     <div className="space-y-6">

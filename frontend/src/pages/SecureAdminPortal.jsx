@@ -59,8 +59,9 @@ export default function SecureAdminPortal() {
       });
 
       const { user, accessToken, refreshToken } = res.data?.data || res.data || {};
+      const normalizedRole = String(user?.role || "").toUpperCase();
 
-      if (!user || !["ADMIN", "SUPER_ADMIN"].includes(user.role)) {
+      if (!user || !["ADMIN", "SUPER_ADMIN"].includes(normalizedRole)) {
         setError("This account does not have admin privileges.");
         toast.error("Access denied. Admin role required.");
         setLoading(false);

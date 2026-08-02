@@ -120,7 +120,7 @@ ProductSchema.index({
     supplier: 1
 });
 
-export default mongoose.model(
+export default mongoose.models.Product || mongoose.model(
     "Product",
     ProductSchema
 );

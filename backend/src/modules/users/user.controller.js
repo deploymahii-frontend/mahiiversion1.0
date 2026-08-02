@@ -184,6 +184,21 @@ export async function suspendUser(req, res, next) {
 |--------------------------------------------------------------------------
 */
 
+export async function getProfile(req, res, next) {
+    try {
+
+        const profile = await userService.getUser(req.user.id);
+
+        return res.status(200).json({
+            success: true,
+            data: profile
+        });
+
+    } catch (error) {
+        next(error);
+    }
+}
+
 export async function updateProfile(req, res, next) {
     try {
 

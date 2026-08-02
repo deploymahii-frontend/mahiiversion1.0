@@ -10,20 +10,27 @@ export const findMomentById = (id) =>
 
 export const findFeed = () =>
   Moment.find({ status: MOMENT_STATUS.PUBLISHED })
-    .populate("creator", "fullName")
-    .populate("shop", "name slug")
+    .populate("creator", "fullName profileImage")
+    .populate("shop", "name slug logo")
     .sort({ createdAt: -1 });
 
 export const findByShop = (shopId) =>
   Moment.find({ shop: shopId, status: MOMENT_STATUS.PUBLISHED })
-    .populate("creator", "fullName")
-    .populate("shop", "name slug")
+    .populate("creator", "fullName profileImage")
+    .populate("shop", "name slug logo")
     .sort({ createdAt: -1 });
 
 export const incrementLikes = (id) =>
   Moment.findByIdAndUpdate(
     id,
     { $inc: { likes: 1 } },
+    { new: true }
+  );
+
+export const decrementLikes = (id) =>
+  Moment.findByIdAndUpdate(
+    id,
+    { $inc: { likes: -1 } },
     { new: true }
   );
 

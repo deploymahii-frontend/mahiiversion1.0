@@ -31,7 +31,7 @@ export default function useDashboardData() {
     subscribeCount("users", "totalUsers");
     subscribeCount("businesses", "totalBusinesses");
     subscribeCount("orders", "activeOrders");
-    // Revenue could be a sub‑collection or doc; for demo we just count docs
+    // Revenue is derived from a revenue collection count.
     subscribeCount("revenue", "revenue", (c) => `₹${(c * 1000).toLocaleString()}`);
     subscribeCount("moments", "moments");
     subscribeCount("products", "products");

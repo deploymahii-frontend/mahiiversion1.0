@@ -9,12 +9,7 @@ export default function AddressPage() {
   const [showForm, setShowForm] = useState(false);
   const { data = [], isLoading } = useAddresses();
 
-  const mockAddresses = [
-    { _id: "ADDR001", label: "Home", type: "HOME", addressLine: "Flat 402, Royal Palms, Rajaram Puri 5th Lane", city: "Kolhapur", state: "Maharashtra", postalCode: "416001", isDefault: true },
-    { _id: "ADDR002", label: "Work", type: "WORK", addressLine: "Building B, Cyber City, Tarabai Park", city: "Kolhapur", state: "Maharashtra", postalCode: "416003", isDefault: false },
-  ];
-
-  const addresses = data.length ? data : mockAddresses;
+  const addresses = data;
 
   if (isLoading) {
     return (

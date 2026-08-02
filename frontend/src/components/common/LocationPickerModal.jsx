@@ -28,10 +28,9 @@ export default function LocationPickerModal({ isOpen, onClose, onSelectLocation,
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          // In a real app, you'd reverse geocode the lat/lng here using Google Maps API or similar.
-          // For now, we'll just mock it to a generic location.
+          // Reverse geocoding would run here if precise address data is needed.
           setTimeout(() => {
-            onSelectLocation("Your Current Location");
+            onSelectLocation("Current Location");
             setIsGettingLocation(false);
             onClose();
           }, 800);

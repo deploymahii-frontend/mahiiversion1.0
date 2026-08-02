@@ -27,7 +27,13 @@ export default function Login() {
       setSubmitting(true);
       setLoading(true);
 
-      const response = await AuthService.login(data);
+      const normalizedPayload = {
+        ...(data.phone ? { phone: data.phone } : {}),
+        ...(data.email ? { email: data.email } : {}),
+        password: data.password,
+      };
+
+      const response = await AuthService.login(normalizedPayload);
 
       const {
         user,

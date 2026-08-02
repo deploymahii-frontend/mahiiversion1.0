@@ -19,7 +19,7 @@ export default function ReviewModal({ isOpen, onClose, shopId, onReviewSubmitted
       const { data } = await createReview({
         shop: shopId,
         rating,
-        comment,
+        review: comment,
       });
       
       toast.success("Review submitted successfully!");

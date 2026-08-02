@@ -1,8 +1,8 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  FiImage, FiVideo, FiX, FiMapPin, FiSend, 
+import {
+  FiImage, FiVideo, FiX, FiMapPin, FiSend,
   FiArrowLeft, FiPlus, FiCamera
 } from "react-icons/fi";
 import toast from "react-hot-toast";
@@ -76,13 +76,21 @@ export default function CreateMoment() {
       }
 
       // 2. Create Moment
+      const hashtags = caption
+        .match(/#[\w-]+/g)
+        ?.map((tag) => tag.toLowerCase()) || [];
+
       const momentData = {
+        title: caption.trim().slice(0, 80),
         description: caption,
         mediaUrl: mediaUrl,
         mediaType: fileType,
-        location: location
+        location: location || "",
+        hashtags,
+        type: "SHOP_PROMOTION",
+        status: "PUBLISHED",
       };
-      
+
       await api.post("/moments", momentData);
       
       toast.success("Moment shared! 🎉");

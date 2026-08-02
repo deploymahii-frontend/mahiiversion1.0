@@ -9,7 +9,7 @@ import ShopOwnerReviews from "../pages/ShopOwnerReviews";
 import ShopOwnerShopProfile from "../pages/ShopOwnerShopProfile";
 import ApprovalPending from "../pages/ApprovalPending";
 
-// Placeholder pages (light stubs until features are expanded)
+// Light placeholder pages for features in progress
 const OffersPage = () => (
   <div className="text-center py-24">
     <p className="text-5xl mb-4">🎁</p>

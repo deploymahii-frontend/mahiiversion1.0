@@ -15,23 +15,11 @@ const popularSearches = [
   "Services",
 ];
 
-const mockSuggestions = [
-  "Kolhapur Misal House",
-  "Shree Krishna Organic Mart",
-  "Mahalaxmi Sweets & Bakers",
-  "Royal Fresh Dairy",
-  "Solkadhi",
-];
-
 export default function SearchSection() {
   const [query, setQuery] = useState("");
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef(null);
   const navigate = useNavigate();
-
-  const filtered = mockSuggestions.filter((item) =>
-    item.toLowerCase().includes(query.toLowerCase())
-  );
 
   const handleSearch = (searchTerm) => {
     const term = searchTerm || query;
@@ -143,24 +131,12 @@ export default function SearchSection() {
               exit={{ opacity: 0 }}
               className="absolute left-0 right-0 mt-2 rounded-2xl bg-white dark:bg-slate-800 shadow-xl border border-gray-100 dark:border-slate-700 overflow-hidden z-30"
             >
-              {filtered.length > 0 ? (
-                filtered.map((item) => (
-                  <button
-                    key={item}
-                    onClick={() => handleSearch(item)}
-                    className="w-full text-left px-4 py-3 hover:bg-orange-50 dark:hover:bg-slate-700 text-gray-800 dark:text-slate-200 text-sm font-medium transition border-b border-gray-50 dark:border-slate-700/50 last:border-none"
-                  >
-                    🔍 {item}
-                  </button>
-                ))
-              ) : (
-                <button
-                  onClick={() => handleSearch()}
-                  className="w-full text-left px-4 py-3 hover:bg-orange-50 dark:hover:bg-slate-700 text-orange-600 dark:text-orange-400 text-sm font-semibold transition"
-                >
-                  Search "{query}" in Explore →
-                </button>
-              )}
+              <button
+                onClick={() => handleSearch()}
+                className="w-full text-left px-4 py-3 hover:bg-orange-50 dark:hover:bg-slate-700 text-orange-600 dark:text-orange-400 text-sm font-semibold transition"
+              >
+                Search "{query}" in Explore →
+              </button>
             </motion.div>
           )}
         </AnimatePresence>

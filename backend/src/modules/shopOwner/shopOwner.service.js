@@ -78,18 +78,50 @@ export class ShopOwnerService {
   }
 
   async updateProduct(ownerId, productId, data) {
+    const shop = await shopOwnerRepository.findShopByOwner(ownerId);
+    if (!shop) throw new Error("No shop found for this account");
+
+    const product = await shopOwnerRepository.findProductById(productId);
+    if (!product || product.shop.toString() !== shop._id.toString()) {
+      throw new Error("Unauthorized: This product does not belong to your shop");
+    }
+
     return shopOwnerRepository.updateProduct(productId, data);
   }
 
   async deleteProduct(ownerId, productId) {
+    const shop = await shopOwnerRepository.findShopByOwner(ownerId);
+    if (!shop) throw new Error("No shop found for this account");
+
+    const product = await shopOwnerRepository.findProductById(productId);
+    if (!product || product.shop.toString() !== shop._id.toString()) {
+      throw new Error("Unauthorized: This product does not belong to your shop");
+    }
+
     return shopOwnerRepository.deleteProduct(productId);
   }
 
   async updateStock(ownerId, productId, quantity) {
+    const shop = await shopOwnerRepository.findShopByOwner(ownerId);
+    if (!shop) throw new Error("No shop found for this account");
+
+    const product = await shopOwnerRepository.findProductById(productId);
+    if (!product || product.shop.toString() !== shop._id.toString()) {
+      throw new Error("Unauthorized: This product does not belong to your shop");
+    }
+
     return shopOwnerRepository.updateProductStock(productId, Number(quantity));
   }
 
   async toggleAvailability(ownerId, productId, available) {
+    const shop = await shopOwnerRepository.findShopByOwner(ownerId);
+    if (!shop) throw new Error("No shop found for this account");
+
+    const product = await shopOwnerRepository.findProductById(productId);
+    if (!product || product.shop.toString() !== shop._id.toString()) {
+      throw new Error("Unauthorized: This product does not belong to your shop");
+    }
+
     return shopOwnerRepository.toggleProductAvailability(productId, available);
   }
 
@@ -121,6 +153,14 @@ export class ShopOwnerService {
   }
 
   async replyToReview(ownerId, reviewId, reply) {
+    const shop = await shopOwnerRepository.findShopByOwner(ownerId);
+    if (!shop) throw new Error("No shop found for this account");
+
+    const review = await shopOwnerRepository.findReviewById(reviewId);
+    if (!review || review.shop.toString() !== shop._id.toString()) {
+      throw new Error("Unauthorized: This review does not belong to your shop");
+    }
+
     return shopOwnerRepository.replyToReview(reviewId, reply);
   }
 }

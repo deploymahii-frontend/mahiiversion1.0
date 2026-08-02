@@ -5,9 +5,9 @@ import { authorize } from "../auth/authorize.middleware.js";
 
 const router = express.Router();
 
+router.get("/nearby", controller.getNearbyPromotions);
+router.get("/shop/:id", controller.getShopPromotions);
 router.post("/", authenticate, authorize(["SHOP_OWNER", "ADMIN"]), controller.createPromotion);
-router.get("/nearby", authenticate, controller.getNearbyPromotions);
-router.get("/shop/:id", authenticate, controller.getShopPromotions);
 router.post("/:id/view", authenticate, controller.viewPromotion);
 router.post("/:id/click", authenticate, controller.clickPromotion);
 
