@@ -14,7 +14,8 @@ function isDevelopmentFallbackLogin({ email, password }) {
 
 class AuthService {
   async signup(payload) {
-    const existingUser = await AuthRepository.findByMobile(payload.mobile);
+    const phone = payload.phone || payload.mobile;
+    const existingUser = phone ? await AuthRepository.findByMobile(phone) : null;
 
     if (existingUser) {
       throw new Error("User already exists.");

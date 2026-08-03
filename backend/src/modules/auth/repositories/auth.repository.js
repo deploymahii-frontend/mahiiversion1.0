@@ -14,7 +14,7 @@ class AuthRepository {
   }
 
   async findByMobile(mobile) {
-    return User.findOne({ mobile }).select("+password +refreshToken");
+    return User.findOne({ phone: mobile }).select("+password +refreshToken");
   }
 
   async findByMobileWithPassword(mobile) {
