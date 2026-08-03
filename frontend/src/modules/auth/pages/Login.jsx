@@ -52,7 +52,7 @@ export default function Login() {
 
         case "shop_owner":
         case "shopowner":
-          navigate("/owner/dashboard");
+          navigate("/dashboard");
           break;
 
         case "admin":

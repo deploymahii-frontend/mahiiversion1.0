@@ -38,17 +38,17 @@ export default function ShopOwnerRoutes() {
   return (
     <Routes>
       <Route element={<ShopOwnerLayout />}>
-        <Route index element={<Navigate to="dashboard" replace />} />
-        <Route path="dashboard"    element={<ShopOwnerDashboard />} />
-        <Route path="orders"       element={<ShopOwnerOrders />} />
-        <Route path="products"     element={<ShopOwnerProducts />} />
-        <Route path="inventory"    element={<ShopOwnerInventory />} />
-        <Route path="offers"       element={<OffersPage />} />
-        <Route path="analytics"    element={<ShopOwnerAnalytics />} />
-        <Route path="reviews"      element={<ShopOwnerReviews />} />
+        <Route index element={<ShopOwnerDashboard />} />
+        <Route path="dashboard" element={<ShopOwnerDashboard />} />
+        <Route path="orders" element={<ShopOwnerOrders />} />
+        <Route path="products" element={<ShopOwnerProducts />} />
+        <Route path="inventory" element={<ShopOwnerInventory />} />
+        <Route path="offers" element={<OffersPage />} />
+        <Route path="analytics" element={<ShopOwnerAnalytics />} />
+        <Route path="reviews" element={<ShopOwnerReviews />} />
         <Route path="subscription" element={<SubscriptionPage />} />
-        <Route path="profile"      element={<ShopOwnerShopProfile />} />
-        <Route path="settings"     element={<SettingsPage />} />
+        <Route path="profile" element={<ShopOwnerShopProfile />} />
+        <Route path="settings" element={<SettingsPage />} />
         <Route path="approval-pending" element={<ApprovalPending />} />
       </Route>
     </Routes>

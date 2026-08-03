@@ -10,16 +10,18 @@ export default function LoginPage() {
     const { setUser, setAuthenticated, loading, setLoading } = useAuth();
 
     function redirectUser(user) {
-        const role = user?.role?.name || user?.role;
+        const role = String(user?.role?.name || user?.role || "").toUpperCase();
+
         switch (role) {
             case "ADMIN":
-                navigate("/");
+            case "SUPER_ADMIN":
+                navigate("/admin/dashboard");
                 break;
             case "SHOP_OWNER":
-                navigate("/shop");
+                navigate("/dashboard");
                 break;
             case "DELIVERY_PARTNER":
-                navigate("/delivery");
+                navigate("/delivery/dashboard");
                 break;
             default:
                 navigate("/");

@@ -84,7 +84,7 @@ export default function useOtp() {
                     break;
 
                 case "SHOP_OWNER":
-                    navigate("/shop/dashboard");
+                    navigate("/dashboard");
                     break;
 
                 case "DELIVERY_PARTNER":
