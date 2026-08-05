@@ -9,7 +9,30 @@ export function useAdminDashboard() {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["admin", "dashboard"],
-    queryFn: () => adminDashboardApi.dashboard().then((r) => r.data),
+    queryFn: async () => {
+      const [overviewRes, revenueRes, topShopsRes, recentOrdersRes, pendingActionsRes] =
+        await Promise.all([
+          adminDashboardApi.dashboard(),
+          adminDashboardApi.getRevenue(),
+          adminDashboardApi.getTopShops(),
+          adminDashboardApi.getRecentOrders(),
+          adminDashboardApi.getPendingActions(),
+        ]);
+
+      const overview = overviewRes?.data?.data || {};
+      const revenueAnalytics = revenueRes?.data?.data || [];
+      const topShops = topShopsRes?.data?.data || [];
+      const recentOrders = recentOrdersRes?.data?.data || [];
+      const pendingActions = pendingActionsRes?.data?.data || [];
+
+      return {
+        ...overview,
+        revenueAnalytics,
+        topShops,
+        recentOrders,
+        pendingActions,
+      };
+    },
     staleTime: 1000 * 60, // 1 minute
   });
 
@@ -23,8 +46,6 @@ export function useAdminDashboard() {
 
     socket.on("newOrder", invalidateDashboard);
     socket.on("orderStatusUpdated", invalidateDashboard);
-    
-    // Add these if they exist in SocketEvents, else they just won't trigger
     socket.on("newShop", invalidateDashboard);
     socket.on("newUser", invalidateDashboard);
 
@@ -37,7 +58,7 @@ export function useAdminDashboard() {
   }, [socket, queryClient]);
 
   return {
-    dashboard: data?.data || {}, // Assuming response is { success: true, data: {...} }
+    dashboard: data || {},
     loading: isLoading,
     error,
   };

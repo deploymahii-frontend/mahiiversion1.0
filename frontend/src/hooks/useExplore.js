@@ -4,7 +4,7 @@ import * as shopService from "../services/shopService";
 import useDebounce from "./useDebounce";
 import { mapShops } from "../utils/shopAdapter";
 
-const CATEGORIES_LIST = ["ALL", "Restaurants", "Grocery", "Bakery", "Dairy", "Services"];
+const CATEGORIES_LIST = ["ALL", "restaurant", "grocery", "bakery", "cafe", "fast_food", "street_food"];
 
 export default function useExplore() {
   const [searchParams, setSearchParams] = useSearchParams();

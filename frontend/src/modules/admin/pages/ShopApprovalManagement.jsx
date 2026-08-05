@@ -65,7 +65,7 @@ export default function ShopApprovalManagement() {
           >
             <option value="">All Statuses</option>
             <option value="PENDING">Pending</option>
-            <option value="ACTIVE">Active</option>
+            <option value="APPROVED">Approved</option>
             <option value="REJECTED">Rejected</option>
             <option value="SUSPENDED">Suspended</option>
           </select>
@@ -100,18 +100,19 @@ export default function ShopApprovalManagement() {
                   <tr key={shop.id || shop._id} className="border-b hover:bg-gray-50 transition-colors">
                     <td className="p-4 font-medium">{shop.name || shop.businessName || "—"}</td>
                     <td className="p-4 text-gray-600">
-                      {shop.owner?.name || [shop.owner?.firstName, shop.owner?.lastName].filter(Boolean).join(" ") || "—"}
-                      <div className="text-xs text-gray-400">{shop.owner?.email || ""}</div>
+                      {shop.owner?.fullName || [shop.owner?.firstName, shop.owner?.lastName].filter(Boolean).join(" ") || shop.owner?.name || "—"}
+                      <div className="text-xs text-gray-400">{shop.owner?.email || shop.owner?.emailAddress || ""}</div>
                     </td>
-                    <td className="p-4">{shop.category || shop.category?.name || "N/A"}</td>
+                    <td className="p-4">{shop.category?.name || shop.category || "N/A"}</td>
                     <td className="p-4">
                       <span className={`px-3 py-1 text-xs font-bold rounded-full ${
-                        shop.status === "APPROVED" || shop.status === "ACTIVE" ? "bg-green-100 text-green-700" :
+                        shop.status === "APPROVED" ? "bg-green-100 text-green-700" :
                         shop.status === "PENDING" ? "bg-orange-100 text-orange-700" :
                         shop.status === "REJECTED" ? "bg-red-100 text-red-700" :
+                        shop.status === "SUSPENDED" ? "bg-yellow-100 text-yellow-700" :
                         "bg-gray-100 text-gray-700"
                       }`}>
-                        {shop.status || "UNKNOWN"}
+                        {shop.status === "APPROVED" ? "Approved" : shop.status || "UNKNOWN"}
                       </span>
                     </td>
                     <td className="p-4">

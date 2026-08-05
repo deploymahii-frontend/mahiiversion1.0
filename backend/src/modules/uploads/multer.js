@@ -1,34 +1,35 @@
 import multer from "multer";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
-import cloudinary from "./cloudinary.js";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const imageStorage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: "mahii/images",
-    allowed_formats: ["jpg", "jpeg", "png", "webp", "svg"],
-    transformation: [{ quality: "auto", fetch_format: "auto" }],
-  },
-});
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const uploadDir = path.join(__dirname, "../../../public/uploads");
 
-const videoStorage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: "mahii/videos",
-    resource_type: "video",
-    allowed_formats: ["mp4", "mov", "mkv", "webm"],
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const localStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadDir);
   },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
 });
 
 export const imageUpload = multer({
-  storage: imageStorage,
+  storage: localStorage,
   limits: {
     fileSize: 10 * 1024 * 1024,
   },
 });
 
 export const videoUpload = multer({
-  storage: videoStorage,
+  storage: localStorage,
   limits: {
     fileSize: 100 * 1024 * 1024,
   },

@@ -2,9 +2,17 @@ import { Link } from "react-router-dom";
 import { Bell, ShoppingCart, LogOut, LogIn } from "lucide-react";
 import ThemeToggle from "../common/ThemeToggle";
 import { useAuth } from "../../context/AuthContext";
+import useAuthStore from "../../modules/auth/store/auth.store";
 
 export default function Navbar() {
   const { user, authenticated, logout } = useAuth();
+  const authUser = user || useAuthStore(state => state.user);
+  const normalizedRole = String(authUser?.role?.name || authUser?.role || "").toUpperCase();
+  const dashboardRoute = normalizedRole === "ADMIN" || normalizedRole === "SUPER_ADMIN"
+    ? "/admin/dashboard"
+    : normalizedRole === "SHOP_OWNER" || normalizedRole === "SHOPOWNER"
+    ? "/shopowner/dashboard"
+    : "/customer/dashboard";
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 transition-colors duration-200 shadow-sm">
@@ -28,7 +36,7 @@ export default function Navbar() {
           {authenticated ? (
             <div className="flex items-center gap-3 ml-2">
               <Link
-                to={user?.role?.toLowerCase().includes("shop") ? "/dashboard" : "/customer/dashboard"}
+                to={dashboardRoute}
                 className="flex items-center gap-2 p-1.5 pr-3 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 transition border border-gray-200 dark:border-slate-700"
               >
                 <div className="w-8 h-8 rounded-lg bg-orange-500 text-white font-bold flex items-center justify-center text-sm">

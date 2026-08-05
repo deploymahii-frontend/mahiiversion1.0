@@ -43,6 +43,7 @@ export default function AdminLogin() {
 
       localStorage.setItem("token", accessToken);
       localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("mahii_token", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
       localStorage.setItem("user", JSON.stringify(adminUser));
 

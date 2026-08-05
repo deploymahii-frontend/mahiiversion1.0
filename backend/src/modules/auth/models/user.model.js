@@ -123,6 +123,6 @@ userSchema.methods.isLocked = function () {
   return this.lockUntil && this.lockUntil.getTime() > Date.now();
 };
 
-const User = mongoose.models.User || mongoose.model("User", userSchema);
+const AuthUser = mongoose.models.AuthUser || mongoose.model("AuthUser", userSchema, "users");
 
-export default User;
+export default AuthUser;

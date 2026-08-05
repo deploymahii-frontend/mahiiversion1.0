@@ -4,12 +4,14 @@ import AdminTopbar from "./AdminTopbar";
 
 export default function AdminLayout() {
   return (
-    <div className="flex min-h-screen bg-[#f4f5f7] text-[#1f2937] font-sans">
+    <div className="flex h-screen bg-[#000000] text-[#ededed] font-sans selection:bg-[#333] selection:text-white">
       <AdminSidebar />
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <AdminTopbar />
-        <main className="flex-1 overflow-auto bg-[#f4f5f7] p-6">
-          <Outlet />
+        <main className="flex-1 overflow-auto p-4 md:p-8 custom-scrollbar">
+          <div className="max-w-7xl mx-auto">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

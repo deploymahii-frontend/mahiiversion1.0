@@ -37,6 +37,14 @@ router.post(
   (req, res, next) => AuthController.refreshToken(req, res, next)
 );
 
+// Dev-only activation endpoint (enable only when NODE_ENV !== 'production')
+if (process.env.NODE_ENV !== 'production') {
+  router.post(
+    "/dev/activate",
+    (req, res, next) => AuthController.activateUser(req, res, next)
+  );
+}
+
 router.post(
   "/firebase-sync",
   verifyFirebaseAuth,

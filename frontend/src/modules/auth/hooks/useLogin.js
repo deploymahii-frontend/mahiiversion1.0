@@ -4,10 +4,12 @@ import { toast } from "react-hot-toast";
 
 import * as authService from "../services/auth.service";
 import { useAuth } from "../../../context/AuthContext";
+import useAuthStore from "../store/auth.store";
 
 export default function useLogin() {
   const navigate = useNavigate();
   const { login: setAuthContextState } = useAuth();
+  const syncAuthStore = useAuthStore((s) => s.login);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -40,30 +42,44 @@ export default function useLogin() {
       const accessToken = data.accessToken;
       const refreshToken = data.refreshToken;
 
-      localStorage.setItem("token", accessToken);
-      localStorage.setItem("accessToken", accessToken);
+      if (accessToken) {
+        localStorage.setItem("token", accessToken);
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("mahii_token", accessToken);
+      }
       if (refreshToken) {
         localStorage.setItem("refreshToken", refreshToken);
       }
-      localStorage.setItem("user", JSON.stringify(userObj));
+      if (userObj) {
+        localStorage.setItem("user", JSON.stringify(userObj));
+      }
 
+      // Sync BOTH auth systems (React Context + Zustand store)
       if (setAuthContextState) {
         setAuthContextState(userObj, accessToken, refreshToken);
+      }
+      if (syncAuthStore) {
+        syncAuthStore(userObj, accessToken);
       }
 
       toast.success("Welcome back! Login Successful 🎉");
 
-      const normalizedRole = String(userObj?.role || userObj?.role?.name || "").toUpperCase();
+      const normalizedRole = String(userObj?.role?.name || userObj?.role || "").toUpperCase();
 
       switch (normalizedRole) {
-        case "SUPER_ADMIN":
         case "ADMIN":
+        case "SUPER_ADMIN":
           navigate("/admin/dashboard");
           break;
 
         case "SHOP_OWNER":
         case "SHOPOWNER":
-          navigate("/dashboard");
+          navigate("/shopowner/dashboard");
+          break;
+
+        case "CUSTOMER":
+        case "USER":
+          navigate("/customer/dashboard");
           break;
 
         default:

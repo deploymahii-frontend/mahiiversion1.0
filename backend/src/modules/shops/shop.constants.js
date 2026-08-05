@@ -1,10 +1,10 @@
 // Shop Status
 export const SHOP_STATUS = Object.freeze({
-  DRAFT: "draft",
-  PENDING: "pending",
-  APPROVED: "approved",
-  REJECTED: "rejected",
-  SUSPENDED: "suspended",
+  DRAFT: "DRAFT",
+  PENDING: "PENDING",
+  APPROVED: "APPROVED",
+  REJECTED: "REJECTED",
+  SUSPENDED: "SUSPENDED",
 });
 
 // Verification Status

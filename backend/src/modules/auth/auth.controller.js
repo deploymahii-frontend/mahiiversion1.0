@@ -8,7 +8,7 @@ function setRefreshTokenCookie(res, refreshToken) {
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: "none",
     maxAge: 30 * 24 * 60 * 60 * 1000,
   });
 }
@@ -56,6 +56,7 @@ export async function login(req, res, next) {
       data: {
         user,
         accessToken,
+        refreshToken,
       },
     });
   } catch (error) {
@@ -93,7 +94,11 @@ export async function logoutAll(req, res, next) {
 
 export async function refreshToken(req, res, next) {
   try {
-    const refreshToken = req.cookies?.refreshToken || req.body?.refreshToken;
+    const refreshToken =
+      req.cookies?.refreshToken ||
+      req.body?.refreshToken ||
+      req.headers["x-refresh-token"] ||
+      req.headers["refresh-token"];
     const result = await authService.refreshToken(refreshToken);
 
     if (result.refreshToken) {
@@ -104,6 +109,7 @@ export async function refreshToken(req, res, next) {
       success: true,
       data: {
         accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
       },
     });
   } catch (error) {

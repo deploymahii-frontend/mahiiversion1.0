@@ -28,47 +28,46 @@ export default function PendingApprovals({ data }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold text-[#1f2937] text-sm">Action Required: Shop Approvals</h3>
-        <span className="bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">
-          {pendingShops.length} Pending
+        <h3 className="text-sm font-medium text-[#ededed]">Pending Approvals</h3>
+        <span className="text-[10px] font-mono text-[#888] bg-[#111] border border-[#333] px-2 py-0.5 rounded">
+          {pendingShops.length}
         </span>
       </div>
 
       {pendingShops.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-8 text-gray-400 text-center">
-          <FiShoppingBag size={32} className="mb-2 opacity-50" />
-          <p className="text-sm">No shops pending approval.</p>
-          <p className="text-xs mt-1">You're all caught up!</p>
+        <div className="flex flex-col items-center justify-center py-8 text-center">
+          <FiShoppingBag size={24} className="mb-2 text-[#444]" />
+          <p className="text-xs text-[#666]">No pending approvals</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-2">
           {pendingShops.map((shop) => (
-            <div key={shop.id} className="flex items-center justify-between p-3 border border-gray-100 rounded-md hover:bg-gray-50 transition-colors">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded bg-[#f1f3f4] flex items-center justify-center flex-shrink-0">
-                  <FiClock className="text-[#1a73e8]" size={18} />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-[#1f2937] line-clamp-1">{shop.name}</p>
-                  <p className="text-xs text-gray-500">{shop.category} · {shop.city}</p>
-                </div>
+            <div
+              key={shop.id}
+              className="flex items-center justify-between p-3 border border-[#222] bg-[#0A0A0A] rounded-md hover:border-[#333] transition-colors group"
+            >
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-[#ededed] truncate">{shop.name}</p>
+                <p className="text-[11px] text-[#666] font-mono mt-0.5">
+                  {shop.category} · {shop.city}
+                </p>
               </div>
-              <div className="flex gap-2">
-                <button 
+              <div className="flex gap-1.5 shrink-0 ml-3">
+                <button
                   onClick={() => rejectShop(shop.id)}
                   disabled={rejecting || approving}
-                  className="w-8 h-8 rounded bg-red-50 text-red-600 hover:bg-red-100 flex items-center justify-center transition-colors disabled:opacity-50"
+                  className="w-7 h-7 rounded border border-[#333] text-[#888] hover:text-red-400 hover:border-red-400/30 flex items-center justify-center transition-all disabled:opacity-40"
                   title="Reject"
                 >
-                  <FiX size={16} />
+                  <FiX size={14} />
                 </button>
-                <button 
+                <button
                   onClick={() => approveShop(shop.id)}
                   disabled={rejecting || approving}
-                  className="w-8 h-8 rounded bg-green-50 text-green-600 hover:bg-green-100 flex items-center justify-center transition-colors disabled:opacity-50"
+                  className="w-7 h-7 rounded border border-[#333] text-[#888] hover:text-emerald-400 hover:border-emerald-400/30 flex items-center justify-center transition-all disabled:opacity-40"
                   title="Approve"
                 >
-                  <FiCheck size={16} />
+                  <FiCheck size={14} />
                 </button>
               </div>
             </div>

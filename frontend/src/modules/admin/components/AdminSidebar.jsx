@@ -1,66 +1,84 @@
 import { useState } from "react";
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { FiChevronLeft, FiChevronRight, FiHome, FiUsers, FiShoppingBag, FiBox, FiTool, FiClipboard, FiCreditCard, FiFilm, FiFlag, FiLifeBuoy, FiMap, FiGrid, FiBarChart2, FiSettings, FiLogOut } from "react-icons/fi";
 import { NavLink } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 
 const items = [
-  { label: "Dashboard", icon: "🏠", href: "/admin/dashboard" },
-  { label: "Users", icon: "👤", href: "/admin/users" },
-  { label: "Businesses", icon: "🏪", href: "/admin/businesses" },
-  { label: "Products", icon: "📦", href: "/admin/products" },
-  { label: "Services", icon: "🛠", href: "/admin/services" },
-  { label: "Orders", icon: "📋", href: "/admin/orders" },
-  { label: "Payments", icon: "💳", href: "/admin/payments" },
-  { label: "Mahii Moments", icon: "🎬", href: "/admin/moments" },
-  { label: "Reports", icon: "🚩", href: "/admin/reports" },
-  { label: "Support", icon: "🎫", href: "/admin/support" },
-  { label: "Cities", icon: "🌍", href: "/admin/cities" },
-  { label: "Categories", icon: "📂", href: "/admin/categories" },
-  { label: "Analytics", icon: "📊", href: "/admin/analytics" },
-  { label: "Settings", icon: "⚙", href: "/admin/settings" },
+  { label: "Overview", icon: FiHome, href: "/admin/dashboard" },
+  { label: "Users", icon: FiUsers, href: "/admin/users" },
+
+  { label: "Products", icon: FiBox, href: "/admin/products" },
+  { label: "Services", icon: FiTool, href: "/admin/services" },
+  { label: "Orders", icon: FiClipboard, href: "/admin/orders" },
+  { label: "Payments", icon: FiCreditCard, href: "/admin/payments" },
+  { label: "Moments", icon: FiFilm, href: "/admin/moments" },
+  { label: "Reports", icon: FiFlag, href: "/admin/reports" },
+  { label: "Support", icon: FiLifeBuoy, href: "/admin/support" },
+  { label: "Cities", icon: FiMap, href: "/admin/cities" },
+  { label: "Categories", icon: FiGrid, href: "/admin/categories" },
+  { label: "Analytics", icon: FiBarChart2, href: "/admin/analytics" },
+  { label: "Settings", icon: FiSettings, href: "/admin/settings" },
 ];
 
 export default function AdminSidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const { logout } = useAuth();
   const toggle = () => setCollapsed((c) => !c);
-  const widthClass = collapsed ? "w-20" : "w-64";
-  
+  const widthClass = collapsed ? "w-16" : "w-56";
+
   return (
     <aside
-      className={`${widthClass} bg-[#051e34] border-r border-[#031525] px-3 py-5 transition-width duration-200 flex flex-col h-screen overflow-y-auto shrink-0 sticky top-0`}
+      className={`${widthClass} bg-[#000000] border-r border-[#222] px-2 py-4 transition-all duration-200 flex flex-col h-screen overflow-y-auto shrink-0 sticky top-0`}
     >
-      <div className="flex items-center justify-between mb-8 px-3">
+      {/* Logo */}
+      <div className="flex items-center justify-between mb-6 px-2">
         {!collapsed && (
-          <span className="text-[#8a9bb1] text-xs font-bold uppercase tracking-wider">
-            Mahii Admin
+          <span className="text-[#ededed] text-sm font-semibold tracking-tight">
+            mahii
           </span>
         )}
-        <button 
-          onClick={toggle} 
-          aria-label="Toggle navigation" 
-          className="text-[#8a9bb1] hover:text-white transition-colors p-1 rounded-lg hover:bg-white/5"
+        <button
+          onClick={toggle}
+          aria-label="Toggle navigation"
+          className="text-[#666] hover:text-[#ededed] transition-colors p-1 rounded hover:bg-[#111]"
         >
-          {collapsed ? <FiChevronRight size={18} /> : <FiChevronLeft size={18} />}
+          {collapsed ? <FiChevronRight size={16} /> : <FiChevronLeft size={16} />}
         </button>
       </div>
-      
-      <nav className="space-y-1.5 flex-1">
-        {items.map((item) => (
-          <NavLink
-            key={item.label}
-            to={item.href}
-            className={({ isActive }) =>
-              `flex items-center gap-3.5 rounded-lg px-3 py-2.5 text-[13px] font-medium transition-colors group ${
-                isActive
-                  ? "bg-white/10 text-white"
-                  : "text-[#8a9bb1] hover:text-white hover:bg-white/10"
-              }`
-            }
-          >
-            <span className="text-lg opacity-80 group-hover:opacity-100 transition-opacity">{item.icon}</span>
-            {!collapsed && <span>{item.label}</span>}
-          </NavLink>
-        ))}
+
+      {/* Navigation */}
+      <nav className="space-y-0.5 flex-1">
+        {items.map((item) => {
+          const Icon = item.icon;
+          return (
+            <NavLink
+              key={item.label}
+              to={item.href}
+              className={({ isActive }) =>
+                `flex items-center gap-3 rounded-md px-2.5 py-2 text-[13px] transition-all duration-150 ${
+                  isActive
+                    ? "bg-[#111] text-[#ededed] font-medium"
+                    : "text-[#888] hover:text-[#ededed] hover:bg-[#111]"
+                }`
+              }
+            >
+              <Icon size={16} className="shrink-0" />
+              {!collapsed && <span>{item.label}</span>}
+            </NavLink>
+          );
+        })}
       </nav>
+
+      {/* Logout */}
+      <div className="mt-auto pt-4 border-t border-[#222]">
+        <button
+          onClick={() => logout()}
+          className="flex items-center gap-3 rounded-md px-2.5 py-2 text-[13px] text-[#888] hover:text-red-400 hover:bg-[#111] transition-all duration-150 w-full"
+        >
+          <FiLogOut size={16} className="shrink-0" />
+          {!collapsed && <span>Logout</span>}
+        </button>
+      </div>
     </aside>
   );
 }

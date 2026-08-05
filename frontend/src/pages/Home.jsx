@@ -2,6 +2,7 @@ import HeroHeader from "../components/home/HeroHeader";
 import SearchSection from "../components/home/SearchSection";
 import ModeSwitcher from "../components/home/ModeSwitcher";
 import AdsCarousel from "../components/home/AdsCarousel";
+import PopularShops from "../components/home/PopularShops";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       <SearchSection />
       <AdsCarousel />
       <ModeSwitcher />
+      <PopularShops />
     </div>
   );
 }

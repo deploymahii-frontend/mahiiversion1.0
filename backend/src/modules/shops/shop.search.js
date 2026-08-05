@@ -1,7 +1,7 @@
 export function buildShopFilter(query = {}) {
   const filter = {
-    isActive: true,
-    status: "approved",
+    isOpen: true,
+    status: "APPROVED",
   };
 
   if (query.category) {

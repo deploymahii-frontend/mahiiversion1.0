@@ -59,6 +59,15 @@ export const getFeed = () => repository.findFeed();
 export const getShopMoments = (shopId) => repository.findByShop(shopId);
 
 export const likeMoment = async (userId, momentId) => {
+  if (!userId) {
+    // Guest like: Just increment the likes
+    const moment = await repository.incrementLikes(momentId);
+    if (!moment) {
+      throw new Error("Moment not found.");
+    }
+    return { liked: true, likes: moment.likes };
+  }
+
   const existing = await MomentSocial.findOne({ moment: toObjectId(momentId), user: toObjectId(userId), type: "LIKE" });
 
   if (existing) {

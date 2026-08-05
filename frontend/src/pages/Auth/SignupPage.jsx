@@ -13,9 +13,12 @@ export default function SignupPage() {
         try {
             setLoading(true);
             const response = await signup(values);
-            const data = response.data || response;
+            const data = response.data?.data || response.data || {};
             if (data.accessToken) {
                 saveToken(data.accessToken);
+            }
+            if (data.refreshToken) {
+                localStorage.setItem("refreshToken", data.refreshToken);
             }
             if (data.user) {
                 setUser(data.user);

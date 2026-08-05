@@ -25,21 +25,8 @@ export function useShopDashboard() {
   return useQuery({
     queryKey: ["shop-dashboard"],
     queryFn: async () => {
-      try {
-        const { data } = await shopOwnerService.getDashboard();
-        return data?.data ?? data ?? {};
-      } catch (err) {
-        console.warn("Shop dashboard API unavailable:", err?.message);
-        return {
-          shopExists: false,
-          shop: {},
-          stats: {
-            todayOrders: 0, todayRevenue: 0, totalRevenue: 0,
-            totalOrders: 0, pendingOrders: 0, completedOrders: 0,
-            totalProducts: 0, rating: 0, totalReviews: 0,
-          },
-        };
-      }
+      const { data } = await shopOwnerService.getDashboard();
+      return data?.data ?? data ?? {};
     },
     staleTime: 1000 * 60 * 2,
     retry: 1,
@@ -144,6 +131,55 @@ export function useShopProducts() {
       const { data } = await shopOwnerService.getProducts();
       return data.data;
     },
+  });
+}
+
+export function useShopOffers(shopId) {
+  return useQuery({
+    queryKey: ["shop-offers", shopId],
+    enabled: Boolean(shopId),
+    queryFn: async () => {
+      const { data } = await shopOwnerService.getOffers(shopId);
+      return data.data;
+    },
+    staleTime: 1000 * 60 * 2,
+  });
+}
+
+export function useCreateOffer() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data) => shopOwnerService.createOffer(data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["shop-offers"] });
+      qc.invalidateQueries({ queryKey: ["shop-dashboard"] });
+      toast.success("Offer created successfully");
+    },
+    onError: () => toast.error("Failed to create offer"),
+  });
+}
+
+export function useUpdateOffer() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ offerId, data }) => shopOwnerService.updateOffer(offerId, data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["shop-offers"] });
+      toast.success("Offer updated successfully");
+    },
+    onError: () => toast.error("Failed to update offer"),
+  });
+}
+
+export function useDeleteOffer() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (offerId) => shopOwnerService.deleteOffer(offerId),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["shop-offers"] });
+      toast.success("Offer deleted successfully");
+    },
+    onError: () => toast.error("Failed to delete offer"),
   });
 }
 

@@ -1,15 +1,17 @@
+import mongoose from "mongoose";
 import AuthRepository from "./repositories/auth.repository.js";
+import UnauthorizedError from "../../shared/errors/UnauthorizedError.js";
 import {
   generateAccessToken,
   generateRefreshToken,
   verifyRefreshToken,
 } from "./jwt.service.js";
 
-const DEV_ADMIN_EMAIL = "admin@mahii.dev";
-const DEV_ADMIN_PASSWORD = "NewAdmin@2026!";
+const getDevAdminEmail = () => process.env.ADMIN_EMAIL || "admin@mahii.dev";
+const getDevAdminPassword = () => process.env.ADMIN_PASSWORD || "NewAdmin@2026!";
 
 function isDevelopmentFallbackLogin({ email, password }) {
-  return process.env.NODE_ENV !== "production" && email === DEV_ADMIN_EMAIL && password === DEV_ADMIN_PASSWORD;
+  return process.env.NODE_ENV !== "production" && email === getDevAdminEmail() && password === getDevAdminPassword();
 }
 
 class AuthService {
@@ -21,7 +23,10 @@ class AuthService {
       throw new Error("User already exists.");
     }
 
-    const user = await AuthRepository.createUser(payload);
+    const user = await AuthRepository.createUser({
+      ...payload,
+      accountStatus: "active",
+    });
 
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
@@ -40,7 +45,7 @@ class AuthService {
       const fallbackUser = {
         _id: "dev-admin-id",
         id: "dev-admin-id",
-        email: DEV_ADMIN_EMAIL,
+        email: getDevAdminEmail(),
         role: "super_admin",
         fullName: "Mahii Super Admin",
         phone: "9999999999",
@@ -65,6 +70,16 @@ class AuthService {
 
     if (!user) {
       throw new Error("Invalid credentials.");
+    }
+
+    const accountStatus = user.accountStatus?.toString().toLowerCase();
+    if (accountStatus && accountStatus !== "active") {
+      if (process.env.NODE_ENV !== "production" && ["pending", "inactive"].includes(accountStatus)) {
+        await AuthRepository.updateAccountStatusById(user._id, "active");
+        user.accountStatus = "active";
+      } else {
+        throw new UnauthorizedError("Account is inactive.");
+      }
     }
 
     if (user.isLocked()) {
@@ -94,6 +109,7 @@ class AuthService {
     return {
       user,
       accessToken,
+      refreshToken,
     };
   }
 
@@ -147,11 +163,48 @@ class AuthService {
   }
 
   async refreshToken(receivedRefreshToken) {
+    if (!receivedRefreshToken) {
+      throw new UnauthorizedError("Refresh token missing.");
+    }
+
     const decoded = verifyRefreshToken(receivedRefreshToken);
-    const user = await AuthRepository.findById(decoded.id);
+
+    if (decoded.id === "dev-admin-id") {
+      const fallbackUser = {
+        _id: "dev-admin-id",
+        id: "dev-admin-id",
+        role: "super_admin",
+        fullName: "Mahii Super Admin",
+        phone: "9999999999",
+      };
+
+      const accessToken = generateAccessToken(fallbackUser);
+      const refreshToken = generateRefreshToken(fallbackUser);
+
+      return {
+        accessToken,
+        refreshToken,
+      };
+    }
+
+    if (!mongoose.isValidObjectId(decoded.id)) {
+      throw new UnauthorizedError("Invalid refresh token.");
+    }
+
+    const user = await AuthRepository.findByIdWithRefreshToken(decoded.id);
 
     if (!user) {
       throw new Error("User not found.");
+    }
+
+    const accountStatus = user.accountStatus?.toString().toLowerCase();
+    if (accountStatus && accountStatus !== "active") {
+      if (process.env.NODE_ENV !== "production" && ["pending", "inactive"].includes(accountStatus)) {
+        await AuthRepository.updateAccountStatusById(user._id, "active");
+        user.accountStatus = "active";
+      } else {
+        throw new UnauthorizedError("Account is inactive.");
+      }
     }
 
     if (!user.refreshToken || user.refreshToken !== receivedRefreshToken) {

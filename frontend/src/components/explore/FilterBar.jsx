@@ -14,7 +14,7 @@ export default function FilterBar({ categories = [], category, setCategory }) {
               : "bg-white text-gray-700 dark:bg-slate-800 dark:text-slate-200 border border-gray-200 dark:border-slate-700 hover:bg-gray-50"
           }`}
         >
-          {item}
+          {item.charAt(0).toUpperCase() + item.slice(1).replace(/_/g, ' ')}
         </button>
       ))}
     </div>

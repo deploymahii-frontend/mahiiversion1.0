@@ -1,41 +1,119 @@
+import {
+  AreaChart, Area, BarChart, Bar, XAxis, YAxis,
+  CartesianGrid, Tooltip, ResponsiveContainer
+} from "recharts";
+
+const CustomTooltip = ({ active, payload, label }) => {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="rounded-lg border border-[#333] bg-[#0A0A0A] px-4 py-3 shadow-xl">
+      <p className="text-xs text-[#888] mb-1.5 font-medium">{label}</p>
+      {payload.map((entry, i) => (
+        <div key={i} className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
+          <span className="text-sm font-semibold text-[#ededed]">
+            {entry.name === "revenue"
+              ? `₹${Number(entry.value || 0).toLocaleString("en-IN")}`
+              : entry.value}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 export default function Charts({ data }) {
-  const revenueData = data?.analytics?.revenueByDay || [];
-  const maxValue = Math.max(...revenueData.map((item) => item.total || 0), 1);
+  const revenueData = Array.isArray(data?.revenueAnalytics) ? data.revenueAnalytics : [];
+  const topShopsData = Array.isArray(data?.topShops) ? data.topShops : [];
 
   return (
-    <section className="grid gap-4 lg:grid-cols-3">
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-2">
-        <h2 className="text-xl font-semibold">Revenue</h2>
-        <div className="mt-6 flex h-64 items-end gap-2 rounded-3xl bg-slate-50 p-4">
-          {revenueData.length === 0 ? (
-            <div className="flex h-full w-full items-center justify-center text-sm text-slate-500">No revenue data yet.</div>
-          ) : (
-            revenueData.map((item) => (
-              <div key={item.date} className="flex flex-1 flex-col items-center gap-2">
-                <div className="w-full rounded-t-md bg-blue-500" style={{ height: `${Math.max(8, (item.total / maxValue) * 100)}%` }} />
-                <span className="text-xs text-slate-500">{item.date?.slice(5)}</span>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="text-xl font-semibold">Snapshot</h2>
-        <div className="mt-6 space-y-3 text-sm text-slate-600">
-          <div className="rounded-2xl bg-slate-50 p-3">
-            <p className="text-slate-500">Users</p>
-            <p className="text-xl font-semibold text-slate-900">{data?.stats?.users ?? 0}</p>
-          </div>
-          <div className="rounded-2xl bg-slate-50 p-3">
-            <p className="text-slate-500">Shops</p>
-            <p className="text-xl font-semibold text-slate-900">{data?.stats?.shops ?? 0}</p>
-          </div>
-          <div className="rounded-2xl bg-slate-50 p-3">
-            <p className="text-slate-500">Orders</p>
-            <p className="text-xl font-semibold text-slate-900">{data?.stats?.orders ?? 0}</p>
+    <div className="space-y-8">
+      <div>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-sm font-medium text-[#ededed]">Revenue</h3>
+            <p className="text-xs text-[#888] mt-0.5">Monthly revenue overview</p>
           </div>
         </div>
+
+        {revenueData.length === 0 ? (
+          <div className="rounded-lg border border-[#222] bg-[#090909] p-10 text-center text-[#888]">
+            No revenue analytics available yet.
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height={260}>
+            <AreaChart data={revenueData} margin={{ top: 5, right: 5, left: -10, bottom: 0 }}>
+              <defs>
+                <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#ededed" stopOpacity={0.15} />
+                  <stop offset="100%" stopColor="#ededed" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid stroke="#222" strokeDasharray="0" vertical={false} />
+              <XAxis
+                dataKey="month"
+                tick={{ fill: "#666", fontSize: 11 }}
+                axisLine={{ stroke: "#222" }}
+                tickLine={false}
+              />
+              <YAxis
+                tick={{ fill: "#666", fontSize: 11 }}
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`}
+              />
+              <Tooltip content={<CustomTooltip />} cursor={{ stroke: "#333", strokeDasharray: "4 4" }} />
+              <Area
+                type="monotone"
+                dataKey="revenue"
+                stroke="#ededed"
+                strokeWidth={1.5}
+                fill="url(#revenueGradient)"
+                dot={false}
+                activeDot={{ r: 4, fill: "#ededed", stroke: "#000", strokeWidth: 2 }}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        )}
       </div>
-    </section>
+
+      <div>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-sm font-medium text-[#ededed]">Top Shops</h3>
+            <p className="text-xs text-[#888] mt-0.5">Highest revenue shops</p>
+          </div>
+        </div>
+
+        {topShopsData.length === 0 ? (
+          <div className="rounded-lg border border-[#222] bg-[#090909] p-10 text-center text-[#888]">
+            No top shop analytics available yet.
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={topShopsData} margin={{ top: 5, right: 5, left: -10, bottom: 0 }} barGap={8}>
+              <CartesianGrid stroke="#222" strokeDasharray="0" vertical={false} />
+              <XAxis
+                dataKey="name"
+                tick={{ fill: "#666", fontSize: 11 }}
+                axisLine={{ stroke: "#222" }}
+                tickLine={false}
+                interval={0}
+                angle={-35}
+                textAnchor="end"
+              />
+              <YAxis
+                tick={{ fill: "#666", fontSize: 11 }}
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`}
+              />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: "#111" }} />
+              <Bar dataKey="revenue" fill="#ededed" radius={[6, 6, 0, 0]} maxBarSize={24} />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
+      </div>
+    </div>
   );
 }

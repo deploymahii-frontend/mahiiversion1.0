@@ -17,7 +17,7 @@ export async function authenticate(req, res, next) {
 
     const payload = jwt.verify(token, config.jwt.secret);
 
-    const user = await User.findById(payload.id);
+    const user = await User.findById(payload.id).populate("role");
 
     if (!user) {
       return res.status(401).json({

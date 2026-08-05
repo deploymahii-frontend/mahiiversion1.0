@@ -2,9 +2,14 @@ import { Navigate, Outlet } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { ROUTES } from "../constants/routes";
 
+const getStoredToken = () =>
+  localStorage.getItem("mahii_token") ||
+  localStorage.getItem("accessToken") ||
+  localStorage.getItem("token");
+
 export default function GuestRoute({ children }) {
   const { authenticated, user, loading } = useAuth();
-  const token = localStorage.getItem("token") || localStorage.getItem("accessToken");
+  const token = getStoredToken();
 
   if (loading) {
     return (
@@ -15,11 +20,11 @@ export default function GuestRoute({ children }) {
   }
 
   if (authenticated && token && user) {
-    const role = String(user?.role || "").toUpperCase();
+    const role = String(user?.role?.name || user?.role || "").toUpperCase();
     if (role === "ADMIN" || role === "SUPER_ADMIN") {
       return <Navigate to="/admin/dashboard" replace />;
     } else if (role === "SHOP_OWNER" || role === "SHOPOWNER") {
-      return <Navigate to="/dashboard" replace />;
+      return <Navigate to="/shopowner/dashboard" replace />;
     }
     return <Navigate to={ROUTES.HOME} replace />;
   }

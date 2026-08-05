@@ -33,7 +33,8 @@ export const getShopMoments = async (req, res, next) => {
 
 export const likeMoment = async (req, res, next) => {
   try {
-    const moment = await momentService.likeMoment(req.user._id, req.params.id);
+    const userId = req.user ? req.user._id : null;
+    const moment = await momentService.likeMoment(userId, req.params.id);
 
     return successResponse(res, moment, "Moment liked successfully");
   } catch (error) {

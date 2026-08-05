@@ -123,151 +123,48 @@ export default function ShopDetails() {
       <ShopHero shop={shop} />
 
       <div className="mx-auto max-w-7xl px-4 py-8 space-y-8 lg:px-6">
-        <div className="grid gap-8 xl:grid-cols-[1.8fr_0.95fr]">
+        <div className="grid gap-8">
           <div className="space-y-8">
-            <ShopInfo shop={shop} />
-            <ShopStats shop={shop} />
-            <ShopQuickActions shop={shop} />
-
-            <div className="grid gap-6 xl:grid-cols-[1.4fr_0.95fr]">
-              <div className="space-y-6">
-                <div className="bg-white rounded-3xl shadow-sm p-6">
-                  <h2 className="text-2xl font-bold text-slate-900">About</h2>
-                  <p className="mt-4 text-gray-600 leading-relaxed">
-                    {shop.description || "No shop description available yet."}
+            <div className="bg-white rounded-3xl shadow-sm p-6">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-2xl font-bold text-slate-900">Products</h2>
+                  <p className="text-sm text-slate-500 mt-1">
+                    {products?.length ?? 0} item{products?.length === 1 ? "" : "s"} in menu
                   </p>
-                  {shop.tagline && (
-                    <p className="mt-4 text-sm text-slate-500 italic">{shop.tagline}</p>
-                  )}
-                  {shop.speciality && (
-                    <p className="mt-4 text-sm text-slate-500">Specialty: {shop.speciality}</p>
-                  )}
-                  {shop.languages && (
-                    <p className="mt-3 text-sm text-slate-500">Languages: {shop.languages.join(", ")}</p>
-                  )}
                 </div>
-
-                <BusinessHours shop={shop} />
-                <ShopFacilities shop={shop} />
-                <ShopOffers shop={shop} />
-
-                <div className="bg-white rounded-3xl shadow-sm p-6">
-                  <div className="flex flex-wrap items-center justify-between gap-4">
-                    <div>
-                      <h2 className="text-2xl font-bold text-slate-900">Products</h2>
-                      <p className="text-sm text-slate-500 mt-1">
-                        {products?.length ?? 0} item{products?.length === 1 ? "" : "s"} in menu
-                      </p>
-                    </div>
-                    <div className="block sm:hidden">
-                      <ShopCategories
-                        categories={categories}
-                        selected={selectedCategory}
-                        onChange={setSelectedCategory}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="mt-6 hidden sm:block">
-                    <ShopCategories
-                      categories={categories}
-                      selected={selectedCategory}
-                      onChange={setSelectedCategory}
-                    />
-                  </div>
-
-                  <div className="mt-6">
-                    {filteredProducts.length ? (
-                      <ProductGrid products={filteredProducts} />
-                    ) : (
-                      <div className="rounded-3xl border border-dashed border-slate-200 bg-slate-50 p-10 text-center text-slate-500">
-                        No products available for this category.
-                      </div>
-                    )}
-                  </div>
+                <div className="block sm:hidden">
+                  <ShopCategories
+                    categories={categories}
+                    selected={selectedCategory}
+                    onChange={setSelectedCategory}
+                  />
                 </div>
+              </div>
 
-                <ShopReviews
-                  shop={shop}
-                  reviews={reviews}
-                  onWriteReview={handleWriteReview}
-                />
-                <ShopMoments shop={shop} />
-                <ReviewModal
-                  isOpen={isReviewModalOpen}
-                  onClose={() => setIsReviewModalOpen(false)}
-                  shopId={shop._id || shop.id}
-                  onReviewSubmitted={handleReviewSubmitted}
+              <div className="mt-6 hidden sm:block">
+                <ShopCategories
+                  categories={categories}
+                  selected={selectedCategory}
+                  onChange={setSelectedCategory}
                 />
               </div>
 
-              <aside className="space-y-6">
-                <div className="bg-white rounded-3xl shadow-sm p-6">
-                  <h2 className="text-xl font-bold text-slate-900">Business Information</h2>
-                  <div className="mt-5 space-y-4 text-sm text-slate-600">
-                    {addressLine && (
-                      <div>
-                        <p className="font-semibold text-slate-900">Address</p>
-                        <p>{addressLine}</p>
-                        <button
-                          onClick={handleCopyAddress}
-                          className="mt-3 inline-flex items-center rounded-full bg-slate-100 px-4 py-2 text-sm text-slate-700 hover:bg-slate-200"
-                        >
-                          {addressCopied ? "Copied" : "Copy Address"}
-                        </button>
-                      </div>
-                    )}
-                    {shop.phone && (
-                      <div>
-                        <p className="font-semibold text-slate-900">Contact</p>
-                        <p>{shop.phone}</p>
-                      </div>
-                    )}
-                    {shop.email && (
-                      <div>
-                        <p className="font-semibold text-slate-900">Email</p>
-                        <p>{shop.email}</p>
-                      </div>
-                    )}
-                    {shop.website && (
-                      <div>
-                        <p className="font-semibold text-slate-900">Website</p>
-                        <p>{shop.website}</p>
-                      </div>
-                    )}
+              <div className="mt-6">
+                {filteredProducts.length ? (
+                  <ProductGrid products={filteredProducts} />
+                ) : (
+                  <div className="rounded-3xl border border-dashed border-slate-200 bg-slate-50 p-10 text-center text-slate-500">
+                    No products available for this category.
                   </div>
-                </div>
+                )}
+              </div>
+            </div>
 
-                <div className="bg-white rounded-3xl shadow-sm p-6">
-                  <h2 className="text-xl font-bold text-slate-900">Policies</h2>
-                  <div className="mt-5 space-y-4 text-sm text-slate-600">
-                    <p>
-                      Published shop policies are managed by Mahii. For detailed delivery, refund, and cancellation rules, read our platform policies.
-                    </p>
-                    <div className="flex flex-wrap gap-3">
-                      <a
-                        href="/terms"
-                        className="rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200"
-                      >
-                        Terms & Conditions
-                      </a>
-                      <a
-                        href="/privacy"
-                        className="rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200"
-                      >
-                        Privacy Policy
-                      </a>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-3xl shadow-sm p-6">
-                  <h2 className="text-xl font-bold text-slate-900">Similar Shops</h2>
-                  <div className="mt-5">
-                    <RelatedShops shops={shop.relatedShops || []} />
-                  </div>
-                </div>
-              </aside>
+            {/* Shop Moments Section */}
+            <div className="bg-white rounded-3xl shadow-sm p-6 mt-8">
+              <h2 className="text-2xl font-bold text-slate-900 mb-6">Moments</h2>
+              <ShopMoments shopId={shop._id || shop.id} />
             </div>
           </div>
         </div>

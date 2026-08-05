@@ -13,15 +13,12 @@ export default function LoginPage() {
         const role = String(user?.role?.name || user?.role || "").toUpperCase();
 
         switch (role) {
-            case "ADMIN":
-            case "SUPER_ADMIN":
-                navigate("/admin/dashboard");
-                break;
             case "SHOP_OWNER":
-                navigate("/dashboard");
+                navigate("/shopowner/dashboard");
                 break;
-            case "DELIVERY_PARTNER":
-                navigate("/delivery/dashboard");
+            case "CUSTOMER":
+            case "USER":
+                navigate("/customer/dashboard");
                 break;
             default:
                 navigate("/");
@@ -32,9 +29,16 @@ export default function LoginPage() {
         try {
             setLoading(true);
             const response = await login(values);
-            const data = response.data || response;
-            saveToken(data.accessToken);
-            setUser(data.user);
+            const data = response.data?.data || response.data || {};
+            if (data.accessToken) {
+                saveToken(data.accessToken);
+            }
+            if (data.refreshToken) {
+                localStorage.setItem("refreshToken", data.refreshToken);
+            }
+            if (data.user) {
+                setUser(data.user);
+            }
             setAuthenticated(true);
             toast.success("Login Successful");
             redirectUser(data.user);

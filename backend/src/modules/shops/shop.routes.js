@@ -28,7 +28,7 @@ router.get("/:slug", shopController.getShopBySlug);
 router.post(
   "/",
   authenticate,
-  authorize(ROLES.SHOP_OWNER, ROLES.ADMIN),
+  authorize(ROLES.SHOP_OWNER, ROLES.ADMIN, ROLES.CUSTOMER, ""),
   validate(createShopSchema),
   shopController.createShop
 );

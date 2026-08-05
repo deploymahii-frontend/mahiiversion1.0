@@ -10,8 +10,8 @@ export function authorize(...allowedRoles) {
             );
         }
 
-        const userRole =
-            req.user.role?.name;
+        const rawRole = req.user.role?.name || req.user.role;
+        const userRole = String(rawRole).toUpperCase();
 
         if (!allowedRoles.includes(userRole)) {
             return next(

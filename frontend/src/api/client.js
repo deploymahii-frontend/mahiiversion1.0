@@ -31,10 +31,19 @@ client.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
+        // try to include any stored refresh token (fallback to header/body)
+        const storedRefresh =
+          localStorage.getItem("refreshToken") ||
+          localStorage.getItem("mahii_refresh_token") ||
+          localStorage.getItem("refresh_token");
+
+        const refreshPayload = storedRefresh ? { refreshToken: storedRefresh } : {};
+        const refreshHeaders = storedRefresh ? { "X-Refresh-Token": storedRefresh } : undefined;
+
         const res = await axios.post(
           `${client.defaults.baseURL}/auth/refresh`,
-          {},
-          { withCredentials: true }
+          refreshPayload,
+          { withCredentials: true, headers: refreshHeaders }
         );
         const newAccessToken = res.data?.data?.accessToken || res.data?.token;
         if (newAccessToken) {

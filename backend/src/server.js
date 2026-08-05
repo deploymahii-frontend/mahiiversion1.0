@@ -1,5 +1,5 @@
-import app from "./app.js";
 import config from "./config/server.config.js";
+import app from "./app.js";
 import connectDB from "./config/mongodb.js";
 
 async function startServer() {

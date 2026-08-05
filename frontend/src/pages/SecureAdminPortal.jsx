@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import {
@@ -24,6 +26,14 @@ export default function SecureAdminPortal() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [shakeError, setShakeError] = useState(false);
+
+  // Restore step if admin gate already verified
+  useEffect(() => {
+    const gate = sessionStorage.getItem("__mahii_admin_gate");
+    if (gate === "verified") {
+      setStep(2);
+    }
+  }, []);
 
   function triggerShake() {
     setShakeError(true);
@@ -59,18 +69,21 @@ export default function SecureAdminPortal() {
       });
 
       const { user, accessToken, refreshToken } = res.data?.data || res.data || {};
-      const normalizedRole = String(user?.role || "").toUpperCase();
 
-      if (!user || !["ADMIN", "SUPER_ADMIN"].includes(normalizedRole)) {
+      const normalizedRole = String(user?.role?.name ?? user?.role ?? "").toUpperCase();
+
+      if (!user || (normalizedRole !== "ADMIN" && normalizedRole !== "SUPER_ADMIN")) {
         setError("This account does not have admin privileges.");
         toast.error("Access denied. Admin role required.");
         setLoading(false);
         triggerShake();
         return;
       }
+      
 
       localStorage.setItem("token", accessToken);
       localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("mahii_token", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
       localStorage.setItem("user", JSON.stringify(user));
 

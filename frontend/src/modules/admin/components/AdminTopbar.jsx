@@ -1,40 +1,33 @@
-import { FiBell, FiUser, FiSearch, FiHelpCircle } from "react-icons/fi";
+import { FiBell, FiSearch, FiUser } from "react-icons/fi";
+import { useAuth } from "@/context/AuthContext";
 
 export default function AdminTopbar() {
-  return (
-    <header className="border-b border-gray-200 bg-white px-6 py-3 sticky top-0 z-10">
-      <div className="flex items-center justify-between gap-4">
-        
-        <div className="text-xl font-medium text-[#1f2937]">
-          Project Overview
-        </div>
-        
-        <div className="flex-1 max-w-xl hidden md:flex">
-          <div className="relative w-full">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-            <input 
-              type="text" 
-              placeholder="Search by ID, business name, or user..." 
-              className="w-full bg-[#f1f3f4] text-[13px] border-transparent focus:bg-white focus:border-[#1a73e8] focus:ring-1 focus:ring-[#1a73e8] rounded-md py-2 pl-9 pr-4 transition-colors outline-none"
-            />
-          </div>
-        </div>
+  const { user } = useAuth();
 
-        <div className="flex items-center gap-5 text-gray-500">
-          <button aria-label="Help" className="hover:text-gray-800 transition-colors">
-            <FiHelpCircle size={20} />
-          </button>
-          <button aria-label="Notifications" className="hover:text-gray-800 transition-colors relative">
-            <FiBell size={20} />
-            <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
-          </button>
-          <div className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1.5 rounded-full transition-colors border border-transparent hover:border-gray-200">
-            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-[#1a73e8] font-bold text-sm">
-              AD
-            </div>
+  return (
+    <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-[#222] bg-[#000000] px-4 md:px-8">
+      <div className="flex items-center gap-4 flex-1">
+        <div className="relative w-full max-w-xs hidden md:block">
+          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-[#888]" size={16} />
+          <input
+            type="text"
+            placeholder="Search..."
+            className="w-full rounded-md border border-[#333] bg-[#0A0A0A] py-1.5 pl-9 pr-4 text-sm text-[#EDEDED] placeholder-[#666] focus:border-[#888] focus:outline-none focus:ring-1 focus:ring-[#888] transition-all"
+          />
+        </div>
+      </div>
+      <div className="flex items-center gap-4">
+        <button className="relative text-[#888] hover:text-[#EDEDED] transition-colors">
+          <FiBell size={18} />
+          <span className="absolute -right-1 -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-blue-500 text-[9px] font-bold text-white border border-[#000]">
+            3
+          </span>
+        </button>
+        <div className="flex items-center gap-2 border-l border-[#222] pl-4">
+          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-gray-700 to-gray-900 text-xs font-bold text-white ring-1 ring-[#333]">
+            {user?.fullName?.charAt(0) || "A"}
           </div>
         </div>
-        
       </div>
     </header>
   );

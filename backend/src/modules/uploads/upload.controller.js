@@ -5,10 +5,18 @@ import Moment from "../moments/moment.model.js";
 import Promotion from "../promotions/promotion.model.js";
 import { successResponse, errorResponse } from "../../utils/api-response.js";
 
-const getFileUrl = (file) => file?.path || file?.secure_url || file?.url || "";
+const getFileUrl = (req, file) => {
+  if (file?.secure_url || file?.url) {
+    return file.secure_url || file.url;
+  }
+  if (file?.filename) {
+    return `${req.protocol}://${req.get("host")}/uploads/${file.filename}`;
+  }
+  return "";
+};
 
-const requireFile = (file) => {
-  const url = getFileUrl(file);
+const requireFile = (req, file) => {
+  const url = getFileUrl(req, file);
   if (!url) {
     const error = new Error("Uploaded file is missing or invalid.");
     error.statusCode = 400;
@@ -19,7 +27,7 @@ const requireFile = (file) => {
 
 export function uploadImage(req, res, next) {
   try {
-    const url = requireFile(req.file);
+    const url = requireFile(req, req.file);
     return successResponse(res, { url }, "Image uploaded successfully.");
   } catch (error) {
     return errorResponse(res, error.message, error.statusCode || 500);
@@ -28,7 +36,7 @@ export function uploadImage(req, res, next) {
 
 export function uploadImages(req, res, next) {
   try {
-    const urls = (req.files || []).map(requireFile);
+    const urls = (req.files || []).map(file => requireFile(req, file));
     return successResponse(res, { urls }, "Images uploaded successfully.");
   } catch (error) {
     return errorResponse(res, error.message, error.statusCode || 500);
@@ -37,7 +45,7 @@ export function uploadImages(req, res, next) {
 
 export function uploadVideo(req, res, next) {
   try {
-    const url = requireFile(req.file);
+    const url = requireFile(req, req.file);
     return successResponse(res, { url }, "Video uploaded successfully.");
   } catch (error) {
     return errorResponse(res, error.message, error.statusCode || 500);
@@ -46,7 +54,7 @@ export function uploadVideo(req, res, next) {
 
 export async function updateUserProfileImage(req, res, next) {
   try {
-    const url = requireFile(req.file);
+    const url = requireFile(req, req.file);
     const user = await User.findByIdAndUpdate(
       req.user._id,
       { profileImage: url },
@@ -65,7 +73,7 @@ export async function updateUserProfileImage(req, res, next) {
 
 export async function updateShopLogo(req, res, next) {
   try {
-    const url = requireFile(req.file);
+    const url = requireFile(req, req.file);
     const shop = await Shop.findById(req.params.shopId);
 
     if (!shop) {
@@ -87,7 +95,7 @@ export async function updateShopLogo(req, res, next) {
 
 export async function updateShopCover(req, res, next) {
   try {
-    const url = requireFile(req.file);
+    const url = requireFile(req, req.file);
     const shop = await Shop.findById(req.params.shopId);
 
     if (!shop) {
@@ -109,7 +117,7 @@ export async function updateShopCover(req, res, next) {
 
 export async function updateProductImages(req, res, next) {
   try {
-    const urls = (req.files || []).map(requireFile);
+    const urls = (req.files || []).map(file => requireFile(req, file));
     const product = await Product.findById(req.params.productId);
 
     if (!product) {
@@ -136,7 +144,7 @@ export async function updateProductImages(req, res, next) {
 
 export async function updateMomentThumbnail(req, res, next) {
   try {
-    const url = requireFile(req.file);
+    const url = requireFile(req, req.file);
     const moment = await Moment.findById(req.params.momentId);
 
     if (!moment) {
@@ -158,7 +166,7 @@ export async function updateMomentThumbnail(req, res, next) {
 
 export async function updateMomentVideo(req, res, next) {
   try {
-    const url = requireFile(req.file);
+    const url = requireFile(req, req.file);
     const moment = await Moment.findById(req.params.momentId);
 
     if (!moment) {
@@ -180,7 +188,7 @@ export async function updateMomentVideo(req, res, next) {
 
 export async function updatePromotionVideo(req, res, next) {
   try {
-    const url = requireFile(req.file);
+    const url = requireFile(req, req.file);
     const promotion = await Promotion.findById(req.params.promotionId);
 
     if (!promotion) {

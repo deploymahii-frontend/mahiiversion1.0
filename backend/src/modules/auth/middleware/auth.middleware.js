@@ -28,7 +28,7 @@ export const authenticate = async (req, res, next) => {
       });
     }
 
-    if (user.accountStatus !== "active") {
+    if (user.accountStatus?.toString().toLowerCase() !== "active") {
       return res.status(403).json({
         success: false,
         message: "Account is not active.",

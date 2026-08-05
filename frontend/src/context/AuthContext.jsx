@@ -24,21 +24,21 @@ export function AuthProvider({ children }) {
     const [loading, setLoading] = useState(true);
 
     const [authenticated, setAuthenticated] = useState(() => {
-        const token = localStorage.getItem("token") || localStorage.getItem("accessToken");
+        const token =
+            localStorage.getItem("mahii_token") ||
+            localStorage.getItem("token") ||
+            localStorage.getItem("accessToken");
         return Boolean(token);
     });
 
     useEffect(() => {
-
         initialize();
-
     }, []);
 
     async function initialize() {
-
         try {
-
             const token =
+                localStorage.getItem("mahii_token") ||
                 localStorage.getItem("token") ||
                 localStorage.getItem("accessToken");
 
@@ -52,7 +52,9 @@ export function AuthProvider({ children }) {
                 try {
                     setUser(JSON.parse(storedUser));
                     setAuthenticated(true);
-                } catch (e) {}
+                } catch (e) {
+                    // ignore malformed stored user
+                }
             }
 
             const response = await authService.getProfile();
@@ -61,48 +63,25 @@ export function AuthProvider({ children }) {
                 setAuthenticated(true);
                 localStorage.setItem("user", JSON.stringify(response.data.data));
             }
-
         } catch (err) {
-            // Only logout on explicit 401 error
             if (err?.response?.status === 401) {
                 logout();
             }
         } finally {
-
             setLoading(false);
-
         }
-
     }
 
     function login(userData, accessToken, refreshToken) {
-
-        localStorage.setItem(
-            "token",
-            accessToken
-        );
-
-        localStorage.setItem(
-            "accessToken",
-            accessToken
-        );
-
+        localStorage.setItem("mahii_token", accessToken);
+        localStorage.setItem("token", accessToken);
+        localStorage.setItem("accessToken", accessToken);
         if (refreshToken) {
-            localStorage.setItem(
-                "refreshToken",
-                refreshToken
-            );
+            localStorage.setItem("refreshToken", refreshToken);
         }
-
-        localStorage.setItem(
-            "user",
-            JSON.stringify(userData)
-        );
-
+        localStorage.setItem("user", JSON.stringify(userData));
         setUser(userData);
-
         setAuthenticated(true);
-
     }
 
     async function refreshProfile() {
@@ -122,49 +101,47 @@ export function AuthProvider({ children }) {
     }
 
     async function logout() {
-
         try {
-
             await authService.logout();
-
         } catch {}
 
+        localStorage.removeItem("mahii_token");
         localStorage.removeItem("token");
-
         localStorage.removeItem("accessToken");
-
         localStorage.removeItem("refreshToken");
-
         localStorage.removeItem("user");
 
         setAuthenticated(false);
-
         setUser(null);
+    }
 
+    function setUserState(userData) {
+        localStorage.setItem("user", JSON.stringify(userData));
+        setUser(userData);
+    }
+
+    function setAuthenticatedState(value) {
+        setAuthenticated(value);
+    }
+
+    function setLoadingState(value) {
+        setLoading(value);
     }
 
     const value = useMemo(() => ({
-
         user,
-
         loading,
-
         authenticated,
-
         login,
-
         logout,
-
         refreshProfile,
-
+        setUser: setUserState,
+        setAuthenticated: setAuthenticatedState,
+        setLoading: setLoadingState,
     }), [
-
         user,
-
         loading,
-
         authenticated,
-
     ]);
 
     return (

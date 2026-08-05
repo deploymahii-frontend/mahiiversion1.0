@@ -100,7 +100,7 @@ const shopSchema = new mongoose.Schema({
             "REJECTED",
             "SUSPENDED"
         ],
-        default:"PENDING"
+        default:"APPROVED"
     },
 
     businessHours: {

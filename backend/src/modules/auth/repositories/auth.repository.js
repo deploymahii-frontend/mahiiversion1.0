@@ -25,6 +25,10 @@ class AuthRepository {
     return User.findOne({ email }).select("+password +refreshToken");
   }
 
+  async findByIdWithRefreshToken(id) {
+    return User.findById(id).select("+refreshToken");
+  }
+
   async updateRefreshToken(userId, refreshToken) {
     return User.findByIdAndUpdate(
       userId,
@@ -80,6 +84,22 @@ class AuthRepository {
       {
         lockUntil: new Date(Date.now() + minutes * 60 * 1000),
       },
+      { new: true }
+    );
+  }
+
+  async updateAccountStatusById(userId, status) {
+    return User.findByIdAndUpdate(
+      userId,
+      { accountStatus: status },
+      { new: true }
+    );
+  }
+
+  async updateAccountStatusByEmail(email, status) {
+    return User.findOneAndUpdate(
+      { email },
+      { accountStatus: status },
       { new: true }
     );
   }

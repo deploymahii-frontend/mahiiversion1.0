@@ -12,27 +12,28 @@ function buildTokenPayload(payload) {
   return payload;
 }
 
-const accessTokenSecret = process.env.JWT_SECRET || "dev-access-secret";
-const refreshTokenSecret = process.env.JWT_REFRESH_SECRET || accessTokenSecret;
-
 export function generateAccessToken(payload) {
-  return jwt.sign(buildTokenPayload(payload), accessTokenSecret, {
+  const secret = process.env.JWT_SECRET || "dev-access-secret";
+  return jwt.sign(buildTokenPayload(payload), secret, {
     expiresIn: "15m",
   });
 }
 
 export function generateRefreshToken(payload) {
-  return jwt.sign(buildTokenPayload(payload), refreshTokenSecret, {
+  const secret = process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET || "dev-access-secret";
+  return jwt.sign(buildTokenPayload(payload), secret, {
     expiresIn: "30d",
   });
 }
 
 export function verifyAccessToken(token) {
-  return jwt.verify(token, accessTokenSecret);
+  const secret = process.env.JWT_SECRET || "dev-access-secret";
+  return jwt.verify(token, secret);
 }
 
 export function verifyRefreshToken(token) {
-  return jwt.verify(token, refreshTokenSecret);
+  const secret = process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET || "dev-access-secret";
+  return jwt.verify(token, secret);
 }
 
 export const signAccessToken = generateAccessToken;

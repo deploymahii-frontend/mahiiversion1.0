@@ -8,34 +8,25 @@ import { buildShopFilter } from "./shop.search.js";
 /**
  * Create a new shop
  */
-export async function registerShop(
-
-    owner,
-
-    payload
-
-){
-
+export async function registerShop(owner, payload){
     const exists = await repository.findShopByOwner(owner);
-
     if(exists){
-
-        throw new Error(
-
-            "Owner already has a shop."
-
-        );
-
+        throw new Error("Owner already has a shop.");
     }
 
+    let slug = generateSlug(payload.name || "shop");
+    let count = 0;
+    while (await repository.findShopBySlug(generateUniqueSlug(slug, count))) {
+        count++;
+    }
+    slug = generateUniqueSlug(slug, count);
+
     return repository.createShop({
-
         owner,
-
-        ...payload
-
+        ...payload,
+        slug,
+        status: "APPROVED",
     });
-
 }
 
 export const createShop = async (shopData) => {

@@ -37,29 +37,14 @@ const leadership = [
     instagram: "https://instagram.com",
   },
   {
-    name: "Aishwarya Patil",
-    role: "Operations Manager",
+    name: "Vishwajit Sanap",
+    role: "influencer",
     image: "",
 
     linkedin: "https://linkedin.com",
     instagram: "https://instagram.com",
   },
-  {
-    name: "Ayush Mane",
-    role: "Technical Manager",
-    image: "",
-
-    linkedin: "https://linkedin.com",
-    instagram: "https://instagram.com",
-  },
-  {
-    name: "Anuja Jaybhaye",
-    role: "HR Manager",
-    image: "",
-
-    linkedin: "https://linkedin.com",
-    instagram: "https://instagram.com",
-  }
+  
 ];
 
 export default function Team() {
@@ -108,9 +93,7 @@ export default function Team() {
               <p className="text-sm font-semibold text-gray-500 dark:text-slate-400">
                 {leadership[0].role}
               </p>
-              <p className="text-sm text-gray-600 dark:text-slate-300 leading-relaxed max-w-2xl">
-                “Mahii was born out of a desire to protect and empower local Kirana stores, messes, and bakeries. By combining real-time technology with neighborhood trust, we give local merchants the power to compete and thrive in the modern digital economy.”
-              </p>
+              
               <div className="flex items-center justify-center lg:justify-start gap-3 pt-2">
                 <a href={leadership[0].linkedin} target="_blank" rel="noreferrer" className="p-2.5 rounded-xl bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-slate-200 hover:text-orange-500 transition">
                   <FiLinkedin size={18} />

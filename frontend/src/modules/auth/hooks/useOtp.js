@@ -76,19 +76,23 @@ export default function useOtp() {
 
             toast.success("OTP verified successfully");
 
-            switch (user.role) {
+            const normalizedRole = String(user?.role?.name || user?.role || "").toUpperCase();
 
-                case "SUPER_ADMIN":
+            switch (normalizedRole) {
+
                 case "ADMIN":
+                case "SUPER_ADMIN":
                     navigate("/admin/dashboard");
                     break;
 
                 case "SHOP_OWNER":
-                    navigate("/dashboard");
+                case "SHOPOWNER":
+                    navigate("/shopowner/dashboard");
                     break;
 
-                case "DELIVERY_PARTNER":
-                    navigate("/delivery/dashboard");
+                case "CUSTOMER":
+                case "USER":
+                    navigate("/customer/dashboard");
                     break;
 
                 default:

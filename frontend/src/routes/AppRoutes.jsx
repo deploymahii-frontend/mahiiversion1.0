@@ -26,7 +26,6 @@ import ProductDetails from '../pages/ProductDetails';
 import NotFound from '../pages/NotFound';
 import OrderSuccess from '../features/orders/pages/OrderSuccess';
 import ShopOwnerDashboardRoutes from './ShopOwnerDashboardRoutes';
-import ShopRegistration from '../modules/shopOwner/pages/ShopRegistration';
 import AdminDashboard from '../modules/admin/pages/Dashboard';
 import SystemSettings from '../modules/admin/system-settings/pages/SystemSettings';
 import FeatureFlagsPage from '../modules/admin/feature-flags/pages/FeatureFlags';
@@ -39,7 +38,7 @@ import CustomerRoutes from '../modules/customer/routes/index.jsx';
 // Admin imports
 import AdminLayout from '../modules/admin/components/AdminLayout';
 import UsersManagement from '../modules/admin/pages/UsersManagement';
-import ShopApprovalManagement from '../modules/admin/pages/ShopApprovalManagement';
+
 import CategoryManagement from '../modules/admin/pages/CategoryManagement';
 import PaymentSettlementManagement from '../modules/admin/pages/PaymentSettlementManagement';
 import DisputeResolution from '../modules/admin/pages/DisputeResolution';
@@ -106,7 +105,7 @@ const AppRoutes = () => {
           <Route index element={<AdminDashboard />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="users" element={<UsersManagement />} />
-          <Route path="businesses" element={<ShopApprovalManagement />} />
+
           <Route path="products" element={<AdminProducts />} />
           <Route path="services" element={<AdminServices />} />
           <Route path="orders" element={<AdminOrders />} />
@@ -123,20 +122,12 @@ const AppRoutes = () => {
           <Route path="feature-flags" element={<FeatureFlagsPage />} />
         </Route>
         <Route
-          path="/dashboard/*"
-          element={
-            <ProtectedRoute allowedRoles={["SHOP_OWNER", "SHOPOWNER", "ADMIN", "SUPER_ADMIN"]}>
-              <ShopOwnerDashboardRoutes />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/shop/register"
-          element={
-            <ProtectedRoute allowedRoles={["SHOP_OWNER", "SHOPOWNER", "ADMIN", "SUPER_ADMIN"]}>
-              <ShopRegistration />
-            </ProtectedRoute>
-          }
+           path="/shopowner/*"
+            element={
+              <ProtectedRoute allowedRoles={["SHOP_OWNER", "SHOPOWNER", "ADMIN", "SUPER_ADMIN"]}>
+                <ShopOwnerDashboardRoutes />
+              </ProtectedRoute>
+            }
         />
         <Route path="/shop/*" element={<ShopRoutes />} />
         <Route

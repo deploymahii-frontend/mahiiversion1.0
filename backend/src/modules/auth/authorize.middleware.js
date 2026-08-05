@@ -7,12 +7,18 @@ export function authorize(...roles) {
       });
     }
 
-    const userRole = req.user.role?.toUpperCase();
+    const rawRole = req.user.role?.name || req.user.role;
+    const userRole = typeof rawRole === "string" ? rawRole.toUpperCase() : "";
 
-    if (!roles.map((role) => role.toUpperCase()).includes(userRole)) {
+    if (userRole === "SUPER_ADMIN") {
+      return next();
+    }
+
+    const validRoles = roles.filter(r => r !== undefined && r !== null);
+    if (!validRoles.map((role) => role.toUpperCase()).includes(userRole)) {
       return res.status(403).json({
         success: false,
-        message: "Access denied",
+        message: `Access denied. Requires one of: ${validRoles.join(", ")}`,
       });
     }
 

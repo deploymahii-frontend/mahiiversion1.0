@@ -3,10 +3,10 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 function StatCard({ label, value, sub }) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
-      <p className="text-sm font-semibold text-slate-400">{label}</p>
-      <p className="text-3xl font-black text-slate-900 mt-1">{value}</p>
-      {sub && <p className="text-xs text-slate-400 mt-1">{sub}</p>}
+    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-5">
+      <p className="text-sm font-semibold text-slate-400 dark:text-slate-500">{label}</p>
+      <p className="text-3xl font-black text-slate-900 dark:text-white mt-1">{value}</p>
+      {sub && <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">{sub}</p>}
     </div>
   );
 }
@@ -17,9 +17,9 @@ export default function ShopOwnerAnalytics() {
   if (isLoading) return (
     <div className="space-y-6 animate-pulse">
       <div className="grid grid-cols-3 gap-5">
-        {[...Array(3)].map((_, i) => <div key={i} className="h-28 bg-slate-200 rounded-2xl" />)}
+        {[...Array(3)].map((_, i) => <div key={i} className="h-28 bg-slate-200 dark:bg-slate-800 rounded-2xl" />)}
       </div>
-      <div className="h-72 bg-slate-200 rounded-2xl" />
+      <div className="h-72 bg-slate-200 dark:bg-slate-800 rounded-2xl" />
     </div>
   );
 
@@ -33,8 +33,8 @@ export default function ShopOwnerAnalytics() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-black text-slate-900">Analytics</h1>
-        <p className="text-slate-400 mt-1">Last 30 days performance overview</p>
+        <h1 className="text-3xl font-black text-slate-900 dark:text-white">Analytics</h1>
+        <p className="text-slate-400 dark:text-slate-500 mt-1">Last 30 days performance overview</p>
       </div>
 
       {/* Summary */}
@@ -46,8 +46,8 @@ export default function ShopOwnerAnalytics() {
 
       {/* Revenue Chart */}
       {revenue.length > 0 && (
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
-          <h2 className="text-lg font-bold text-slate-800 mb-6">Daily Revenue</h2>
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-6">
+          <h2 className="text-lg font-bold text-slate-800 dark:text-white mb-6">Daily Revenue</h2>
           <ResponsiveContainer width="100%" height={280}>
             <LineChart data={revenue}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
@@ -65,8 +65,8 @@ export default function ShopOwnerAnalytics() {
 
       {/* Top Products */}
       {topProds.length > 0 && (
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
-          <h2 className="text-lg font-bold text-slate-800 mb-6">Top Selling Products</h2>
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-6">
+          <h2 className="text-lg font-bold text-slate-800 dark:text-white mb-6">Top Selling Products</h2>
           <ResponsiveContainer width="100%" height={240}>
             <BarChart data={topProds.slice(0, 8)} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
@@ -85,8 +85,8 @@ export default function ShopOwnerAnalytics() {
       {revenue.length === 0 && topProds.length === 0 && (
         <div className="flex flex-col items-center justify-center h-64 text-center">
           <p className="text-5xl mb-3">📊</p>
-          <p className="font-bold text-slate-700">No analytics data yet</p>
-          <p className="text-slate-400 text-sm mt-1">Analytics will appear once you receive delivered orders</p>
+          <p className="font-bold text-slate-700 dark:text-slate-300">No analytics data yet</p>
+          <p className="text-slate-400 dark:text-slate-500 text-sm mt-1">Analytics will appear once you receive delivered orders</p>
         </div>
       )}
     </div>

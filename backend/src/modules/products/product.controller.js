@@ -3,6 +3,10 @@ import * as service from "./product.service.js";
 
 export async function create(req, res, next) {
     try {
+        if (!req.body.shop && req.user?.shopId) {
+            req.body.shop = req.user.shopId;
+        }
+        
         const product = await service.createProduct(req.body);
 
         return res.status(201).json({

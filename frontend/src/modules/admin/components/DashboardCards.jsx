@@ -1,38 +1,59 @@
-import { FiUsers, FiBriefcase, FiShoppingCart, FiDollarSign, FiFilm, FiBox, FiTool, FiAlertCircle } from "react-icons/fi";
+import { FiUsers, FiShoppingBag, FiDollarSign, FiActivity, FiTrendingUp, FiTrendingDown } from "react-icons/fi";
 
 export default function DashboardCards({ data }) {
-  // Use data passed from the dashboard component rather than fetching here
-  const dashboard = data || {};
-
   const cards = [
-    { label: "TOTAL USERS", value: dashboard?.stats?.users ?? 0, icon: <FiUsers size={20} className="text-[#1a73e8]" /> },
-    { label: "TOTAL BUSINESSES", value: dashboard?.stats?.shops ?? 0, icon: <FiBriefcase size={20} className="text-[#f9ab00]" /> },
-    { label: "TOTAL ORDERS", value: dashboard?.stats?.orders ?? 0, icon: <FiShoppingCart size={20} className="text-[#34a853]" /> },
-    { label: "REVENUE", value: `₹${(dashboard?.stats?.revenue ?? 0).toLocaleString('en-IN')}`, icon: <FiDollarSign size={20} className="text-[#ea4335]" /> },
-    { label: "PENDING APPROVALS", value: dashboard?.pendingShops?.length ?? 0, icon: <FiAlertCircle size={20} className="text-[#d93025]" /> },
+    {
+      title: "Total Users",
+      value: data?.users ?? 0,
+      change: "+12%",
+      trend: "up",
+      icon: FiUsers,
+    },
+    {
+      title: "Total Shops",
+      value: data?.shops ?? 0,
+      change: "+8%",
+      trend: "up",
+      icon: FiShoppingBag,
+    },
+    {
+      title: "Orders Today",
+      value: data?.ordersToday ?? 0,
+      change: data?.ordersToday > 0 ? "+5%" : "0%",
+      trend: data?.ordersToday > 0 ? "up" : "neutral",
+      icon: FiActivity,
+    },
+    {
+      title: "Revenue",
+      value: `₹${(data?.revenue ?? 0).toLocaleString("en-IN")}`,
+      change: "+18%",
+      trend: "up",
+      icon: FiDollarSign,
+    },
   ];
 
   return (
-    <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-      {cards.map((card) => (
-        <div
-          key={card.label}
-          className="rounded-lg bg-white p-5 border border-gray-200 shadow-[0_1px_2px_rgba(0,0,0,0.05)] hover:shadow-md transition-shadow relative overflow-hidden group"
-        >
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-[11px] font-bold text-gray-500 mb-1">{card.label}</p>
-              <p className="text-2xl font-normal text-[#202124]">{card.value}</p>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {cards.map((card) => {
+        const Icon = card.icon;
+        return (
+          <div
+            key={card.title}
+            className="rounded-lg border border-[#222] bg-[#0A0A0A] p-5 transition-all hover:border-[#333] group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-xs text-[#888] uppercase tracking-wider font-medium">{card.title}</span>
+              <span className={`flex items-center gap-1 text-xs font-medium ${
+                card.trend === "up" ? "text-emerald-400" : card.trend === "down" ? "text-red-400" : "text-[#888]"
+              }`}>
+                {card.trend === "up" ? <FiTrendingUp size={12} /> : card.trend === "down" ? <FiTrendingDown size={12} /> : null}
+                {card.change}
+              </span>
             </div>
-            <div className="p-2 bg-gray-50 rounded-lg group-hover:scale-110 transition-transform">
-              {card.icon}
-            </div>
+            <p className="text-2xl font-bold text-[#ededed] tracking-tight">{card.value}</p>
           </div>
-          <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gray-100">
-            <div className="h-full bg-gray-200 w-1/3 group-hover:w-full transition-all duration-300"></div>
-          </div>
-        </div>
-      ))}
-    </section>
+        );
+      })}
+    </div>
   );
 }

@@ -79,16 +79,11 @@ export default function ShopCard({ shop = {} }) {
     >
       <div>
         <div className="relative">
-            <img
-              src={shopData.image}
-              alt={shopData.name}
-              loading="lazy"
-              className="w-full h-32 sm:h-40 object-cover"
-              onError={(e) => {
-                e.currentTarget.onerror = null;
-                e.currentTarget.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&auto=format&fit=crop";
-              }}
-            />
+          <div className="w-full h-32 sm:h-40 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-slate-700 dark:to-slate-800 overflow-hidden flex items-center justify-center p-4 text-center">
+            <h2 className="text-xl md:text-2xl font-black text-orange-800 dark:text-orange-200 uppercase tracking-widest opacity-90 line-clamp-2">
+              {shopData.name}
+            </h2>
+          </div>
 
           <button
             type="button"

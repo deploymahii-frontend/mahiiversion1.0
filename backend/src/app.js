@@ -23,7 +23,7 @@ const app = express();
 app.set("trust proxy", 1);
 
 /* Security */
-app.use(helmet());
+app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 
 /* Compression */
 app.use(compression());
@@ -70,19 +70,24 @@ app.use("/api/v1", routes);
 app.use("/api/v1/businesses", businessRoutes);
 app.use("/api/v1/catalog", catalogRoutes);
 
+// Serve static files (frontend build)
+const staticPath = path.resolve(__dirname, "../../frontend/dist");
+app.use(express.static(staticPath));
+
+// Serve local uploads if Cloudinary is not configured
+const uploadsPath = path.resolve(__dirname, "../public/uploads");
+app.use("/uploads", express.static(uploadsPath));
+
+// Fallback for SPA routes – serve index.html
+app.use((req, res, next) => {
+  if (req.originalUrl.startsWith("/api")) return next();
+  res.sendFile(path.join(staticPath, "index.html"));
+});
+
 /* 404 */
 app.use(notFound);
 
 /* Error */
 app.use(errorHandler);
 
-// Serve static files (frontend build)
-// path imported earlier (duplicate removed)
-const staticPath = path.resolve(__dirname, "../../frontend/dist");
-app.use(express.static(staticPath));
-
-// Fallback for SPA routes – serve index.html
-app.use((req, res) => {
-  res.sendFile(path.join(staticPath, "index.html"));
-});
 export default app;

@@ -31,6 +31,12 @@ const shopOwnerService = {
   // Analytics
   getAnalytics: (days = 30) => api.get("/shop/analytics", { params: { days } }),
 
+  // Shop offers
+  getOffers: (shopId) => api.get(`/offers/shop/${shopId}`),
+  createOffer: (data) => api.post("/offers", data),
+  updateOffer: (offerId, data) => api.put(`/offers/${offerId}`, data),
+  deleteOffer: (offerId) => api.delete(`/offers/${offerId}`),
+
   // Reviews
   getReviews:     () => api.get("/shop/reviews"),
   replyToReview:  (reviewId, reply) => api.patch(`/shop/reviews/${reviewId}/reply`, { reply }),

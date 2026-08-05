@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  FiImage, FiVideo, FiX, FiMapPin, FiSend,
+  FiImage, FiX, FiMapPin, FiSend,
   FiArrowLeft, FiPlus, FiCamera
 } from "react-icons/fi";
 import toast from "react-hot-toast";
@@ -25,24 +25,19 @@ export default function CreateMoment() {
 
   const handleFile = (file) => {
     if (!file) return;
-    const isVideo = file.type.startsWith("video/");
     const isImage = file.type.startsWith("image/");
-    if (!isVideo && !isImage) {
-      toast.error("Only images and videos are supported.");
+    if (!isImage) {
+      toast.error("Only images are supported.");
       return;
     }
-    if (isVideo && file.size > 50 * 1024 * 1024) {
-      toast.error("Video must be under 50MB.");
-      return;
-    }
-    if (isImage && file.size > 10 * 1024 * 1024) {
+    if (file.size > 10 * 1024 * 1024) {
       toast.error("Image must be under 10MB.");
       return;
     }
     const url = URL.createObjectURL(file);
     setPreview(url);
     setFile(file);
-    setFileType(isVideo ? "video" : "image");
+    setFileType("image");
   };
 
   const handleDrop = (e) => {
@@ -54,7 +49,7 @@ export default function CreateMoment() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!file) { toast.error("Please add a photo or video."); return; }
+    if (!file) { toast.error("Please add a photo."); return; }
     if (!caption.trim()) { toast.error("Please write a caption."); return; }
 
     try {
@@ -64,7 +59,7 @@ export default function CreateMoment() {
       const formData = new FormData();
       formData.append("file", file);
       
-      const endpoint = fileType === "image" ? "/uploads/image" : "/uploads/video";
+      const endpoint = "/uploads/image";
       const uploadRes = await api.post(endpoint, formData, {
         headers: { "Content-Type": "multipart/form-data" }
       });
@@ -167,7 +162,7 @@ export default function CreateMoment() {
                 <FiCamera size={36} className="text-orange-500" />
               </div>
               <div className="text-center">
-                <p className="font-bold text-gray-900 dark:text-white text-lg">Add Photo or Video</p>
+                <p className="font-bold text-gray-900 dark:text-white text-lg">Add Photo</p>
                 <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">Drag & drop or tap to choose</p>
               </div>
               <div className="flex gap-3 mt-2">
@@ -178,15 +173,8 @@ export default function CreateMoment() {
                 >
                   <FiImage size={16} /> Photo
                 </button>
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); videoInputRef.current?.click(); }}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-700 dark:text-slate-200 font-semibold text-sm hover:bg-gray-50 dark:hover:bg-slate-700 transition"
-                >
-                  <FiVideo size={16} /> Video
-                </button>
               </div>
-              <p className="text-xs text-gray-400 dark:text-slate-500">Images up to 10MB • Videos up to 50MB</p>
+              <p className="text-xs text-gray-400 dark:text-slate-500">Images up to 10MB</p>
             </motion.div>
           ) : (
             <motion.div
@@ -196,19 +184,11 @@ export default function CreateMoment() {
               exit={{ opacity: 0 }}
               className="relative rounded-3xl overflow-hidden bg-black shadow-xl"
             >
-              {fileType === "video" ? (
-                <video
-                  src={preview}
-                  controls
-                  className="w-full max-h-[500px] object-contain"
-                />
-              ) : (
                 <img
                   src={preview}
                   alt="Preview"
                   className="w-full max-h-[500px] object-cover"
                 />
-              )}
               <button
                 type="button"
                 onClick={() => { setPreview(null); setFileType(null); }}
@@ -231,14 +211,7 @@ export default function CreateMoment() {
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/*,video/*"
-          className="hidden"
-          onChange={(e) => handleFile(e.target.files?.[0])}
-        />
-        <input
-          ref={videoInputRef}
-          type="file"
-          accept="video/*"
+          accept="image/*"
           className="hidden"
           onChange={(e) => handleFile(e.target.files?.[0])}
         />

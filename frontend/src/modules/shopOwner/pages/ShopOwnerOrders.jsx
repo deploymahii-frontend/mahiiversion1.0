@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useShopOrders, useUpdateOrderStatus } from "../hooks/useShopOwner";
-import { CheckCircle2, XCircle, ChefHat, Bike, PackageCheck } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useShopOrders, useUpdateOrderStatus, useShopDashboard } from "../hooks/useShopOwner";
+import { CheckCircle2, XCircle, ChefHat, Bike, PackageCheck, AlertCircle } from "lucide-react";
 
 const STATUS_ACTIONS = {
   PLACED:     [{ label: "Accept",   status: "ACCEPTED",  icon: CheckCircle2, color: "bg-emerald-500" }, { label: "Reject", status: "CANCELLED", icon: XCircle, color: "bg-red-500" }],
@@ -29,10 +30,27 @@ export default function ShopOwnerOrders() {
   );
   const { mutate: updateStatus, isPending } = useUpdateOrderStatus();
 
-  if (isLoading) {
+  const { data: dashboardData, isLoading: dashboardLoading } = useShopDashboard();
+
+  if (dashboardLoading || isLoading) {
     return (
       <div className="space-y-4 animate-pulse">
-        {[...Array(4)].map((_, i) => <div key={i} className="h-36 bg-slate-200 rounded-2xl" />)}
+        {[...Array(4)].map((_, i) => <div key={i} className="h-36 bg-slate-200 dark:bg-slate-800 rounded-2xl" />)}
+      </div>
+    );
+  }
+
+  if (dashboardData && !dashboardData.shopExists) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[70vh] text-center space-y-4">
+        <AlertCircle size={48} className="text-orange-500" />
+        <h2 className="text-2xl font-black text-slate-800 dark:text-white">Shop Not Initialized</h2>
+        <p className="max-w-md text-slate-500 dark:text-slate-400">
+          You must complete the shop onboarding process before managing orders.
+        </p>
+        <Link to="/shopowner/dashboard" className="bg-orange-500 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-orange-600 transition">
+          Set up Shop
+        </Link>
       </div>
     );
   }
@@ -41,8 +59,8 @@ export default function ShopOwnerOrders() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-black text-slate-900">Orders</h1>
-          <p className="text-slate-400 mt-1">{orders.length} orders found</p>
+          <h1 className="text-3xl font-black text-slate-900 dark:text-white">Orders</h1>
+          <p className="text-slate-400 dark:text-slate-500 mt-1">{orders.length} orders found</p>
         </div>
       </div>
 
@@ -53,7 +71,7 @@ export default function ShopOwnerOrders() {
             key={f}
             onClick={() => setFilter(f)}
             className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${
-              filter === f ? "bg-slate-900 text-white" : "bg-white border border-slate-200 text-slate-600 hover:border-slate-400"
+              filter === f ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900" : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-500"
             }`}
           >
             {f}
@@ -64,41 +82,41 @@ export default function ShopOwnerOrders() {
       {orders.length === 0 && (
         <div className="flex flex-col items-center justify-center h-64 text-center">
           <p className="text-5xl mb-3">📭</p>
-          <p className="font-bold text-slate-700">No orders found</p>
-          <p className="text-slate-400 text-sm mt-1">Orders will appear here when customers place them</p>
+          <p className="font-bold text-slate-700 dark:text-slate-300">No orders found</p>
+          <p className="text-slate-400 dark:text-slate-500 text-sm mt-1">Orders will appear here when customers place them</p>
         </div>
       )}
 
       <div className="space-y-4">
         {orders.map((order) => (
-          <div key={order._id} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+          <div key={order._id} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-6">
             <div className="flex items-start justify-between">
               <div>
                 <div className="flex items-center gap-3">
-                  <h3 className="font-black text-slate-900">{order.orderNumber}</h3>
+                  <h3 className="font-black text-slate-900 dark:text-white">{order.orderNumber}</h3>
                   <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${STATUS_COLOR[order.orderStatus] || "bg-slate-100 text-slate-600"}`}>
                     {order.orderStatus}
                   </span>
                 </div>
-                <p className="text-sm text-slate-500 mt-1">
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                   {order.customer?.name} · {order.customer?.phone}
                 </p>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
                   {new Date(order.createdAt).toLocaleString("en-IN")}
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-2xl font-black text-slate-900">₹{order.totalAmount}</p>
-                <p className="text-xs text-slate-400 mt-0.5">{order.paymentMethod}</p>
+                <p className="text-2xl font-black text-slate-900 dark:text-white">₹{order.totalAmount}</p>
+                <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">{order.paymentMethod}</p>
               </div>
             </div>
 
             {/* Items */}
-            <div className="mt-4 space-y-1 bg-slate-50 rounded-xl p-3">
+            <div className="mt-4 space-y-1 bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3">
               {order.items?.map((item, i) => (
                 <div key={i} className="flex justify-between text-sm">
-                  <span className="text-slate-700">{item.quantity}× {item.name}</span>
-                  <span className="font-semibold text-slate-800">₹{item.total}</span>
+                  <span className="text-slate-700 dark:text-slate-300">{item.quantity}× {item.name}</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-200">₹{item.total}</span>
                 </div>
               ))}
             </div>

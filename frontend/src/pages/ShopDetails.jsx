@@ -10,7 +10,9 @@ import ShopGallery from "../components/shop/ShopGallery";
 import ShopOffers from "../components/shop/ShopOffers";
 import ShopReviews from "../components/shop/ShopReviews";
 import ShopMoments from "../components/shop/ShopMoments";
+import MenuSection from "../components/shop/MenuSection";
 import ReviewModal from "../components/shop/ReviewModal";
+import { getShopProducts } from "../services/productService";
 import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
 
@@ -21,13 +23,27 @@ export default function ShopDetails() {
   const { authenticated } = useAuth();
   
   const [reviews, setReviews] = useState([]);
+  const [products, setProducts] = useState([]);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   useEffect(() => {
     if (shop?._id || shop?.id) {
-      fetchReviews(shop._id || shop.id);
+      const shopId = shop._id || shop.id;
+      fetchReviews(shopId);
+      fetchProducts(shopId);
     }
   }, [shop]);
+
+  const fetchProducts = async (id) => {
+    try {
+      const data = await getShopProducts(id);
+      if (data) {
+        setProducts(data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch products", err);
+    }
+  };
 
   const fetchReviews = async (id) => {
     try {
@@ -70,6 +86,7 @@ export default function ShopDetails() {
       <ShopQuickActions shop={shop} />
       <BusinessHours shop={shop} />
       <ShopFacilities shop={shop} />
+      <MenuSection products={products} />
       <ShopGallery shop={shop} />
       <ShopOffers shop={shop} />
       <ShopMoments shop={shop} />

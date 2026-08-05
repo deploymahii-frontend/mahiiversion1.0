@@ -87,9 +87,48 @@ const UserSchema = new mongoose.Schema(
       default: null,
     },
 
+    employeeCode: {
+      type: String,
+      unique: true,
+      sparse: true,
+      trim: true,
+      uppercase: true,
+      index: true,
+    },
+
     role: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Role",
+    },
+
+    company: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Company",
+    },
+
+    branch: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Branch",
+    },
+
+    department: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Department",
+    },
+
+    designation: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Designation",
+    },
+
+    avatar: {
+      type: String,
+      default: null,
+    },
+
+    joiningDate: {
+      type: Date,
+      default: null,
     },
 
     permissions: [

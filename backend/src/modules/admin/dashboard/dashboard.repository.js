@@ -4,14 +4,23 @@ import ShopModel from "../../shops/shop.model.js";
 import UserModel from "../../users/user.model.js";
 
 const getOverview = async () => {
-  const [users, shops, ordersToday, revenueData] = await Promise.all([
+  const [users, shops, ordersToday, revenueData, pendingShopsData] = await Promise.all([
     UserModel.countDocuments(),
     ShopModel.countDocuments(),
     OrderModel.countDocuments({ createdAt: { $gte: new Date(new Date().setHours(0,0,0,0)) } }),
-    OrderModel.aggregate([ { $match: { paymentStatus: "PAID" } }, { $group: { _id: null, total: { $sum: "$totalAmount" } } } ])
+    OrderModel.aggregate([ { $match: { paymentStatus: "PAID" } }, { $group: { _id: null, total: { $sum: "$totalAmount" } } } ]),
+    ShopModel.find({ status: "PENDING" }).select("_id name category city").lean()
   ]);
   const revenue = revenueData.length > 0 ? revenueData[0].total : 0;
-  return { users, shops, ordersToday, revenue };
+  
+  const pendingShops = pendingShopsData.map(shop => ({
+      id: shop._id,
+      name: shop.name,
+      category: shop.category || "Uncategorized",
+      city: shop.city || "Unknown"
+  }));
+  
+  return { users, shops, ordersToday, revenue, pendingShops };
 };
 
 const getStats = async () => {

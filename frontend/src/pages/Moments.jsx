@@ -19,22 +19,39 @@ export default function Moments() {
       try {
         setLoading(true);
         const { data } = await api.get("/moments/feed");
-        const normalized = (data?.data || []).map((moment) => ({
-          id: moment._id,
-          author: moment.creator?.fullName || "Mahii user",
-          avatar: moment.creator?.profileImage || "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80",
-          shop: moment.shop?.name || "Mahii Shop",
-          location: moment.location || "Nearby",
-          time: new Date(moment.createdAt).toLocaleDateString(),
-          image: moment.mediaUrl,
-          caption: moment.description || moment.title,
-          likes: moment.likes || 0,
-          comments: 0,
-          liked: false,
-          saved: false,
-          following: false,
-          mediaType: moment.mediaType || "image",
-        }));
+        const normalized = (data?.data || []).map((moment) => {
+          let imageUrl = moment.mediaUrl;
+          const baseUrl = api.defaults.baseURL.replace("/api/v1", "");
+          if (imageUrl) {
+            imageUrl = imageUrl.replace(/\\/g, "/");
+            if (imageUrl.startsWith("uploads/")) {
+              imageUrl = `/${imageUrl}`;
+            }
+
+            if (imageUrl.startsWith("http://localhost:5000")) {
+              imageUrl = imageUrl.replace("http://localhost:5000", baseUrl);
+            } else if (imageUrl.startsWith("/uploads")) {
+              imageUrl = `${baseUrl}${imageUrl}`;
+            }
+          }
+
+          return {
+            id: moment._id,
+            author: moment.creator?.fullName || "Mahii user",
+            avatar: moment.creator?.profileImage || "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80",
+            shop: moment.shop?.name || "Mahii Shop",
+            location: moment.location || "Nearby",
+            time: new Date(moment.createdAt).toLocaleDateString(),
+            image: imageUrl,
+            caption: moment.description || moment.title,
+            likes: moment.likes || 0,
+            comments: 0,
+            liked: false,
+            saved: false,
+            following: false,
+            mediaType: moment.mediaType || "image",
+          };
+        });
         setMoments(normalized);
       } catch (error) {
         console.error("Failed to load moments", error);
