@@ -3,46 +3,58 @@ import { FiLinkedin, FiInstagram, FiMail, FiAward } from "react-icons/fi";
 
 const placeholderImg = "https://via.placeholder.com/300x300?text=Team+Member";
 
+const getTeamImage = (name) => {
+  const imageMap = {
+    "Om Jaunjal": "/team/Om%20Jaunjal.jpeg",
+    "Atharv Dahifale": "/team/Atharv%20Dahifale.jpeg",
+    "Rohan Kodgire": "/team/Rohan%20Kodgire.jpeg",
+    "Atharv Kambale": "/team/Athav%20kamble.png",
+    "Vishwajit Sanap": "/team/Vishwajit%20Sanap.png",
+  };
+
+  return imageMap[name] || placeholderImg;
+};
+
 const leadership = [
   {
     name: "Om Jaunjal",
     role: "Founder & Chief Executive Officer (CEO)",
-    image: "",
+    image: getTeamImage("Om Jaunjal"),
 
     linkedin: "https://www.linkedin.com/in/om-jaunjal-8b2414306/",
-    instagram: "https://instagram.com",
+    instagram: "https://www.instagram.com/omjaunjal_?igsh=MXA1Z3I5dGl4dHM2bA==",
   },
   {
-    name: "Atharv Dahifale",
+    name: "Atharva Dahifale",
     role: "Chief Financial Officer",
-    image: "",
+    image: getTeamImage("Atharv Dahifale"),
 
     linkedin: "https://linkedin.com",
-    instagram: "https://instagram.com",
+    instagram: "https://www.instagram.com/atharva_407?igsh=azVvNjMxd213Z3Rz",
   },
   {
     name: "Rohan Kodgire",
     role: "Chief Marketing Officer",
-    image: "",
+    image: getTeamImage("Rohan Kodgire"),
 
     linkedin: "https://linkedin.com",
-    instagram: "https://instagram.com",
+    instagram: "https://www.instagram.com/rohan_40006?igsh=N2d5OWRtam14NnRs",
   },
   {
     name: "Atharv Kambale",
     role: "Digital Media Manager",
-    image: "",
+    image: getTeamImage("Atharv Kambale"),
 
     linkedin: "https://linkedin.com",
-    instagram: "https://instagram.com",
+    instagram: "https://www.instagram.com/athu19_?igsh=NG8xNWduMDg3enB3",
   },
   {
     name: "Vishwajit Sanap",
     role: "influencer",
-    image: "",
+    image: getTeamImage("Vishwajit Sanap"),
 
     linkedin: "https://linkedin.com",
-    instagram: "https://instagram.com",
+    instagram: "https://www.instagram.com/vishu_sanap_02?igsh=cHE3eXAwc3ZndmFu",
   },
   
 ];
