@@ -14,14 +14,7 @@ import {
 } from "react-icons/fi";
 
 const popularAreas = [
-  "Rajarampuri",
-  "Tarabai Park",
-  "Rankala Lake",
-  "Shahupuri",
-  "Mangalwar Peth",
-  "Shivaji University Area",
-  "Laxmipuri",
-  "Nagala Park",
+  "KIT college Kolhapur",
 ];
 
 const categories = [
@@ -155,34 +148,28 @@ export default function Footer() {
             <div className="space-y-2.5 text-xs text-slate-400">
               <p className="flex items-center gap-2">
                 <FiMapPin className="text-orange-400 shrink-0" size={15} />
-                <span>Kolhapur, Maharashtra 416008, India</span>
+                <span>KIT Kolhapur, Maharashtra 416234, India</span>
               </p>
               <p className="flex items-center gap-2">
                 <FiPhone className="text-orange-400 shrink-0" size={15} />
-                <span>+91 98765 43210 / 0231 2654321</span>
+                <span>+91 7757096119 / 920179770</span>
               </p>
               <p className="flex items-center gap-2">
                 <FiMail className="text-orange-400 shrink-0" size={15} />
-                <span>support@mahii.in</span>
+                <span>supportmahii@gmail.com</span>
               </p>
             </div>
 
             <div className="pt-2">
               <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2.5">Follow Our Journey</p>
               <div className="flex items-center gap-2.5">
-                <a href="https://instagram.com" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-orange-500 hover:text-white text-slate-300 flex items-center justify-center transition">
+                <a href="https://www.instagram.com/mahii.yourfriend?igsh=MXE1Y2EwYWNwY29kaw==" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-orange-500 hover:text-white text-slate-300 flex items-center justify-center transition">
                   <FiInstagram size={16} />
                 </a>
-                <a href="https://facebook.com" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-orange-500 hover:text-white text-slate-300 flex items-center justify-center transition">
-                  <FiFacebook size={16} />
-                </a>
-                <a href="https://twitter.com" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-orange-500 hover:text-white text-slate-300 flex items-center justify-center transition">
-                  <FiTwitter size={16} />
-                </a>
-                <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-orange-500 hover:text-white text-slate-300 flex items-center justify-center transition">
+                <a href="https://in.linkedin.com/company/mahii-pvt-ltd" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-orange-500 hover:text-white text-slate-300 flex items-center justify-center transition">
                   <FiLinkedin size={16} />
                 </a>
-                <a href="https://youtube.com" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-orange-500 hover:text-white text-slate-300 flex items-center justify-center transition">
+                <a href="https://youtube.com/@mahii.yourfriend?si=iMT5F_rx5TN6KUUs" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-orange-500 hover:text-white text-slate-300 flex items-center justify-center transition">
                   <FiYoutube size={16} />
                 </a>
               </div>
