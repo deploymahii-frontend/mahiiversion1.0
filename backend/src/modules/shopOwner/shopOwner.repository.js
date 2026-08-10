@@ -129,7 +129,7 @@ export class ShopOwnerRepository {
 
   /* ── Products ─────────────────────────────── */
   async getShopProducts(shopId) {
-    return Product.find({ shop: shopId }).populate("category", "name").sort({ createdAt: -1 }).lean();
+    return Product.find({ shop: shopId }).sort({ createdAt: -1 }).lean();
   }
 
   async createProduct(data) {
