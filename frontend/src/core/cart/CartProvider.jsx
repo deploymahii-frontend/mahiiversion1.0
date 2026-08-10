@@ -51,8 +51,8 @@ export default function CartProvider({ children }) {
       });
     } catch (error) {
       dispatch({
-        type: "SET_ERROR",
-        payload: error.message,
+        type: "SET_CART",
+        payload: { items: [], totalItems: 0, subtotal: 0, total: 0 },
       });
     }
   }

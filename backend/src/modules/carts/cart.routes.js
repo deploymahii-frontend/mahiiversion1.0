@@ -20,7 +20,7 @@ router.use(authenticate);
 /**
  * Only customers can manage their cart.
  */
-router.use(authorize(ROLES.CUSTOMER));
+router.use(authorize(ROLES.CUSTOMER, ROLES.SHOP_OWNER, ROLES.ADMIN));
 
 router.get("/", controller.getCart);
 
