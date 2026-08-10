@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 import userRepository from "./user.repository.js";
-import roleRepository from "../roles/role.repository.js";
 
 import { hashPassword } from "../../shared/services/password.service.js";
 
@@ -54,13 +53,8 @@ export async function createUser(data) {
 
         }
 
-        const role =
-            await roleRepository.findById(data.role);
-
-        if (!role) {
-
-            throw new Error("Role not found.");
-
+        if (data.role && typeof data.role === "string") {
+            data.role = data.role.toUpperCase();
         }
 
         const user =

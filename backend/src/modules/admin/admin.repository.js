@@ -2,7 +2,7 @@ import User from "../auth/models/user.model.js";
 import Shop from "../shops/shop.model.js";
 import Order from "../orders/order.model.js";
 import Payment from "../payment/payment.model.js";
-import Product from "../product/product.model.js";
+import Product from "../products/product.model.js";
 import { ORDER_STATUS } from "../orders/order.constants.js";
 
 const toObjectId = (id) => id;

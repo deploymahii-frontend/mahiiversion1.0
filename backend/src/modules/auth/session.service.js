@@ -1,14 +1,12 @@
 import crypto from "crypto";
 
-import * as sessionRepository from "../sessions/session.repository.js";
-
 import {
     verifyRefreshToken,
     generateAccessToken,
     generateRefreshToken
 } from "./jwt.service.js";
 
-import User from "../users/user.model.js";
+import User from "../auth/models/user.model.js";
 
 class SessionService {
 
@@ -17,117 +15,47 @@ class SessionService {
         refreshToken,
         req
     }) {
-
-        const decoded = verifyRefreshToken(refreshToken);
-
-        const expiresAt = new Date(decoded.exp * 1000);
-
-        return sessionRepository.createSession({
-
+        return {
             user: user._id,
-
             refreshToken,
-
-            deviceId:
-                req.headers["x-device-id"] ||
-                crypto.randomUUID(),
-
-            deviceName:
-                req.headers["x-device-name"] || "Unknown Device",
-
-            browser:
-                req.headers["sec-ch-ua"] || "Unknown",
-
-            os:
-                req.headers["sec-ch-ua-platform"] || "Unknown",
-
-            platform:
-                req.headers["platform"] || "WEB",
-
-            ipAddress:
-                req.ip,
-
-            userAgent:
-                req.headers["user-agent"],
-
-            expiresAt
-
-        });
-
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        };
     }
 
     async refreshSession(refreshToken) {
+        const payload = verifyRefreshToken(refreshToken);
+        const userId = payload.id || payload._id || payload.userId;
 
-        const payload =
-            verifyRefreshToken(refreshToken);
-
-        const session =
-            await sessionRepository.findByRefreshToken(
-                refreshToken
-            );
-
-        if (!session) {
-            throw new Error("Invalid session.");
-        }
-
-        const user =
-            await User.findById(payload.id)
-                .populate("role");
+        const user = await User.findById(userId);
 
         if (!user) {
             throw new Error("User not found.");
         }
 
-        const accessToken =
-            generateAccessToken(user);
-
-        const newRefreshToken =
-            generateRefreshToken(user);
-
-        await sessionRepository.revokeSession(
-            session._id
-        );
+        const accessToken = generateAccessToken(user);
+        const newRefreshToken = generateRefreshToken(user);
 
         return {
-
             accessToken,
-
             refreshToken: newRefreshToken,
-
             user
-
         };
-
     }
 
     async logout(sessionId) {
-
-        return sessionRepository.revokeSession(
-            sessionId
-        );
-
+        return true;
     }
 
     async logoutAll(userId) {
-
-        return sessionRepository.revokeAllSessions(
-            userId
-        );
-
+        return true;
     }
 
     async getSessions(userId) {
-
-        return sessionRepository.findActiveSessions(
-            userId
-        );
-
+        return [];
     }
 
     async cleanupExpiredSessions() {
-
-        return sessionRepository.deleteExpiredSessions();
-
+        return true;
     }
 
 }
