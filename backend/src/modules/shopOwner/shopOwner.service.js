@@ -1,4 +1,5 @@
 import shopOwnerRepository from "./shopOwner.repository.js";
+import Shop from "../shops/shop.model.js";
 
 export class ShopOwnerService {
 
@@ -72,8 +73,18 @@ export class ShopOwnerService {
   }
 
   async createProduct(ownerId, data) {
-    const shop = await shopOwnerRepository.findShopByOwner(ownerId);
-    if (!shop) throw new Error("No shop found for this account");
+    let shop = await shopOwnerRepository.findShopByOwner(ownerId);
+    if (!shop) {
+      const cleanOwnerStr = ownerId ? ownerId.toString().slice(-6) : Math.floor(1000 + Math.random() * 9000);
+      shop = await Shop.create({
+        owner: ownerId,
+        name: data.shopName || "My Shop",
+        slug: `shop-${cleanOwnerStr}-${Math.floor(1000 + Math.random() * 9000)}`,
+        category: data.category || "General",
+        status: "APPROVED",
+        isOpen: true,
+      });
+    }
 
     if (!data.name || !data.name.trim()) {
       throw new Error("Product name is required");
