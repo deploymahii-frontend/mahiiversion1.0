@@ -22,7 +22,12 @@ export async function create(req, res, next) {
 export async function list(req, res, next) {
   try {
     const shopId = req.params.shopId || req.query.shopId;
-    const isShopOwnerRequest = req.user && getUserRole(req) === "SHOP_OWNER" && !req.params.shopId;
+    const isShopOwnerRequest =
+      req.user &&
+      getUserRole(req) === "SHOP_OWNER" &&
+      !req.params.shopId &&
+      !req.query.search &&
+      !req.query.category;
 
     if (isShopOwnerRequest) {
       const products = await shopOwnerService.getProducts(req.user._id);

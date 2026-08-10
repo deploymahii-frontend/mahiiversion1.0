@@ -3,8 +3,6 @@ import app from "./app.js";
 import connectDB from "./config/mongodb.js";
 
 async function startServer() {
-  await connectDB();
-
   app.listen(config.app.port, () => {
     console.log("===================================");
     console.log("🚀 Mahii API Started");
@@ -12,6 +10,10 @@ async function startServer() {
     console.log(`🚪 Port        : ${config.app.port}`);
     console.log(`📌 Version     : ${config.app.version}`);
     console.log("===================================");
+  });
+
+  connectDB().catch((error) => {
+    console.error("❌ MongoDB Connection Error:", error.message);
   });
 }
 

@@ -5,9 +5,21 @@ import { imageUpload, videoUpload } from "./multer.js";
 
 const router = Router();
 
-router.post("/image", authenticate, imageUpload.single("file"), controller.uploadImage);
-router.post("/images", authenticate, imageUpload.array("files", 10), controller.uploadImages);
-router.post("/video", authenticate, videoUpload.single("file"), controller.uploadVideo);
+const handleUpload = (uploadMiddleware) => (req, res, next) => {
+  uploadMiddleware(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({
+        success: false,
+        message: err.message || "File upload failed",
+      });
+    }
+    next();
+  });
+};
+
+router.post("/image", authenticate, handleUpload(imageUpload.single("file")), controller.uploadImage);
+router.post("/images", authenticate, handleUpload(imageUpload.array("files", 10)), controller.uploadImages);
+router.post("/video", authenticate, handleUpload(videoUpload.single("file")), controller.uploadVideo);
 
 router.post(
   "/user/profile",

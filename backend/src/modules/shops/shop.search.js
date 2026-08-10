@@ -1,15 +1,26 @@
 export function buildShopFilter(query = {}) {
   const filter = {
-    isOpen: true,
     status: "APPROVED",
   };
 
-  if (query.category) {
-    filter.category = query.category;
+  const searchTerm = query.search || query.q;
+  if (searchTerm && String(searchTerm).trim()) {
+    const regex = new RegExp(String(searchTerm).trim(), "i");
+    filter.$or = [
+      { name: regex },
+      { category: regex },
+      { description: regex },
+      { "address.city": regex },
+      { "address.line1": regex },
+    ];
+  }
+
+  if (query.category && query.category !== "ALL") {
+    filter.category = new RegExp(`^${query.category}$`, "i");
   }
 
   if (query.city) {
-    filter["address.city"] = query.city;
+    filter["address.city"] = new RegExp(query.city, "i");
   }
 
   if (query.pureVeg === "true") {

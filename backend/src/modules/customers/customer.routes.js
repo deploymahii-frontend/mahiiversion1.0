@@ -2,6 +2,18 @@ import { Router } from "express";
 
 const router = Router();
 
+router.get("/dashboard", (req, res) => {
+    return res.json({
+        success: true,
+        data: {
+            recentOrders: [],
+            favoriteShops: [],
+            activeOffers: [],
+            stats: { totalOrders: 0, rewardPoints: 0, activeCartItems: 0 }
+        }
+    });
+});
+
 router.get("/shop", (req, res) => {
     return res.json({
         success: true,

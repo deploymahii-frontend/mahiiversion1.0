@@ -45,19 +45,46 @@ export async function deleteShop(id){
 }
 
 export async function updateShop(id,data){
-
     return Shop.findByIdAndUpdate(
-
         id,
-
         data,
-
         {
-
             new:true
-
         }
-
     );
+}
 
+export async function searchShops(query) {
+  if (!query) return Shop.find({ status: "APPROVED" });
+  const regex = new RegExp(query, "i");
+  return Shop.find({
+    status: "APPROVED",
+    $or: [
+      { name: regex },
+      { category: regex },
+      { description: regex },
+      { "address.city": regex },
+      { "address.line1": regex },
+    ],
+  });
+}
+
+export async function findNearby({ longitude, latitude, maxDistance = 50000, filter = {} }) {
+  const query = {
+    ...filter,
+    "address.location": {
+      $near: {
+        $geometry: {
+          type: "Point",
+          coordinates: [longitude, latitude],
+        },
+        $maxDistance: maxDistance,
+      },
+    },
+  };
+  try {
+    return await Shop.find(query);
+  } catch (err) {
+    return await Shop.find({ status: "APPROVED", ...filter });
+  }
 }

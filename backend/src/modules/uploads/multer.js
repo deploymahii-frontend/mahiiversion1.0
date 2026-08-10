@@ -20,11 +20,17 @@ const localStorage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    const ext = path.extname(file.originalname) || '.jpg';
+    cb(null, file.fieldname + '-' + uniqueSuffix + ext);
   }
 });
 
-const hasCloudinary = !!(config.cloudinary?.cloudName && config.cloudinary?.apiKey && config.cloudinary?.apiSecret);
+const hasCloudinary = !!(
+  process.env.NODE_ENV === "production" &&
+  config.cloudinary?.cloudName &&
+  config.cloudinary?.apiKey &&
+  config.cloudinary?.apiSecret
+);
 
 const cloudinaryStorage = hasCloudinary
   ? new CloudinaryStorage({
@@ -37,13 +43,12 @@ const cloudinaryStorage = hasCloudinary
         return {
           folder: "mahii_uploads",
           resource_type: resource_type,
-          allowed_formats: ["jpg", "png", "jpeg", "webp", "mp4", "mov"],
         };
       },
     })
   : null;
 
-const activeStorage = hasCloudinary ? cloudinaryStorage : localStorage;
+const activeStorage = (hasCloudinary && cloudinaryStorage) ? cloudinaryStorage : localStorage;
 
 export const imageUpload = multer({
   storage: activeStorage,

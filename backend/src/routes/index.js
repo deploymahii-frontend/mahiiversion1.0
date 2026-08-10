@@ -30,6 +30,7 @@ const router = Router();
 router.use("/auth", authRoutes);
 router.use("/users", userRoutes);
 router.use("/customers", customerRoutes);
+router.use("/customer", customerRoutes);
 router.use("/shop", shopOwnerRoutes);
 router.use("/categories", categoryRoutes);
 router.use("/shops", shopRoutes);

@@ -27,23 +27,48 @@ export default function LocationPickerModal({ isOpen, onClose, onSelectLocation,
     setIsGettingLocation(true);
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          // Reverse geocoding would run here if precise address data is needed.
-          setTimeout(() => {
-            onSelectLocation("Current Location");
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          try {
+            const res = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+            );
+            const data = await res.json();
+            const area =
+              data.address?.suburb ||
+              data.address?.neighbourhood ||
+              data.address?.residential ||
+              data.address?.city_district ||
+              data.address?.city ||
+              data.address?.town ||
+              "Current Location";
+            const city = data.address?.city || data.address?.state || "";
+            const formatted = city ? `${area}, ${city}` : area;
+
+            localStorage.setItem("mahii_user_coords", JSON.stringify({ latitude, longitude }));
+            onSelectLocation(formatted);
+          } catch (e) {
+            onSelectLocation(`Location (${latitude.toFixed(2)}, ${longitude.toFixed(2)})`);
+          } finally {
             setIsGettingLocation(false);
             onClose();
-          }, 800);
+          }
         },
         (error) => {
           setIsGettingLocation(false);
-          alert("Could not get your location. Please check permissions.");
-        }
+          alert("Could not get your location. Please check browser permissions.");
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
       );
     } else {
       setIsGettingLocation(false);
       alert("Geolocation is not supported by your browser.");
     }
+  };
+
+  const handleCustomLocationSelect = (loc) => {
+    onSelectLocation(loc);
+    onClose();
   };
 
   const filteredLocations = POPULAR_LOCATIONS.filter((loc) =>
@@ -110,6 +135,20 @@ export default function LocationPickerModal({ isOpen, onClose, onSelectLocation,
               <p className="text-sm font-semibold text-gray-400 dark:text-slate-500 mb-3 uppercase tracking-wider">
                 Popular Areas
               </p>
+
+              {searchQuery.trim() && (
+                <button
+                  onClick={() => handleCustomLocationSelect(searchQuery.trim())}
+                  className="w-full flex items-center justify-between p-4 rounded-2xl bg-orange-50 dark:bg-slate-800 hover:bg-orange-100 text-orange-600 dark:text-orange-400 font-bold transition mb-3 border border-orange-200 dark:border-slate-700"
+                >
+                  <div className="flex items-center gap-3">
+                    <FiMapPin className="text-orange-500" />
+                    <span>Select "{searchQuery.trim()}"</span>
+                  </div>
+                  <span className="text-xs bg-orange-500 text-white px-2 py-1 rounded-md">Use Custom</span>
+                </button>
+              )}
+
               <div className="space-y-2">
                 {filteredLocations.length > 0 ? (
                   filteredLocations.map((loc) => (

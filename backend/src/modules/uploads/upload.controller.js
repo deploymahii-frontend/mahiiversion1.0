@@ -1,3 +1,4 @@
+import path from "path";
 import User from "../users/user.model.js";
 import Shop from "../shops/shop.model.js";
 import Product from "../products/product.model.js";
@@ -6,11 +7,16 @@ import Promotion from "../promotions/promotion.model.js";
 import { successResponse, errorResponse } from "../../utils/api-response.js";
 
 const getFileUrl = (req, file) => {
-  if (file?.secure_url || file?.url) {
+  if (!file) return "";
+  if (file.secure_url || file.url) {
     return file.secure_url || file.url;
   }
-  if (file?.filename) {
+  if (file.filename) {
     return `${req.protocol}://${req.get("host")}/uploads/${file.filename}`;
+  }
+  if (file.path) {
+    const filename = path.basename(file.path);
+    return `${req.protocol}://${req.get("host")}/uploads/${filename}`;
   }
   return "";
 };
