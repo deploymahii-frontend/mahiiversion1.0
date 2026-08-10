@@ -1,5 +1,6 @@
 import shopOwnerRepository from "./shopOwner.repository.js";
 import Shop from "../shops/shop.model.js";
+import { updateOrderStatus as updateOrderServiceStatus } from "../orders/order.service.js";
 
 export class ShopOwnerService {
 
@@ -51,18 +52,16 @@ export class ShopOwnerService {
   }
 
   async updateOrderStatus(ownerId, orderId, status) {
-    const ALLOWED = ["ACCEPTED", "PREPARING", "READY", "OUT_FOR_DELIVERY", "DELIVERED", "CANCELLED"];
-    if (!ALLOWED.includes(status)) throw new Error(`Invalid status: ${status}`);
-
     const order = await shopOwnerRepository.findOrderById(orderId);
     if (!order) throw new Error("Order not found");
 
     const shop = await shopOwnerRepository.findShopByOwner(ownerId);
-    if (!shop || order.shop.toString() !== shop._id.toString()) {
+    const orderShopId = order.shop?._id || order.shop;
+    if (!shop || String(orderShopId) !== String(shop._id)) {
       throw new Error("Unauthorized: This order does not belong to your shop");
     }
 
-    return shopOwnerRepository.updateOrderStatus(orderId, status);
+    return updateOrderServiceStatus(orderId, status);
   }
 
   /* ── Products ─────────────────────────────── */

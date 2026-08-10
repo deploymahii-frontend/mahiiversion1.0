@@ -85,15 +85,19 @@ export async function addToCart(customerId, productId, quantity) {
     });
   }
 
-  if (String(cart.shop) !== String(product.shop)) {
-    throw new Error(
-      "A cart can only contain products from one shop."
-    );
+  const cartShopId = cart.shop?._id || cart.shop;
+  const productShopId = product.shop?._id || product.shop;
+
+  if (cart.items.length > 0 && String(cartShopId) !== String(productShopId)) {
+    // If cart has items from another shop, reset shop & clear old items
+    cart.shop = productShopId;
+    cart.items = [];
   }
 
-  const existing = cart.items.find(
-    (item) => String(item.product._id) === String(product._id)
-  );
+  const existing = cart.items.find((item) => {
+    const itemPid = item.product?._id || item.product;
+    return String(itemPid) === String(product._id);
+  });
 
   if (existing) {
     existing.quantity += quantity;
@@ -101,6 +105,8 @@ export async function addToCart(customerId, productId, quantity) {
   } else {
     cart.items.push({
       product: product._id,
+      name: product.name || "Item",
+      image: product.images?.[0] || product.image || "",
       quantity,
       price: product.price,
       total: quantity * product.price,

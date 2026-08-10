@@ -66,6 +66,16 @@ const productSchema = new mongoose.Schema(
       default: true,
     },
 
+    isVeg: {
+      type: Boolean,
+      default: true,
+    },
+
+    stock: {
+      type: Number,
+      default: 100,
+    },
+
     variants: [
       {
         name: String,

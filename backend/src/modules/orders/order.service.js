@@ -70,16 +70,15 @@ export async function createOrder(customerId, orderData) {
             }));
 
             for (const item of cart.items) {
+                const itemPid = item.product._id || item.product;
                 const updatedProduct = await Product.findOneAndUpdate(
                     {
-                        _id: item.product._id,
-                        stock: {
-                            $gte: item.quantity,
-                        },
+                        _id: itemPid,
                     },
                     {
                         $inc: {
                             stock: -item.quantity,
+                            "inventory.quantity": -item.quantity,
                         },
                     },
                     {
@@ -90,7 +89,7 @@ export async function createOrder(customerId, orderData) {
 
                 if (!updatedProduct) {
                     throw new Error(
-                        `${item.product.name} is out of stock.`
+                        `${item.name || item.product?.name || "Item"} is out of stock.`
                     );
                 }
             }
@@ -139,14 +138,14 @@ export async function createOrder(customerId, orderData) {
         if (createdOrder) {
             try {
                 await notificationService.createNotification({
-                    user: shopOwnerId,
-                    title: "New Order Received",
+                    recipient: shopOwnerId,
+                    title: "New Order Received 🛒",
                     message: `New order ${createdOrder.orderNumber} has been placed for your shop.`,
                     type: "ORDER",
-                    referenceId: createdOrder._id,
+                    data: { orderId: createdOrder._id },
                 });
             } catch (err) {
-                console.error(err);
+                console.error("Notification failed (non-fatal):", err.message);
             }
         }
 
@@ -176,7 +175,7 @@ export async function updateOrderStatus(id, status) {
         for (const item of order.items) {
           await Product.findByIdAndUpdate(
             item.product,
-            { $inc: { stock: item.quantity } },
+            { $inc: { stock: item.quantity, "inventory.quantity": item.quantity } },
             { session }
           );
         }
@@ -190,23 +189,43 @@ export async function updateOrderStatus(id, status) {
   }
 
   const updatedOrder = await repository.findById(id);
+  const customerId = order.customer?._id || order.customer;
 
-  if (status === ORDER_STATUS.ACCEPTED) {
-    await notificationService.createNotification({
-      user: order.customer._id || order.customer,
-      title: "Order Accepted",
-      message: `Your order ${order.orderNumber} has been accepted by the shop.`,
-      type: "ORDER",
-      referenceId: order._id,
-    });
-  } else if (status === ORDER_STATUS.CANCELLED) {
-    await notificationService.createNotification({
-      user: order.customer._id || order.customer,
+  // Send customer notification based on status
+  const notificationMap = {
+    [ORDER_STATUS.ACCEPTED]: {
+      title: "Order Accepted ✅",
+      message: `Your order ${order.orderNumber} has been accepted by the shop and is being prepared.`,
+    },
+    [ORDER_STATUS.PREPARING]: {
+      title: "Order is Being Prepared 👨‍🍳",
+      message: `Great news! Your order ${order.orderNumber} is being prepared.`,
+    },
+    [ORDER_STATUS.OUT_FOR_DELIVERY]: {
+      title: "Out for Delivery 🚴",
+      message: `Your order ${order.orderNumber} is out for delivery and will reach you soon!`,
+    },
+    [ORDER_STATUS.DELIVERED]: {
+      title: "Order Delivered 🎉",
+      message: `Your order ${order.orderNumber} has been delivered. Enjoy your order!`,
+    },
+    [ORDER_STATUS.CANCELLED]: {
       title: "Order Cancelled",
       message: `Your order ${order.orderNumber} has been cancelled.`,
-      type: "ORDER",
-      referenceId: order._id,
-    });
+    },
+  };
+
+  if (notificationMap[status] && customerId) {
+    try {
+      await notificationService.createNotification({
+        recipient: customerId,
+        type: "ORDER",
+        ...notificationMap[status],
+        data: { orderId: order._id },
+      });
+    } catch (err) {
+      console.error("Notification failed (non-fatal):", err.message);
+    }
   }
 
   return updatedOrder;
