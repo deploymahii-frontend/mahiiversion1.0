@@ -140,17 +140,28 @@ export default function MomentCard({ moment, onUpdate }) {
     }
   };
 
-  const handleShare = () => {
+  const handleShare = async () => {
     const shareUrl = `${window.location.origin}/moments?id=${moment._id || moment.id}`;
     if (navigator.share) {
-      navigator.share({
-        title: `Mahii Moment: ${creatorName}`,
-        text: moment.description || moment.title || "Check out this local moment on Mahii!",
-        url: shareUrl,
-      });
+      try {
+        await navigator.share({
+          title: `Mahii Moment: ${creatorName}`,
+          text: moment.description || moment.title || "Check out this local moment on Mahii!",
+          url: shareUrl,
+        });
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          navigator.clipboard?.writeText(shareUrl);
+          toast.success("Link copied to clipboard! 📋");
+        }
+      }
     } else {
-      navigator.clipboard.writeText(shareUrl);
-      toast.success("Link copied to clipboard! 📋");
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success("Link copied to clipboard! 📋");
+      } catch (err) {
+        toast.error("Share URL: " + shareUrl);
+      }
     }
   };
 

@@ -28,9 +28,10 @@ export async function createMoment(userId, userRole, data) {
     throw error;
   }
 
+  const userRoleStr = String(userRole || "").toUpperCase();
   const isOwner =
-    userRole === "SHOP_OWNER" ||
-    userRole === "SHOPOWNER" ||
+    userRoleStr === "SHOP_OWNER" ||
+    userRoleStr === "SHOPOWNER" ||
     data.creatorType === CREATOR_TYPE.SHOP_OWNER;
 
   let shopId = null;
@@ -60,7 +61,8 @@ export async function createMoment(userId, userRole, data) {
 
     // Rule 9: If Shop Owner creates a moment, verify product belongs to their shop
     if (isOwner && ownerShop) {
-      if (product.shop.toString() !== ownerShop._id.toString()) {
+      const prodShopId = product.shop?._id ? product.shop._id.toString() : String(product.shop);
+      if (prodShopId !== ownerShop._id.toString()) {
         const error = new Error("Forbidden: Cannot tag products from another shop");
         error.statusCode = 403;
         throw error;

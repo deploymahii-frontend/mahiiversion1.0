@@ -109,9 +109,8 @@ export default function CreateMoment() {
       formData.append("file", file);
 
       const endpoint = fileType === "video" ? "/uploads/video" : "/uploads/image";
-      const uploadRes = await api.post(endpoint, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      // Let Axios automatically compute multipart boundary
+      const uploadRes = await api.post(endpoint, formData);
 
       const mediaUrl =
         uploadRes.data.data?.url || uploadRes.data.url || uploadRes.data.data;
@@ -128,8 +127,8 @@ export default function CreateMoment() {
 
       // 3. Post Moment Payload
       const momentData = {
-        title: caption.trim().slice(0, 80),
-        description: caption,
+        title: caption.trim().slice(0, 80) || "Mahii Moment",
+        description: caption || "Shared on Mahii Moment",
         mediaUrl: mediaUrl,
         mediaType: fileType,
         location: location || "",
