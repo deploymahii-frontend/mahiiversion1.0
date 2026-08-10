@@ -20,7 +20,7 @@ export default function BottomCartBar() {
           </div>
           <div>
             <p className="text-xs font-black uppercase tracking-wider text-white/90">
-              {totalItems} ITEM{totalItems > 1 ? "S" IN Cart : ""} IN CART
+              {totalItems} ITEM{totalItems > 1 ? "S" : ""} IN CART
             </p>
             <p className="text-lg font-black text-white leading-none mt-0.5">
               ₹{displayTotal.toLocaleString("en-IN")}
