@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: import.meta.env.VITE_API_URL || "https://mahiiversion1-0-1.onrender.com/api/v1",
   withCredentials: true,
 });
 
@@ -38,7 +38,7 @@ const isProtectedPath = () => {
   const pathname = window.location.pathname;
   return (
     pathname.includes("/admin") ||
-    pathname.includes("/shopowner") ||
+    pathname.includes("/shop") ||
     pathname.includes("/checkout") ||
     pathname.includes("/customer/dashboard")
   );
