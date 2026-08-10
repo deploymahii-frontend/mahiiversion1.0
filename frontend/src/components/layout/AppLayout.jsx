@@ -5,6 +5,7 @@ import BottomNavigation from './MobileBottomNav';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
 import PageContainer from './PageContainer';
+import BottomCartBar from '../cart/BottomCartBar';
 
 const AppLayout = () => {
   return (
@@ -14,13 +15,14 @@ const AppLayout = () => {
       <div className="flex-1 flex w-full max-w-7xl mx-auto">
         <Sidebar />
         
-        <main className="flex-1 w-full min-w-0 p-3 sm:p-4 md:p-6 pb-20 md:pb-8">
+        <main className="flex-1 w-full min-w-0 p-3 sm:p-4 md:p-6 pb-24 md:pb-12">
           <PageContainer>
             <Outlet />
           </PageContainer>
         </main>
       </div>
 
+      <BottomCartBar />
       <BottomNavigation />
       <Footer />
       <Toaster position="top-right" toastOptions={{ duration: 3000 }} />

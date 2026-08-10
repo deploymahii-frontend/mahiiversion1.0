@@ -29,7 +29,6 @@ import ShopOwnerDashboardRoutes from './ShopOwnerDashboardRoutes';
 import AdminDashboard from '../modules/admin/pages/Dashboard';
 import SystemSettings from '../modules/admin/system-settings/pages/SystemSettings';
 import FeatureFlagsPage from '../modules/admin/feature-flags/pages/FeatureFlags';
-import ShopRoutes from '../modules/shop/routes';
 import ForbiddenPage from '../pages/ForbiddenPage';
 import Unauthorized from '../pages/Unauthorized';
 import { ROUTES } from '../core/constants/routes';
@@ -134,7 +133,6 @@ const AppRoutes = () => {
               </ProtectedRoute>
             }
         />
-        <Route path="/shop/*" element={<ShopRoutes />} />
         <Route
           path="/customer/*"
           element={
