@@ -138,7 +138,7 @@ productSchema.index({
 });
 
 // Auto generate unique slug if not present
-productSchema.pre("save", function (next) {
+productSchema.pre("save", async function () {
   if (!this.slug && this.name) {
     const cleanName = this.name
       .toLowerCase()
@@ -147,7 +147,6 @@ productSchema.pre("save", function (next) {
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
     this.slug = `${cleanName}-${randomSuffix}`;
   }
-  next();
 });
 
 export default mongoose.models.Product ||
