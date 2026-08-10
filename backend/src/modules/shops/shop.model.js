@@ -207,6 +207,28 @@ const shopSchema = new mongoose.Schema({
             String
         ]
 
+    },
+
+    averageRating: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 5,
+        index: true
+    },
+
+    reviewCount: {
+        type: Number,
+        default: 0,
+        min: 0
+    },
+
+    ratingDistribution: {
+        star1: { type: Number, default: 0 },
+        star2: { type: Number, default: 0 },
+        star3: { type: Number, default: 0 },
+        star4: { type: Number, default: 0 },
+        star5: { type: Number, default: 0 }
     }
 
 }, {

@@ -1,90 +1,102 @@
-import { FiHeart, FiShare2, FiStar, FiMapPin, FiClock, FiGlobe } from "react-icons/fi";
+import { FiStar, FiMapPin, FiClock, FiInfo, FiMoreHorizontal } from "react-icons/fi";
+import { motion } from "framer-motion";
 
 export default function ShopHero({ shop }) {
   const statusLabel = shop.isOpen ? "Open Now" : "Closed";
-  const statusClass = shop.isOpen ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700";
+  const statusClass = shop.isOpen ? "text-emerald-700 bg-emerald-50" : "text-rose-700 bg-rose-50";
+  
+  const rating = shop.rating != null ? shop.rating.toFixed(1) : "0.0";
+  const isHighRating = parseFloat(rating) >= 4.0;
+  const ratingBg = isHighRating ? "bg-green-700" : (parseFloat(rating) >= 3.0 ? "bg-yellow-500" : "bg-orange-500");
 
   return (
-    <section className="bg-white">
-      <div className="relative h-72 md:h-96">
-        <img
-          src={shop.coverImage || shop.cover || shop.images?.cover || "/images/default-cover.jpg"}
-          alt={shop.name}
-          className="w-full h-full object-cover"
-        />
-
-        <div className="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent" />
-
-        <button className="absolute top-5 right-20 bg-white p-3 rounded-full shadow-lg">
-          <FiHeart size={20} />
-        </button>
-
-        <button className="absolute top-5 right-5 bg-white p-3 rounded-full shadow-lg">
-          <FiShare2 size={20} />
-        </button>
-      </div>
-
-      <div className="mx-auto max-w-7xl px-5">
-        <div className="-mt-16 relative z-10">
-          <img
-            src={shop.logo || shop.images?.logo || "/images/default-logo.png"}
-            alt={shop.name}
-            className="w-32 h-32 rounded-3xl border-4 border-white shadow-xl object-cover"
-          />
+    <section className="bg-white dark:bg-slate-950 pt-8 pb-6 border-b border-dashed border-gray-200 dark:border-slate-800">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        
+        {/* Breadcrumb / Top Actions */}
+        <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide mb-6">
+          <div className="flex items-center gap-2">
+            <span>Home</span>
+            <span>/</span>
+            <span>{shop.address?.city || "Location"}</span>
+            <span>/</span>
+            <span className="text-gray-900 dark:text-gray-100">{shop.name}</span>
+          </div>
+          <button className="hover:text-gray-900 dark:hover:text-gray-100 transition">
+            <FiMoreHorizontal size={20} />
+          </button>
         </div>
 
-        <div className="mt-5 rounded-3xl bg-white p-6 shadow-lg">
-          <div className="flex flex-wrap items-center gap-3 justify-between">
+        {/* Primary Info & Rating */}
+        <div className="flex justify-between items-start gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight leading-tight">
+              {shop.name}
+            </h1>
+            <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-1 line-clamp-1">
+              {shop.category || "Local Store"} • {shop.address?.area || shop.address?.city || "Nearby"}
+            </p>
+            
+            <div className="flex items-center gap-3 mt-3">
+              <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${statusClass}`}>
+                {statusLabel}
+              </span>
+              <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1.5 font-medium">
+                <FiClock size={12} className="text-gray-400" /> 
+                {shop.businessHours?.monday?.open || "9:00 AM"} - {shop.businessHours?.monday?.close || "9:00 PM"}
+              </span>
+            </div>
+          </div>
+
+          {/* Swiggy/Zomato Style Rating Box */}
+          <div className="flex flex-col items-center justify-center border border-gray-200 dark:border-slate-700 rounded-xl p-2 shadow-sm bg-white dark:bg-slate-900 shrink-0 min-w-[72px]">
+            <div className={`flex items-center gap-1 font-extrabold text-white px-2.5 py-1 rounded-lg text-sm shadow-sm ${ratingBg}`}>
+              <span>{rating}</span>
+              <FiStar size={12} className="fill-current" />
+            </div>
+            <div className="text-[10px] text-gray-500 dark:text-gray-400 font-semibold mt-1.5 uppercase tracking-wide border-t border-dashed border-gray-200 dark:border-slate-700 pt-1.5 w-full text-center">
+              {shop.reviewsCount || "100+"} ratings
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Info Bar */}
+        <div className="mt-8 flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-900/50 rounded-2xl border border-gray-100 dark:border-slate-800">
+          <div className="flex items-center gap-3 w-1/3">
+            <div className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center text-gray-600 dark:text-gray-300">
+              <FiClock size={14} />
+            </div>
             <div>
-              <div className="flex flex-wrap items-center gap-3">
-                <h1 className="text-4xl font-bold text-slate-900">{shop.name}</h1>
-                <span className={`px-3 py-1 rounded-full text-sm font-semibold ${statusClass}`}>
-                  {statusLabel}
-                </span>
-              </div>
-              <p className="text-gray-600 mt-2">{shop.category || "Local store"}</p>
+              <p className="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">Delivery</p>
+              <p className="text-sm font-extrabold text-gray-900 dark:text-white mt-0.5">{shop.deliveryTime || `${shop.deliverySettings?.averageDeliveryTime ?? 30} mins`}</p>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="rounded-3xl bg-slate-50 px-4 py-3 text-center">
-                <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Rating</p>
-                <p className="mt-2 flex items-center gap-2 text-2xl font-bold text-slate-900">
-                  <FiStar /> {shop.rating != null ? shop.rating.toFixed(1) : "0.0"}
-                </p>
-              </div>
+          </div>
+          
+          <div className="w-px h-10 bg-gray-200 dark:bg-slate-700"></div>
+
+          <div className="flex items-center gap-3 w-1/3 justify-center">
+            <div className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center text-gray-600 dark:text-gray-300">
+              <FiInfo size={14} />
+            </div>
+            <div>
+              <p className="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">Min Order</p>
+              <p className="text-sm font-extrabold text-gray-900 dark:text-white mt-0.5">₹{shop.minimumOrder ?? shop.deliverySettings?.minimumOrder ?? 0}</p>
             </div>
           </div>
 
-          <div className="mt-6 grid gap-4 sm:grid-cols-3">
-            <div className="rounded-3xl bg-slate-50 p-5">
-              <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Delivery</p>
-              <p className="mt-2 text-lg font-semibold text-slate-900">{shop.deliveryTime || `${shop.deliverySettings?.averageDeliveryTime ?? 30} min`}</p>
-            </div>
-            <div className="rounded-3xl bg-slate-50 p-5">
-              <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Minimum Order</p>
-              <p className="mt-2 text-lg font-semibold text-slate-900">₹{shop.minimumOrder ?? shop.deliverySettings?.minimumOrder ?? 0}</p>
-            </div>
-            <div className="rounded-3xl bg-slate-50 p-5">
-              <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Location</p>
-              <p className="mt-2 flex items-center gap-2 text-lg font-semibold text-slate-900">
-                <FiMapPin />
-                {shop.address?.line1 || shop.address?.city || shop.address?.area || "Nearby"}
-              </p>
-            </div>
-          </div>
+          <div className="w-px h-10 bg-gray-200 dark:bg-slate-700"></div>
 
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            {shop.website && (
-              <div className="rounded-3xl bg-slate-50 p-5 flex items-center gap-3">
-                <FiGlobe className="text-slate-500" />
-                <p className="text-sm text-slate-700 truncate">{shop.website}</p>
-              </div>
-            )}
-            <div className="rounded-3xl bg-slate-50 p-5 flex items-center gap-3">
-              <FiClock className="text-slate-500" />
-              <p className="text-sm text-slate-700">{shop.businessHours?.monday?.open || shop.businessHours?.tuesday?.open || "Opening hours not specified"}</p>
+          <div className="flex items-center gap-3 w-1/3 justify-end">
+            <div className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center text-gray-600 dark:text-gray-300">
+              <FiMapPin size={14} />
+            </div>
+            <div className="text-right">
+              <p className="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">Distance</p>
+              <p className="text-sm font-extrabold text-gray-900 dark:text-white mt-0.5">2.5 km</p>
             </div>
           </div>
         </div>
+
       </div>
     </section>
   );

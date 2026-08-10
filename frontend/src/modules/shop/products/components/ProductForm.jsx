@@ -17,6 +17,7 @@ export default function ProductForm({
         initialValues.images?.map((url) => ({
             id: crypto.randomUUID(),
             preview: url,
+            url,
             primary: false,
         })) || []
     );
@@ -27,7 +28,9 @@ export default function ProductForm({
 
         description: initialValues.description || "",
 
-        category: initialValues.category?._id || initialValues.category || "",
+        category: typeof initialValues.category === "object"
+            ? initialValues.category?.name || ""
+            : initialValues.category || "",
 
         price: initialValues.price || "",
 
@@ -88,30 +91,12 @@ export default function ProductForm({
 
         e.preventDefault();
 
-        const data = new FormData();
+        const payload = {
+            ...form,
+            images,
+        };
 
-        Object.entries(form).forEach(
-
-            ([key, value]) => {
-
-                data.append(key, value);
-
-            }
-
-        );
-
-        images.forEach(image => {
-            if (image.file) {
-                data.append("images", image.file);
-            }
-        });
-
-        const primary = images.find(img => img.primary);
-        if (primary && primary.file) {
-            data.append("primaryImage", primary.file.name);
-        }
-
-        onSubmit(data);
+        onSubmit(payload);
 
     }
 
@@ -190,7 +175,7 @@ export default function ProductForm({
 
                                 key={cat._id}
 
-                                value={cat._id}
+                                value={cat.name}
 
                             >
 

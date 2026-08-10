@@ -1,15 +1,17 @@
 import Product from "./product.model.js";
 
+const POPULATE_SHOP = { path: "shop", select: "name slug logo averageRating address owner" };
+
 export const create = (data) => Product.create(data);
 
 export const findById = (id) =>
-  Product.findById(id).populate("shop", "name slug");
+  Product.findById(id).populate(POPULATE_SHOP);
 
 export const findBySlug = (slug) =>
-  Product.findOne({ slug }).populate("shop", "name slug");
+  Product.findOne({ slug }).populate(POPULATE_SHOP);
 
-export const findByShop = (shopId) =>
-  Product.find({ shop: shopId })
+export const findByShop = (shopId, extraFilter = {}) =>
+  Product.find({ shop: shopId, ...extraFilter })
     .sort({ createdAt: -1 });
 
 export const update = (id, data) =>
@@ -19,121 +21,56 @@ export const update = (id, data) =>
   });
 
 export const remove = (id) =>
-  Product.findByIdAndDelete(id);
+  Product.findByIdAndUpdate(id, { status: "ARCHIVED", available: false }, { new: true });
 
-export const getAll = (filter = {}, options = {}) => {
-  const {
-    page = 1,
-    limit = 10,
-    sort = { createdAt: -1 },
-  } = options;
+export const getAll = async (filter = {}, options = {}) => {
+  const page = parseInt(options.page, 10) || 1;
+  const limit = parseInt(options.limit, 10) || 20;
+  const skip = (page - 1) * limit;
 
-  return Product.find(filter)
-    .populate("shop", "name slug")
-    .sort(sort)
-    .skip((page - 1) * limit)
-    .limit(limit);
+  let sort = { createdAt: -1 };
+  if (options.sort === "price_asc") sort = { price: 1 };
+  if (options.sort === "price_desc") sort = { price: -1 };
+  if (options.sort === "rating") sort = { "rating.average": -1 };
+  if (options.sort === "newest") sort = { createdAt: -1 };
+
+  const [products, total] = await Promise.all([
+    Product.find(filter)
+      .populate(POPULATE_SHOP)
+      .sort(sort)
+      .skip(skip)
+      .limit(limit),
+    Product.countDocuments(filter),
+  ]);
+
+  return { products, total, page, totalPages: Math.ceil(total / limit) };
 };
 
-export const count = (filter = {}) =>
-  Product.countDocuments(filter);
+export const count = (filter = {}) => Product.countDocuments(filter);
 
-export const search = (keyword) =>
-  Product.find({
-    $text: {
-      $search: keyword,
-    },
-  }).populate("shop", "name slug");
+export const searchProducts = async (queryStr, extraFilter = {}) => {
+  const filter = {
+    ...extraFilter,
+    $or: [
+      { name: { $regex: queryStr, $options: "i" } },
+      { description: { $regex: queryStr, $options: "i" } },
+      { category: { $regex: queryStr, $options: "i" } },
+    ],
+  };
 
-export async function createProduct(data){
+  return Product.find(filter).populate(POPULATE_SHOP).sort({ createdAt: -1 });
+};
 
-    return Product.create(data);
+export const createProduct = (data) => Product.create(data);
 
-}
+export const getProducts = (shopId) => Product.find({ shop: shopId }).populate(POPULATE_SHOP);
 
-export async function getProducts(shopId){
+export const updateProduct = (id, data) => Product.findByIdAndUpdate(id, data, { new: true });
 
-    return Product.find({
+export const bulkCreateProducts = (products) => Product.insertMany(products);
 
-        shop:shopId
-
-    });
-
-}
-
-export async function updateProduct(
-
-    id,
-
-    data
-
-){
-
-    return Product.findByIdAndUpdate(
-
-        id,
-
-        data,
-
-        {
-
-            new:true
-
-        }
-
-    );
-}
-
-export async function searchProducts(query){
-
-    return Product.find({
-
-        $text:{
-
-            $search:query
-
-        }
-
-    });
-
-}
-
-export async function bulkCreateProducts(
-
-    products
-
-){
-
-    return Product.insertMany(
-
-        products
-
-    );
-
-}
-
-export async function decreaseInventory(
-
-    productId,
-
-    quantity
-
-){
-
-    await Product.findByIdAndUpdate(
-
-        productId,
-
-        {
-
-            $inc:{
-
-                "inventory.quantity":-quantity
-
-            }
-
-        }
-
-    );
-
-}
+export const decreaseInventory = async (productId, quantity) => {
+  await Product.findByIdAndUpdate(productId, {
+    $inc: { "inventory.quantity": -quantity },
+  });
+};

@@ -49,6 +49,8 @@ import AdminMoments from '../modules/admin/pages/Moments';
 import AdminReports from '../modules/admin/pages/Reports';
 import AdminCities from '../modules/admin/pages/Cities';
 import AdminAnalytics from '../modules/admin/pages/Analytics';
+import MyReviews from '../pages/MyReviews';
+import AdminReviewModeration from '../modules/admin/components/AdminReviewModeration';
 
 const AppRoutes = () => {
   return (
@@ -81,6 +83,8 @@ const AppRoutes = () => {
             <Route path={ROUTES.CHECKOUT} element={<Checkout />} />
             <Route path={ROUTES.ORDERS} element={<Orders />} />
             <Route path={`${ROUTES.ORDERS}/:id`} element={<OrderDetails />} />
+            <Route path="/my-reviews" element={<MyReviews />} />
+            <Route path="/reviews" element={<MyReviews />} />
             <Route path={ROUTES.PROFILE} element={<Profile />} />
             <Route path="/wallet" element={<Wallet />} />
             <Route path="/create-moment" element={<CreateMoment />} />
@@ -109,6 +113,7 @@ const AppRoutes = () => {
           <Route path="products" element={<AdminProducts />} />
           <Route path="services" element={<AdminServices />} />
           <Route path="orders" element={<AdminOrders />} />
+          <Route path="reviews" element={<AdminReviewModeration />} />
           <Route path="payments" element={<PaymentSettlementManagement />} />
           <Route path="moments" element={<AdminMoments />} />
           <Route path="reports" element={<AdminReports />} />

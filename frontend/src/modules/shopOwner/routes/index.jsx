@@ -10,6 +10,7 @@ import ShopOwnerShopProfile from "../pages/ShopOwnerShopProfile";
 import ShopOwnerOffers from "../pages/ShopOwnerOffers";
 import ShopOwnerSubscription from "../pages/ShopOwnerSubscription";
 import ShopOwnerSettings from "../pages/ShopOwnerSettings";
+import ShopOwnerMoments from "../pages/ShopOwnerMoments";
 
 export default function ShopOwnerRoutes() {
   return (
@@ -21,6 +22,7 @@ export default function ShopOwnerRoutes() {
         <Route path="products" element={<ShopOwnerProducts />} />
         <Route path="inventory" element={<ShopOwnerInventory />} />
         <Route path="offers" element={<ShopOwnerOffers />} />
+        <Route path="moments" element={<ShopOwnerMoments />} />
         <Route path="analytics" element={<ShopOwnerAnalytics />} />
         <Route path="reviews" element={<ShopOwnerReviews />} />
         <Route path="subscription" element={<ShopOwnerSubscription />} />

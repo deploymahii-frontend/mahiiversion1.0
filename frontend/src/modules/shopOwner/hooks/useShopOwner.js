@@ -190,9 +190,9 @@ export function useCreateProduct() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["shop-products"] });
       qc.invalidateQueries({ queryKey: ["shop-dashboard"] });
-      toast.success("Product created");
+      toast.success("Product created successfully!");
     },
-    onError: () => toast.error("Failed to create product"),
+    onError: (err) => toast.error(err?.response?.data?.message || err?.message || "Failed to create product"),
   });
 }
 
@@ -202,9 +202,9 @@ export function useUpdateProduct() {
     mutationFn: ({ productId, data }) => shopOwnerService.updateProduct(productId, data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["shop-products"] });
-      toast.success("Product updated");
+      toast.success("Product updated successfully!");
     },
-    onError: () => toast.error("Failed to update product"),
+    onError: (err) => toast.error(err?.response?.data?.message || err?.message || "Failed to update product"),
   });
 }
 
@@ -214,9 +214,9 @@ export function useDeleteProduct() {
     mutationFn: (productId) => shopOwnerService.deleteProduct(productId),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["shop-products"] });
-      toast.success("Product deleted");
+      toast.success("Product archived");
     },
-    onError: () => toast.error("Failed to delete product"),
+    onError: (err) => toast.error(err?.response?.data?.message || err?.message || "Failed to delete product"),
   });
 }
 
@@ -228,7 +228,7 @@ export function useUpdateStock() {
       qc.invalidateQueries({ queryKey: ["shop-products"] });
       toast.success("Stock updated");
     },
-    onError: () => toast.error("Failed to update stock"),
+    onError: (err) => toast.error(err?.response?.data?.message || err?.message || "Failed to update stock"),
   });
 }
 
@@ -237,6 +237,7 @@ export function useToggleAvailability() {
   return useMutation({
     mutationFn: ({ productId, available }) => shopOwnerService.toggleAvailability(productId, available),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["shop-products"] }),
+    onError: (err) => toast.error(err?.response?.data?.message || err?.message || "Failed to toggle availability"),
   });
 }
 

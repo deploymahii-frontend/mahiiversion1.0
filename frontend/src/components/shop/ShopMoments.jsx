@@ -1,63 +1,61 @@
-import useMoments from "../../hooks/useMoments";
-import { FiHeart, FiPlay } from "react-icons/fi";
-
-import api from "../../services/api";
+import React, { useEffect, useState } from "react";
+import { FiCamera, FiEye, FiHeart } from "react-icons/fi";
+import momentService from "../../services/moment.service";
+import MomentCard from "../moments/MomentCard";
 
 export default function ShopMoments({ shopId }) {
-  const { moments, loading } = useMoments(shopId);
+  const [moments, setMoments] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  if (loading) {
-    return <div className="p-6 bg-white rounded-3xl">Loading moments...</div>;
-  }
+  useEffect(() => {
+    if (shopId) {
+      loadShopMoments();
+    }
+  }, [shopId]);
 
-  const getImageUrl = (url) => {
-    if (!url) return url;
-    let imageUrl = url.replace(/\\/g, "/");
-    if (imageUrl.startsWith("uploads/")) {
-      imageUrl = `/${imageUrl}`;
+  const loadShopMoments = async () => {
+    try {
+      setLoading(true);
+      const res = await momentService.getShopMoments(shopId);
+      setMoments(res.data || []);
+    } catch (err) {
+      console.error("Failed to load shop moments", err);
+    } fontally: {
+      setLoading(false);
     }
-
-    const baseUrl = api.defaults.baseURL.replace("/api/v1", "");
-    if (imageUrl.startsWith("http://localhost:5000")) {
-      return imageUrl.replace("http://localhost:5000", baseUrl);
-    }
-    if (imageUrl.startsWith("/uploads")) {
-      return `${baseUrl}${imageUrl}`;
-    }
-    return imageUrl;
   };
 
+  if (!loading && moments.length === 0) {
+    return null; // Hide section if shop has no moments yet
+  }
+
   return (
-    <section className="w-full">
-      {moments.length === 0 ? (
-        <div className="rounded-3xl border border-dashed border-slate-200 bg-slate-50 p-10 text-center text-slate-500">
-          No moments yet.
+    <div className="my-10 border-t border-gray-100 dark:border-slate-800 pt-8 space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="p-2 rounded-xl bg-orange-100 dark:bg-orange-950 text-orange-600 dark:text-orange-400">
+            <FiCamera size={18} />
+          </div>
+          <div>
+            <h3 className="font-extrabold text-gray-900 dark:text-white text-lg">
+              Shop Moments & Highlights
+            </h3>
+            <p className="text-xs text-gray-500 dark:text-slate-400">
+              Visual feed posts and customer reviews from this shop
+            </p>
+          </div>
         </div>
+      </div>
+
+      {loading ? (
+        <p className="text-xs text-gray-400">Loading moments...</p>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {moments.map((moment) => (
-            <div
-              key={moment._id}
-              className="relative rounded-2xl overflow-hidden shadow-lg group"
-            >
-              <img
-                src={getImageUrl(moment.thumbnailUrl || moment.mediaUrl)}
-                alt=""
-                className="w-full h-72 object-cover"
-              />
-
-              <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                <FiPlay className="text-white" size={40} />
-              </div>
-
-              <div className="absolute bottom-3 left-3 flex items-center gap-2 bg-black/60 text-white px-3 py-1 rounded-full">
-                <FiHeart />
-                {moment.likes || 0}
-              </div>
-            </div>
+            <MomentCard key={moment._id || moment.id} moment={moment} />
           ))}
         </div>
       )}
-    </section>
+    </div>
   );
 }

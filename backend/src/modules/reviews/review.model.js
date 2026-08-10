@@ -19,7 +19,8 @@ const reviewSchema = new mongoose.Schema(
     order: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Order",
-      default: null,
+      required: true,
+      index: true,
     },
 
     rating: {
@@ -29,10 +30,24 @@ const reviewSchema = new mongoose.Schema(
       max: 5,
     },
 
+    title: {
+      type: String,
+      trim: true,
+      maxlength: 100,
+      default: "",
+    },
+
+    comment: {
+      type: String,
+      trim: true,
+      maxlength: 2000,
+      default: "",
+    },
+
     review: {
       type: String,
       trim: true,
-      maxlength: 1000,
+      maxlength: 2000,
       default: "",
     },
 
@@ -43,17 +58,42 @@ const reviewSchema = new mongoose.Schema(
 
     isVerifiedPurchase: {
       type: Boolean,
-      default: false,
+      default: true,
     },
 
-    likes: {
-      type: Number,
-      default: 0,
+    status: {
+      type: String,
+      enum: ["ACTIVE", "REPORTED", "HIDDEN", "REMOVED"],
+      default: "ACTIVE",
+      index: true,
     },
 
-    reports: {
+    helpfulCount: {
       type: Number,
       default: 0,
+      min: 0,
+    },
+
+    reportCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    ownerReply: {
+      comment: {
+        type: String,
+        trim: true,
+        default: null,
+      },
+      repliedAt: {
+        type: Date,
+        default: null,
+      },
+      updatedAt: {
+        type: Date,
+        default: null,
+      },
     },
   },
   {
@@ -61,6 +101,10 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 
-reviewSchema.index({ shop: 1, customer: 1 });
+// Compound unique index to enforce one review per customer order per shop
+reviewSchema.index({ customer: 1, shop: 1, order: 1 }, { unique: true });
+
+// Compound index for querying active reviews by shop ordered by creation date
+reviewSchema.index({ shop: 1, status: 1, createdAt: -1 });
 
 export default mongoose.model("Review", reviewSchema);

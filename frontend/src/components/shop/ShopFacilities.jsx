@@ -1,6 +1,6 @@
 import {
   FiWifi,
-  FiHome,
+  FiInfo,
   FiCheckCircle,
 } from "react-icons/fi";
 import {
@@ -45,37 +45,31 @@ export default function ShopFacilities({ shop }) {
     },
   ];
 
-  return (
-    <section className="max-w-7xl mx-auto px-5 mt-8">
-      <div className="bg-white rounded-3xl shadow-lg p-6">
-        <div className="flex items-center gap-3 mb-6">
-          <FiHome className="text-orange-500 text-2xl" />
-          <h2 className="text-2xl font-bold">Facilities</h2>
-        </div>
+  const availableFacilities = facilities.filter(item => shop.facilities?.[item.key]);
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {facilities.map((item) => (
+  return (
+    <section>
+      <div className="flex items-center gap-2 mb-4">
+        <FiInfo className="text-gray-900 dark:text-gray-100" />
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">Features</h2>
+      </div>
+
+      {availableFacilities.length === 0 ? (
+         <p className="text-sm text-gray-500 dark:text-gray-400">No specific features listed.</p>
+      ) : (
+        <div className="space-y-3">
+          {availableFacilities.map((item) => (
             <div
               key={item.key}
-              className={`rounded-2xl p-4 flex items-center gap-3 border ${
-                shop.facilities?.[item.key]
-                  ? "bg-green-50 border-green-200"
-                  : "bg-gray-50 border-gray-200 opacity-60"
-              }`}
+              className="flex items-center gap-3 text-sm"
             >
-              <div className="text-xl">{item.icon}</div>
-
-              <div className="flex-1">
-                <p className="font-medium">{item.label}</p>
-              </div>
-
-              {shop.facilities?.[item.key] && (
-                <FiCheckCircle className="text-green-600" />
-              )}
+              <div className="text-gray-400">{item.icon}</div>
+              <span className="font-medium text-gray-700 dark:text-gray-300 flex-1">{item.label}</span>
+              <FiCheckCircle className="text-emerald-500" />
             </div>
           ))}
         </div>
-      </div>
+      )}
     </section>
   );
 }

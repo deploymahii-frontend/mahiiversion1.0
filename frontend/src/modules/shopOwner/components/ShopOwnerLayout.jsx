@@ -3,7 +3,7 @@ import { NavLink, Outlet, useNavigate, Link } from "react-router-dom";
 import {
   LayoutDashboard, ShoppingBag, Package, Boxes,
   Tag, BarChart3, Star, Crown, Store, Settings,
-  LogOut, Bell, Sun, Moon, Home, Menu, X, ChevronDown,
+  LogOut, Bell, Sun, Moon, Home, Menu, X, ChevronDown, Camera,
 } from "lucide-react";
 import { useShopDashboard } from "../hooks/useShopOwner";
 import useAuthStore from "../../auth/store/auth.store";
@@ -15,6 +15,7 @@ const NAV = [
   { label: "Products",     to: "products",  icon: Package },
   { label: "Inventory",    to: "inventory", icon: Boxes },
   { label: "Offers",       to: "offers",    icon: Tag },
+  { label: "Mahii Moment", to: "moments",   icon: Camera },
   { label: "Analytics",    to: "analytics", icon: BarChart3 },
   { label: "Reviews",      to: "reviews",   icon: Star },
   { label: "Subscription", to: "subscription", icon: Crown },

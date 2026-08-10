@@ -74,7 +74,39 @@ export class ShopOwnerService {
   async createProduct(ownerId, data) {
     const shop = await shopOwnerRepository.findShopByOwner(ownerId);
     if (!shop) throw new Error("No shop found for this account");
-    return shopOwnerRepository.createProduct({ ...data, shop: shop._id });
+
+    if (!data.name || !data.name.trim()) {
+      throw new Error("Product name is required");
+    }
+
+    const price = Number(data.price);
+    if (isNaN(price) || price <= 0) {
+      throw new Error("Product price must be a valid positive number");
+    }
+
+    const cleanName = data.name.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+    const slug = data.slug || `${cleanName}-${randomSuffix}`;
+
+    const payload = {
+      ...data,
+      name: data.name.trim(),
+      description: data.description ? data.description.trim() : "",
+      sku: data.sku ? data.sku.trim() : "",
+      shop: shop._id,
+      slug,
+      price,
+      discountedPrice: data.discountedPrice ? Number(data.discountedPrice) : undefined,
+      category: data.category || "General",
+      status: data.status || (data.available === false ? "INACTIVE" : "ACTIVE"),
+      available: data.available ?? true,
+      inventory: {
+        quantity: data.stock !== undefined ? Number(data.stock) : Number(data.inventory?.quantity || 100),
+        trackInventory: data.trackInventory ?? true,
+      },
+    };
+
+    return shopOwnerRepository.createProduct(payload);
   }
 
   async updateProduct(ownerId, productId, data) {
@@ -86,7 +118,17 @@ export class ShopOwnerService {
       throw new Error("Unauthorized: This product does not belong to your shop");
     }
 
-    return shopOwnerRepository.updateProduct(productId, data);
+    const updatePayload = { ...data };
+    if (data.price !== undefined) updatePayload.price = Number(data.price);
+    if (data.discountedPrice !== undefined) updatePayload.discountedPrice = Number(data.discountedPrice);
+    if (data.stock !== undefined) {
+      updatePayload["inventory.quantity"] = Number(data.stock);
+    }
+    if (data.status) {
+      updatePayload.available = data.status === "ACTIVE";
+    }
+
+    return shopOwnerRepository.updateProduct(productId, updatePayload);
   }
 
   async deleteProduct(ownerId, productId) {
@@ -98,7 +140,8 @@ export class ShopOwnerService {
       throw new Error("Unauthorized: This product does not belong to your shop");
     }
 
-    return shopOwnerRepository.deleteProduct(productId);
+    // Soft delete / archive product
+    return shopOwnerRepository.updateProduct(productId, { status: "ARCHIVED", available: false });
   }
 
   async updateStock(ownerId, productId, quantity) {
@@ -110,7 +153,13 @@ export class ShopOwnerService {
       throw new Error("Unauthorized: This product does not belong to your shop");
     }
 
-    return shopOwnerRepository.updateProductStock(productId, Number(quantity));
+    const qty = Number(quantity);
+    const status = qty <= 0 ? "OUT_OF_STOCK" : "ACTIVE";
+    return shopOwnerRepository.updateProduct(productId, {
+      "inventory.quantity": qty,
+      status,
+      available: qty > 0,
+    });
   }
 
   async toggleAvailability(ownerId, productId, available) {
@@ -122,7 +171,8 @@ export class ShopOwnerService {
       throw new Error("Unauthorized: This product does not belong to your shop");
     }
 
-    return shopOwnerRepository.toggleProductAvailability(productId, available);
+    const status = available ? "ACTIVE" : "INACTIVE";
+    return shopOwnerRepository.updateProduct(productId, { available, status });
   }
 
   /* ── Analytics ────────────────────────────── */

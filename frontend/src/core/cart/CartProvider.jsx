@@ -23,6 +23,20 @@ export default function CartProvider({ children }) {
   }, []);
 
   async function loadCart() {
+    const token =
+      localStorage.getItem("mahii_token") ||
+      localStorage.getItem("accessToken") ||
+      localStorage.getItem("token") ||
+      localStorage.getItem("authToken");
+
+    if (!token) {
+      dispatch({
+        type: "SET_CART",
+        payload: { items: [], totalItems: 0, subtotal: 0, total: 0 },
+      });
+      return;
+    }
+
     dispatch({
       type: "SET_LOADING",
       payload: true,
@@ -44,6 +58,17 @@ export default function CartProvider({ children }) {
   }
 
   async function addToCart(product, quantity = 1) {
+    const token =
+      localStorage.getItem("mahii_token") ||
+      localStorage.getItem("accessToken") ||
+      localStorage.getItem("token") ||
+      localStorage.getItem("authToken");
+
+    if (!token) {
+      window.location.href = "/login";
+      return;
+    }
+
     dispatch({
       type: "SET_LOADING",
       payload: true,
@@ -51,7 +76,7 @@ export default function CartProvider({ children }) {
 
     try {
       const cart = await cartService.addItem(
-        product._id,
+        product._id || product.id,
         quantity
       );
 

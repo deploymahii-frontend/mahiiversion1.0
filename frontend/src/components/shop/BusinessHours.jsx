@@ -18,36 +18,34 @@ export default function BusinessHours({ shop }) {
   })).filter((item) => item.open || item.closed);
 
   return (
-    <section className="max-w-7xl mx-auto px-5 mt-8">
-      <div className="bg-white rounded-3xl shadow-lg p-6">
-        <div className="flex items-center gap-3 mb-6">
-          <FiClock className="text-orange-500 text-2xl" />
-          <h2 className="text-2xl font-bold">Business Hours</h2>
-        </div>
-
-        {businessHours.length === 0 ? (
-          <p className="text-gray-500">Business hours not available.</p>
-        ) : (
-          <div className="space-y-4">
-            {businessHours.map((day) => (
-              <div
-                key={day.day}
-                className="flex justify-between items-center border-b pb-3"
-              >
-                <span className="font-medium">{day.day}</span>
-
-                {day.closed ? (
-                  <span className="text-red-500 font-medium">Closed</span>
-                ) : (
-                  <span className="text-gray-700">
-                    {day.open || "-"} - {day.close || "-"}
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+    <section>
+      <div className="flex items-center gap-2 mb-4">
+        <FiClock className="text-gray-900 dark:text-gray-100" />
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">Business Hours</h2>
       </div>
+
+      {businessHours.length === 0 ? (
+        <p className="text-sm text-gray-500 dark:text-gray-400">Business hours not available.</p>
+      ) : (
+        <div className="space-y-3">
+          {businessHours.map((day) => (
+            <div
+              key={day.day}
+              className="flex justify-between items-center text-sm"
+            >
+              <span className="font-semibold text-gray-700 dark:text-gray-300">{day.day}</span>
+
+              {day.closed ? (
+                <span className="text-rose-500 font-bold tracking-wide uppercase text-[10px]">Closed</span>
+              ) : (
+                <span className="text-gray-500 dark:text-gray-400 font-medium">
+                  {day.open || "-"} - {day.close || "-"}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

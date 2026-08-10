@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { MOMENT_STATUS, MOMENT_TYPE } from "./moment.constants.js";
+import { MOMENT_STATUS, MOMENT_TYPE, CREATOR_TYPE } from "./moment.constants.js";
 
 const momentSchema = new mongoose.Schema(
   {
@@ -7,11 +7,38 @@ const momentSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      index: true,
+    },
+
+    creatorType: {
+      type: String,
+      enum: Object.values(CREATOR_TYPE),
+      default: CREATOR_TYPE.CUSTOMER,
     },
 
     shop: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Shop",
+      default: null,
+      index: true,
+    },
+
+    productIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    ],
+
+    productId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+      default: null,
+    },
+
+    offerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Offer",
       default: null,
     },
 
@@ -25,7 +52,7 @@ const momentSchema = new mongoose.Schema(
     description: {
       type: String,
       default: "",
-      maxlength: 1000,
+      maxlength: 2200,
       trim: true,
     },
 
@@ -34,21 +61,13 @@ const momentSchema = new mongoose.Schema(
       default: "",
       maxlength: 200,
       trim: true,
+      index: true,
     },
 
     hashtags: {
       type: [String],
       default: [],
-    },
-
-    productId: {
-      type: mongoose.Schema.Types.ObjectId,
-      default: null,
-    },
-
-    offerId: {
-      type: mongoose.Schema.Types.ObjectId,
-      default: null,
+      index: true,
     },
 
     mediaUrl: {
@@ -59,7 +78,7 @@ const momentSchema = new mongoose.Schema(
     mediaType: {
       type: String,
       enum: ["image", "video"],
-      default: "video",
+      default: "image",
     },
 
     thumbnailUrl: {
@@ -83,7 +102,17 @@ const momentSchema = new mongoose.Schema(
       default: 0,
     },
 
+    commentsCount: {
+      type: Number,
+      default: 0,
+    },
+
     shares: {
+      type: Number,
+      default: 0,
+    },
+
+    savesCount: {
       type: Number,
       default: 0,
     },
@@ -93,15 +122,31 @@ const momentSchema = new mongoose.Schema(
       default: 0,
     },
 
+    productClicks: {
+      type: Number,
+      default: 0,
+    },
+
+    cartAdditions: {
+      type: Number,
+      default: 0,
+    },
+
     orderGenerated: {
       type: Number,
       default: 0,
     },
 
+    isFeatured: {
+      type: Boolean,
+      default: false,
+    },
+
     status: {
       type: String,
       enum: Object.values(MOMENT_STATUS),
-      default: MOMENT_STATUS.DRAFT,
+      default: MOMENT_STATUS.PUBLISHED,
+      index: true,
     },
   },
   {
@@ -109,9 +154,8 @@ const momentSchema = new mongoose.Schema(
   }
 );
 
-momentSchema.index({ creator: 1 });
-momentSchema.index({ shop: 1 });
-// Auto-delete moments 24 hours after creation
-momentSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400 });
+momentSchema.index({ status: 1, createdAt: -1 });
+momentSchema.index({ shop: 1, status: 1, createdAt: -1 });
+momentSchema.index({ creator: 1, status: 1 });
 
 export default mongoose.model("Moment", momentSchema);
