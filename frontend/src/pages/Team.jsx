@@ -27,9 +27,9 @@ const leadership = [
   {
     name: "Ayush Mane",
     role: "Co-Founder & CTO",
-    image: getTeamImage("Ayush Mane"),
+    image: getTeamImage("ayush mane"),
 
-    linkedin: "https://linkedin.com",
+    linkedin: "www.linkedin.com/in/ayush-mane-6a7a6333b",
     instagram: "https://www.instagram.com/atharva_407?igsh=azVvNjMxd213Z3Rz",
   },
 
