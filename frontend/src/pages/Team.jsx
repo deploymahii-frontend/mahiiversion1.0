@@ -25,38 +25,16 @@ const leadership = [
     instagram: "https://www.instagram.com/omjaunjal_?igsh=MXA1Z3I5dGl4dHM2bA==",
   },
   {
-    name: "Atharva Dahifale",
-    role: "Chief Financial Officer",
-    image: getTeamImage("Atharv Dahifale"),
+    name: "Ayush Mane",
+    role: "Co-Founder & CTO",
+    image: getTeamImage("Ayush Mane"),
 
     linkedin: "https://linkedin.com",
     instagram: "https://www.instagram.com/atharva_407?igsh=azVvNjMxd213Z3Rz",
   },
-  {
-    name: "Rohan Kodgire",
-    role: "Chief Marketing Officer",
-    image: getTeamImage("Rohan Kodgire"),
 
-    linkedin: "https://linkedin.com",
-    instagram: "https://www.instagram.com/rohan_40006?igsh=N2d5OWRtam14NnRs",
-  },
-  {
-    name: "Atharv Kambale",
-    role: "Digital Media Manager",
-    image: getTeamImage("Atharv Kambale"),
 
-    linkedin: "https://linkedin.com",
-    instagram: "https://www.instagram.com/athu19_?igsh=NG8xNWduMDg3enB3",
-  },
-  {
-    name: "Vishwajit Sanap",
-    role: "influencer",
-    image: getTeamImage("Vishwajit Sanap"),
 
-    linkedin: "https://linkedin.com",
-    instagram: "https://www.instagram.com/vishu_sanap_02?igsh=cHE3eXAwc3ZndmFu",
-  },
-  
 ];
 
 export default function Team() {
@@ -86,11 +64,11 @@ export default function Team() {
           <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 sm:p-12 shadow-xl border border-gray-100 dark:border-slate-700 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-4 flex justify-center">
               <div className="relative">
-<img
-  src={leadership[0].image || placeholderImg}
-  alt={leadership[0].name}
-  className="w-56 h-56 sm:w-64 sm:h-64 object-cover rounded-3xl shadow-lg border-4 border-orange-500"
-/>
+                <img
+                  src={leadership[0].image || placeholderImg}
+                  alt={leadership[0].name}
+                  className="w-56 h-56 sm:w-64 sm:h-64 object-cover rounded-3xl shadow-lg border-4 border-orange-500"
+                />
                 <span className="absolute bottom-3 right-3 bg-orange-500 text-white font-black text-[10px] uppercase px-3 py-1 rounded-full tracking-wider shadow">
                   Founder & CEO
                 </span>
@@ -105,7 +83,7 @@ export default function Team() {
               <p className="text-sm font-semibold text-gray-500 dark:text-slate-400">
                 {leadership[0].role}
               </p>
-              
+
               <div className="flex items-center justify-center lg:justify-start gap-3 pt-2">
                 <a href={leadership[0].linkedin} target="_blank" rel="noreferrer" className="p-2.5 rounded-xl bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-slate-200 hover:text-orange-500 transition">
                   <FiLinkedin size={18} />
@@ -127,7 +105,7 @@ export default function Team() {
               {leadership.slice(1).map((member) => (
                 <div
                   key={member.name}
-                                  className="max-w-xs w-full mx-auto rounded-2xl overflow-hidden bg-white dark:bg-slate-800 shadow-sm border border-gray-100 dark:border-slate-700/50 flex flex-col justify-between cursor-pointer hover:-translate-y-1 transition duration-200 p-4"
+                  className="max-w-xs w-full mx-auto rounded-2xl overflow-hidden bg-white dark:bg-slate-800 shadow-sm border border-gray-100 dark:border-slate-700/50 flex flex-col justify-between cursor-pointer hover:-translate-y-1 transition duration-200 p-4"
                 >
                   <div className="flex flex-col flex-1 space-y-4 text-center">
                     <img
